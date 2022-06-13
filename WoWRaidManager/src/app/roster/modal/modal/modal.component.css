@@ -1,0 +1,35 @@
+.containerLayout{
+font-size: 12px;
+width:100%;
+}
+.h1{
+    font-size: 16px;
+}
+.userIcon{
+    padding-right: 15px;
+}
+
+.mat-radio-button ~ .mat-radio-button {
+    margin-left: 16px;
+  }
+
+  .dialogRows {
+      width:100%;
+      display: flex;
+      justify-content: space-around;
+  }
+
+  .dialogRowsTwoItems{
+    width:100%;
+    display: flex;
+    justify-content: space-around;
+  }
+  .mat-radio-group{
+      padding-top: 5px;
+      padding-bottom: 10px;
+  }
+  .error{
+    color: red;
+    font-size: 10px;
+} 
+

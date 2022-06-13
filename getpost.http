@@ -1,0 +1,63 @@
+GET http://127.0.0.1:3000/roster HTTP/1.1
+
+GET http://127.0.0.1:3000/roster/5 HTTP/1.1
+
+
+GET http://127.0.0.1:3000/spec/Knight/Blood HTTP/1.1
+Host: Test1
+Content-Type: application/json
+
+{
+  "specName": "Blood",
+  "className": "Knight"
+}
+
+POST http://127.0.0.1:3000/roster HTTP/1.1
+Host: Test1
+Content-Type: application/json
+
+        {
+          "charName": "Greko",
+          "specUID": 5,
+          "main": true
+        }
+
+PUT http://127.0.0.1:3001/insertCharacter HTTP/1.1
+Host: Test1
+Content-Type: application/json
+
+{
+  "specName": "Blood",
+  "className": "Knight"
+}
+
+GET http://127.0.0.1:3001/processRoster HTTP/1.1
+
+
+GET http://127.0.0.1:3001/processRaidComp HTTP/1.1
+
+
+
+DELETE http://127.0.0.1:3000/roster/123 HTTP/1.1
+
+DELETE http://127.0.0.1:3001/deleteCharacter/123 HTTP/1.1
+Host: Test1
+Content-Type: application/json
+
+{
+  "charName": "test123",
+  "specUID": 28,
+  "main": false
+}
+
+
+PUT http://127.0.0.1:3000/roster/28 HTTP/1.1
+Host: Test1
+Content-Type: application/json
+
+{
+  "charName": "test123",
+  "specUID": 28,
+  "main": false
+}
+

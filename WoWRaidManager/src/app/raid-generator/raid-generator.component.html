@@ -1,0 +1,97 @@
+<div class="QueryControls">
+    <form [formGroup]='RaidGeneratorSettings' class="RaidGeneratorSettings" fxLayoutGap="10px grid"
+        (ngSubmit)="generateRaidComp()">
+        <!--Raid Day     Calander Date Picker-->
+        <div>
+            <mat-form-field appearance="fill">
+                <mat-label>Raid Date</mat-label>
+                <input matInput [matDatepicker]="picker">
+                <mat-hint>MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+        </div>
+
+        <!--Raid Size (10,25)-->
+        <div>
+            <mat-form-field appearance="fill">
+                <mat-label>Raid Size</mat-label>
+                <mat-select formControlName="raidSize" (selectionChange)="raidSizeChanged($event)">
+                    <mat-option *ngFor="let value of raidSizeValues" [value]="value" >
+                        {{value}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <!--Number of Tanks-->
+        <div>
+            <mat-form-field appearance="fill">
+                <mat-label>Tanks</mat-label>
+                <mat-select formControlName="tanks">
+                    <mat-option *ngFor="let value of tankSelectorValues" [value]="value">
+                        {{value}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <!--Number of Healers-->
+        <div>
+            <mat-form-field appearance="fill">
+                <mat-label>Healers</mat-label>
+                <mat-select formControlName="healer">
+                    <mat-option *ngFor="let value of healerSelectorValues" [value]="value">
+                        {{value}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <!--Number of RDPS-->
+        <div>
+            <mat-form-field appearance="fill">
+                <mat-label>Ranged DPS</mat-label>
+                <mat-select formControlName="rDPS">
+                    <mat-option *ngFor="let value of rDPSSelectorValues" [value]="value">
+                        {{value}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <!--Number of MDPS-->
+        <div>
+            <mat-form-field appearance="fill">
+                <mat-label>Melee DPS</mat-label>
+                <mat-select formControlName="mDPS">
+                    <mat-option *ngFor="let value of mDPSSelectorValues" [value]="value">
+                        {{value}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <!--Number of Raids-->
+
+        <!--Buttons-->
+
+        <div mat-dialog-actions class="RaidSettingsButtons">
+            <button mat-raised-button type="button" (click)="resetControls()" color="warn">Reset</button>
+            <button mat-raised-button type="submit" color="primary" cdkFocusInitial [disabled]="">Generate
+                Roster</button>
+        </div>
+
+    </form>
+
+</div>
+
+<div class="content" role="main">
+ 
+        <spinner [hidden]="hideProgress">
+
+        </spinner>
+        <mat-tab-group [hidden]="hideTabs">
+            <mat-tab *ngFor="let raid of RaidCollection">
+                <optimized-raid-display [optimizedRaid]="raid.raid"></optimized-raid-display>
+            </mat-tab>
+        </mat-tab-group>
+    </div>

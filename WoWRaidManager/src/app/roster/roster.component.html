@@ -1,0 +1,49 @@
+<div class="characters view indent">
+    <div class="container">
+        <header>
+            <h3>
+                <fa-icon [icon]="userGylph"></fa-icon>
+                {{ title }}
+            </h3>
+        </header>
+        <br />
+        <div class="row">
+         
+                <div class="navbar">
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="toolbar-item">
+                            <a (click)="changeDisplayMode(displayModeEnum.Grid)" [class.active]="displayMode === displayModeEnum.Grid">
+                                <fa-icon [icon]="alignJustifyGlyph"></fa-icon> List View
+                            </a>
+                        </li>
+                        <li class="toolbar-item">
+                            <a (click)="changeDisplayMode(displayModeEnum.Card)" [class.active]="displayMode === displayModeEnum.Card">
+                                <fa-icon [icon]="thLargeGlyph"></fa-icon> Card View
+                            </a>
+                        </li>
+                        <li class="toolbar-item">
+                            <a (click)="addEditCharacter('Add',{})">
+                                <fa-icon [icon]="plusGlyph"></fa-icon> New Character
+                            </a>
+                        </li>
+                    </ul>
+                    
+                        <cm-filter-textbox class="nav mr-auto" (changed)="filterChanged($event)"></cm-filter-textbox>
+                    
+                    
+                </div>
+           
+        </div>
+        
+         <roster-card
+          [characters]="filteredCharacters" 
+          [hidden]="displayMode !== displayModeEnum.Card"
+          (refreshData)="refresh()"
+          (editCharacterEvent)="addEditCharacter('Edit',$event)"></roster-card>
+        <roster-grid 
+          [characters]="filteredCharacters" 
+          [hidden]="displayMode !== displayModeEnum.Grid"
+          (refreshData)="refresh()"
+          (editCharacterEvent)="addEditCharacter('Edit',$event)"></roster-grid>
+    </div>
+</div>

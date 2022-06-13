@@ -1,0 +1,50 @@
+<!-- <div class="outerContainer">
+  <div fxLayout="column" fxLayoutGap="10px">
+    <div fxLayoutAlign="center center">
+      <ag-grid-angular style="width: 90vw; height: 80vh;" class="ag-theme-alpine" [rowData]="characters"
+        [columnDefs]="columnDefs" (gridReady)="onGridReady($event)">
+      </ag-grid-angular>
+    </div>
+    <div fxLayoutAlign="center center" align="right">
+
+      <button mat-fab color="warn" aria-label="Example icon button with a home icon">
+        <mat-icon>add_circle_outline</mat-icon>
+      </button>
+
+    </div>
+  </div>
+</div> -->
+
+
+
+
+<div class="outerContainer" fxLayout="column wrap">
+  <div fxFlex class="card-container" fxLayout="row wrap" fxLayoutGap="10px grid">
+    <div *ngFor="let char of obs | async">
+      <mat-card class="mat-elevation-z4">
+        <div fxFlex fxLayout="column">
+          <mat-card-header [style.background-color]="geBackgrounColorforClass(char.primarySpec.specName)">
+            <div mat-card-avatar class="classIconHeaderImage" [style.background-image]="getSpecImage(char.primarySpec.specName)"></div>
+            <mat-card-title h1>{{char.charName}}</mat-card-title>
+            <mat-card-subtitle>{{char.primarySpec.specName}}</mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-card-content class="characterCardContent">
+           <span>{{mainCharacterNameDisplay(char.mainsCharacterName, char.main)}}</span><br>
+           
+           <span>{{offSpecNameDisplay(char.offSpec.specName)}}</span>
+           
+          </mat-card-content>
+  
+          <mat-card-actions>
+            <div class="matActionFlexContainer">
+              <button mat-raised-button color="primary" (click)="editCharacter(char)" >Edit</button>
+              <button mat-raised-button color="warn" (click)="deleteCharacter(char)" >Delete</button>   
+            </div>
+          </mat-card-actions>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+  <mat-paginator #paginator [pageSizeOptions]="[12, 24, 48]" showFirstLastButtons></mat-paginator>
+</div>

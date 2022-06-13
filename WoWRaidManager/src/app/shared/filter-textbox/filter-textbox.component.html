@@ -1,0 +1,7 @@
+<mat-form-field>
+    <mat-label>Filter</mat-label>
+    <input matInput type="text" name="filter" [(ngModel)]="model.filter" (keyup)="filterChanged($event)"  />
+    <button *ngIf="model.filter" matSuffix mat-icon-button aria-label="Clear" (click)="model.filter=''">
+        <fa-icon [icon]="closeIcon"></fa-icon>
+    </button>
+</mat-form-field>

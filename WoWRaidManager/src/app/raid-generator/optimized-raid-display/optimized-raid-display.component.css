@@ -1,0 +1,156 @@
+.ContainerPanel {
+    width: 100vw;
+    display: flex;
+    flex-direction: row;
+}
+
+.RaidPanel {
+    width: 40vw;
+}
+
+.RaidData {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    margin: 20px;
+}
+
+.RaidViewHeader {
+    padding-bottom: 5px;
+    font-size: xx-large;
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+}
+.mat-card{
+    width:auto;
+    height: auto;
+}
+.GeneratedRaid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.charInRaid {
+    padding: 0px;
+    margin: 0px;
+    border: 1px solid black;
+}
+
+.classIconHeaderImage {
+    background-size: cover;
+}
+
+.mat-header-div{
+    display: flex;
+    align-items: center;
+}
+
+.mat-card-header .mat-card-title {
+    margin-bottom: 0px;
+}
+
+ .mat-card-title {
+    margin-bottom: 0px;
+}
+
+.characterDiv {
+    width: 48%;
+}
+
+.BuffPanel {
+    width: 30vw;
+}
+
+.BuffData {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    margin: 20px;
+}
+
+.BuffViewHeader {
+    padding-bottom: 5px;
+    font-size: xx-large;
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.GeneratedBuffs {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.BuffButtons {
+    width: 50%;
+}
+
+.BuffDescription {
+    padding-top: 50px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.DescriptionBox {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 100px;
+}
+
+.textarea {
+    font-size: large;
+    text-align-last: center;
+}
+
+
+.active {
+    background: rgb(196, 196, 204);
+}
+.headerIconCheck{
+    margin-left: 60px;
+    font-size: large;
+}
+
+
+.button {
+    background-color: #1c87c9;
+    border-radius: 100%;
+    border: 1px #40be19 solid;
+    color: #eeeeee;
+    cursor: pointer;
+    display: inline-block;
+    font-family: sans-serif;
+    font-size: 1px;
+    text-align: center;
+    text-decoration: none;
+    background-color: #49e819;
+    box-shadow: 0 0 10px #49e819;
+    height: 20px;
+    width: 20px;
+    padding-right: 5px;
+}
+
+@keyframes glowing {
+    0% {
+        background-color: #2ba805;
+        box-shadow: 0 0 5px #2ba805;
+    }
+
+    50% {
+        background-color: #49e819;
+        box-shadow: 0 0 20px #49e819;
+    }
+
+    100% {
+        background-color: #2ba805;
+        box-shadow: 0 0 5px #2ba805;
+    }
+}

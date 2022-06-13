@@ -1,0 +1,80 @@
+<div class="dialogRows">
+  <h1 mat-dialog-title>
+    <fa-icon [icon]="userGylph" class="userIcon"></fa-icon>{{action}} Character
+  </h1>
+</div>
+<mat-divider></mat-divider>
+
+<form [formGroup]="reactiveForm" fxLayout="row wrap" class="containerLayout" (ngSubmit)="doAction()"
+  (ngCancel)="onNoClick()">
+
+  <div class="dialogRows">
+    <div mat-dialog-content>
+      <mat-form-field appearance="standard" >
+        <mat-label class="charEntryLabel">Character Name</mat-label>
+        <input formControlName="characterName" matInput placeholder="Character Name" >
+      </mat-form-field>
+      <!-- <label *ngIf="characterName.invalid" [ngClass]="'error'"> Name required</label> -->
+    </div>
+  </div>
+
+  <div class="dialogRows">
+    <mat-radio-group aria-label="Select an option" formControlName="mainRB" class="radioButtons" (change)="RBChange($event)" >
+      <mat-radio-button value="main">Main</mat-radio-button>
+      <mat-radio-button value="alt">Alt</mat-radio-button>
+    </mat-radio-group>
+  </div>
+
+  <div class="dialogRows">
+    <mat-form-field appearance="fill" class="items">
+      <mat-label>Class</mat-label>
+      <mat-select formControlName="classes" (selectionChange)="setSpecBoxValues($event)" >
+        <mat-option *ngFor="let class of classesData" [value]="class.value">
+          {{class.viewValue}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="dialogRows">
+    <mat-form-field appearance="fill">
+      <mat-label>Specialization</mat-label>
+      <mat-select formControlName="specs">
+        <mat-option *ngFor="let spec of specData" [value]="spec.value">
+          {{spec.viewValue}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="dialogRowsTwoItems">
+    <mat-form-field appearance="fill">
+      <mat-label>Off Spec</mat-label>
+      <mat-select formControlName="offSpecs" >
+        <mat-option *ngFor="let spec of specData" [value]="spec.value">
+          {{spec.viewValue}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="dialogRowsTwoItems">
+    <mat-form-field appearance="fill" [hidden]="hideMainSelector">
+      <mat-label>Main Character</mat-label>
+      <mat-select formControlName="mainCharacters" >
+        <mat-option *ngFor="let char of mainCharacters" [value]="char">
+          {{char}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+
+  <div mat-dialog-actions class="dialogRows">
+    <button mat-raised-button type="button" (click)="onNoClick()" color="warn">Cancel</button>
+    <button mat-raised-button type="submit" color="primary"
+      [disabled]="!reactiveForm.valid">{{action}}</button>
+  </div>
+
+
+</form>

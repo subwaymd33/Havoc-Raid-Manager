@@ -1,0 +1,20 @@
+::ng-deep h3{
+    font-size: 24px;
+}
+
+.navbar-nav{
+    flex-direction: row;
+}
+
+.navbar {
+    display:block;
+    justify-content: space-between;
+}
+
+.nav.mr-auto{
+justify-content: flex-end;
+}
+
+.navbar  {
+    width:80vw;
+}

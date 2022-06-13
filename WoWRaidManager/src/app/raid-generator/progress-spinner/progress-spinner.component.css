@@ -1,0 +1,6 @@
+.progressContainer{
+    width: 100vw;
+    align-items: center;
+    display: flex;
+    margin-top: 40px;
+}
