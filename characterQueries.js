@@ -1,9 +1,9 @@
 const Pool = require('pg').Pool
 require('dotenv').config();
 const pool = new Pool({
-  user: 'tblhuetj',
-  host: 'fanny.db.elephantsql.com',
-  database: 'tblhuetj',
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_DATABASE,
   password: process.env.DB_PSWD,
   port: 5432,
 })
