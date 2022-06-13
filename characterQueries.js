@@ -1,9 +1,9 @@
 const Pool = require('pg').Pool
 const pool = new Pool({
-  user: 'havocApp',
-  host: 'localhost',
-  database: 'HavocRaidManager',
-  password: 'havoc',
+  user: 'tblhuetj',
+  host: 'fanny.db.elephantsql.com',
+  database: 'tblhuetj',
+  password: '9lrYJI-8jbId6V3jyWxfxeqYfVttWGYb',
   port: 5432,
 })
 
