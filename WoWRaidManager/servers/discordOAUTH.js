@@ -28,11 +28,11 @@ app.get('/api/auth/discord/redirect/:code', async (request, response) => {
 
     try {
         const formData = new URLSearchParams({
-            client_id: '985911105857658950',
-            client_secret: 'TawfW_W9FpmoS-TvpE4MnWWnvvTlPsif',
+            client_id: DISCORD_CLIENT_ID,
+            client_secret: DISCORD_CLIENT_SECRET,
             grant_type: 'authorization_code',
             code: code.toString(),
-            redirect_uri: 'http://localhost:4200/callback'
+            redirect_uri: DISCORD_CLIENT_REDIRECT
         });
         const resp = await axios.post('https://discord.com/api/v8/oauth2/token',
             formData.toString(),
@@ -54,8 +54,8 @@ app.get('/api/auth/discord/refresh/:token', async (request, response) => {
     const refresh_token = request.params.token;
     try {
         const formData = new URLSearchParams({
-            client_id: '985911105857658950',
-            client_secret: 'TawfW_W9FpmoS-TvpE4MnWWnvvTlPsif',
+            client_id: DISCORD_CLIENT_ID,
+            client_secret: DISCORD_CLIENT_SECRET,
             grant_type: 'refresh_token',
             refresh_token: refresh_token
         });

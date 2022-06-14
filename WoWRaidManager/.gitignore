@@ -39,7 +39,6 @@ testem.log
 
 #env
 .env
-db.env
 
 # System files
 .DS_Store
