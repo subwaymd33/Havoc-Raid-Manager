@@ -54,11 +54,11 @@
     <nav class="topnav">
       <a routerLink="/roster" routerLinkActive="active">Roster</a>
       <a routerLink="/raidGenerator" routerLinkActive="active">Raid Generator</a> 
-      <a routerLink="/user" routerLinkActive="active">User Info</a>
-      
+     
     </nav>
   <div class = 'LoginPanel'>
-    <app-login-control></app-login-control>
+    <app-logout-control [hidden]="hideLogoff()"></app-logout-control>
+    <app-login-control [hidden]="hideLogon()"></app-login-control>
   </div>
     
   

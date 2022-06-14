@@ -1,0 +1,14 @@
+.discord-button{
+    background-color: #7289da ;
+    color: white;
+}
+
+.logoff-container{
+    display:flex;
+    align-items: center;
+}
+
+.username-container{
+    padding-right: 10px;
+    font-size: 17px;
+}

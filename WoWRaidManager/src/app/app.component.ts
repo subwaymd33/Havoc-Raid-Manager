@@ -10,4 +10,22 @@ import { RosterService } from './service/roster.service';
 
 export class AppComponent {
   title = 'WoWRaidManager';
+
+
+
+  hideLogoff(){
+    if (sessionStorage.getItem("isLogon")=="false"||sessionStorage.getItem("isLogon")==null){
+      return true
+    }else{
+      return false
+    }
+  }
+  hideLogon(){
+    if (sessionStorage.getItem("isLogon")=="true"){
+      return true
+    }else{
+      return false
+    }
+  }
+
 }

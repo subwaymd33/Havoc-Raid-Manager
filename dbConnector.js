@@ -24,10 +24,16 @@ app.get('/roster/:id', db.getRosterbyID);
 app.get('/spec', db.getAllSpecs)
 app.get('/spec/:baseClass/:spec', db.getSpecUID)
 app.get('/buffs', db.getBuffTable)
+app.get('/user/:user_id', db.getUserbyID)
+app.get('/session/:user_id', db.getSessionbyID)
+
 
 app.patch('/roster',db.updateCharacter)
+app.patch('/session',db.updateSession)
 
 app.post('/roster', db.insertCharacter)
+app.post('/user', db.insertUser)
+app.post('/session', db.insertSession)
 
 app.delete('/roster/:charName', db.deleteCharacter)
 

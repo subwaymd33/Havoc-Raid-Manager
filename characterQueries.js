@@ -18,16 +18,6 @@ const getRoster = (request, response) => {
     console.log("Returning: getRoster")
     response.status(200).json(results.rows)
   });
-
-
-
-  // pool.query("SELECT public.characters.\"charName\", public.characters.\"specUID\", public.specs.\"role\",public.raidbuffdebuff.\"buffCode\",public.raidbuffdebuff.\"buffText\",public.characters.main, public.characters.\"offSpecUID\" FROM public.characters join public.specs on public.characters.\"specUID\" = public.specs.\"specUID\" join public.\"specToBuffDebuff\" on public.specs.\"specUID\" = public.\"specToBuffDebuff\".\"specUID\" join public.raidbuffdebuff on public.\"specToBuffDebuff\".\"buffDebuffUID\" = public.raidbuffdebuff.\"buffDebuffUID\" order by public.raidbuffdebuff.\"buffText\" desc", (error, results) => {
-  //   if (error) {
-  //     throw error
-  //   }
-  //   console.log("Returning: getRoster")
-  //   response.status(200).json(results.rows)
-  // });
 }
 
 const getRosterbyID = (request, response) => {
@@ -44,7 +34,7 @@ const getRosterbyID = (request, response) => {
 
 const updateCharacter = (request, response) => {
   console.log('Processing request: updateCharacter')
-  const { charName, specUID, main, offspecUID} = request.body
+  const { charName, specUID, main, offspecUID } = request.body
 
   pool.query(
     `UPDATE public.characters SET \"specUID\" = $2, main = $3, \"offSpecUID\" = $4 WHERE \"charName\" = $1`,
@@ -87,16 +77,16 @@ const getSpecUID = (request, response) => {
 const insertCharacter = (request, response) => {
   console.log('Processing request: insertCharacter')
   const { charName, specUID, main, offSpecUID, mainsName } = request.body
-    pool.query(
-      `INSERT INTO public.characters(\"charName\", \"specUID\", main, \"offSpecUID\", \"mainsName\" )VALUES ($1, $2, $3, $4,$5);`, [charName, specUID, main,offSpecUID, mainsName],
-      (error, results) => {
-        if (error) {
-          throw error
-        }
-        console.log("Returning: insertCharacter")
-        response.status(200).send(`Character created`)
+  pool.query(
+    `INSERT INTO public.characters(\"charName\", \"specUID\", main, \"offSpecUID\", \"mainsName\" )VALUES ($1, $2, $3, $4,$5);`, [charName, specUID, main, offSpecUID, mainsName],
+    (error, results) => {
+      if (error) {
+        throw error
       }
-    )  
+      console.log("Returning: insertCharacter")
+      response.status(200).send(`Character created`)
+    }
+  )
 }
 
 const deleteCharacter = (request, response) => {
@@ -122,6 +112,76 @@ const getAllSpecs = (request, response) => {
     response.status(200).json(results.rows)
   });
 }
+
+
+const getUserbyID = (request, response) => {
+  console.log('Processing request: getUserbyID')
+  const user_id = request.params.user_id
+  pool.query(`SELECT \"user_name\" from public.users where \"user_id\" = $1`, [user_id], (error, results) => {
+    if (error) {
+      throw error
+    }
+    console.log("Returning: getUserbyID")
+    response.status(200).json(results.rows)
+  });
+};
+
+const insertUser = (request, response) => {
+  console.log('Processing request: insertUser')
+  const { user_id, user_name } = request.body
+  console.log(user_id)
+  pool.query(
+    `INSERT INTO public.users(\"user_id\", \"user_name\" )VALUES ($1, $2);`, [user_id, user_name],
+    (error, results) => {
+      if (error) {
+        throw error
+      }
+      console.log("Returning: insertUser")
+      response.status(200).send(`User created`)
+    }
+  )
+}
+
+const getSessionbyID = (request, response) => {
+  const user_id = request.params.user_id
+  pool.query(`SELECT \"user_id\",\"access_token\",\"refresh_token\",\"expiry_time\" from public.sessions where \"user_id\" = $1`, [user_id], (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).json(results.rows)
+  });
+};
+
+const insertSession = (request, response) => {
+  console.log('Processing request: insertSession')
+  const { user_id, access_token, refresh_token, expiry_time } = request.body
+  pool.query(
+    `INSERT INTO public.sessions(\"user_id\", \"access_token\", \"refresh_token\", \"expiry_time\" )VALUES ($1, $2, $3, $4);`, [user_id, access_token, refresh_token, expiry_time],
+    (error, results) => {
+      if (error) {
+        throw error
+      }
+      console.log("Returning: insertSession")
+      response.status(200).send(`Session created`)
+    }
+  )
+}
+
+const updateSession = (request, response) => {
+  console.log('Processing request: updateSession')
+  const { user_id, access_token, refresh_token, expiry_time } = request.body
+  pool.query(
+    `UPDATE public.sessions SET \"access_token\"= $2, \"refresh_token\" = $3, \"expiry_time\"= $4 WHERE \"user_id\" = $1;`, [user_id, access_token, refresh_token, expiry_time],
+    (error, results) => {
+      if (error) {
+        throw error
+      }
+      console.log("Returning: updateSession")
+      response.status(200).send(`Session UPDATED`)
+    }
+  )
+}
+
 module.exports = {
   getRoster,
   getRosterbyID,
@@ -130,5 +190,10 @@ module.exports = {
   getSpecUID,
   insertCharacter,
   getAllSpecs,
-  getBuffTable
+  getBuffTable,
+  insertUser,
+  insertSession,
+  updateSession,
+  getUserbyID,
+  getSessionbyID
 };

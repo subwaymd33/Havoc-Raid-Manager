@@ -74,7 +74,6 @@ app.get('/processRoster', (request, response) => {
 });
 
 
-
 app.post('/insertCharacter', (request, response) => {
 
   console.log(request.body.charName)
@@ -197,7 +196,6 @@ app.delete('/deleteCharacter/:charName', (request, response) => {
     console.error(err); // handle error
   });
 })
-
 
 app.post('/processRaidComp', (request, response) => {
 

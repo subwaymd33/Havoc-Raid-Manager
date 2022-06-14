@@ -22,6 +22,7 @@ import {MatNativeDateModule} from '@angular/material/core';
 import { OptimizedRaidDisplayComponent } from './raid-generator/optimized-raid-display/optimized-raid-display.component';
 import { ProgressSpinnerComponent } from './raid-generator/progress-spinner/progress-spinner.component';
 import { LoginControlComponent } from './login-control/login-control.component';
+import { LogoutControlComponent } from './login-control/logout-control/logout-control.component';
 
 
 
@@ -36,7 +37,8 @@ import { LoginControlComponent } from './login-control/login-control.component';
     RaidGeneratorComponent,
     OptimizedRaidDisplayComponent,
     ProgressSpinnerComponent,
-    LoginControlComponent
+    LoginControlComponent,
+    LogoutControlComponent
   ],
   imports: [
     BrowserModule,

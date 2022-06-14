@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthCallbackComponent } from './login-control/auth-callback/auth-callback.component';
 import { RaidGeneratorComponent } from './raid-generator/raid-generator.component';
 import { RosterComponent } from './roster/roster.component';
-import { UserPageComponent } from './user-page/user-page.component';
 
 const routes: Routes = [
   {
@@ -12,8 +12,8 @@ const routes: Routes = [
     path: 'raidGenerator', component: RaidGeneratorComponent
   },
   {
-    path: 'user', component: UserPageComponent
-  },
+    path: 'callback', component: AuthCallbackComponent
+  }
 
 ];
 
@@ -22,5 +22,5 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule {
-  static components = [RosterComponent, RaidGeneratorComponent, UserPageComponent];
+  static components = [RosterComponent, RaidGeneratorComponent, ];
 }
