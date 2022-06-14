@@ -78,7 +78,7 @@ export class AuthCallbackComponent implements OnInit {
     })
 
 
-    // this.router.navigate(['./host']);
+    // this.router.navigate(['./userPage']);
   }
 
 }
