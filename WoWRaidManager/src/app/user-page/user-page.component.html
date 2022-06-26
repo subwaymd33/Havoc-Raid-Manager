@@ -1,0 +1,25 @@
+<div class="main-container" [hidden]="toggleToLootSheet">
+    <div class="header-container">
+        <header>
+            <h3>
+                <fa-icon [icon]="userGylph"></fa-icon>
+                {{ username }}
+            </h3>
+        </header>
+    </div>
+    <hr>
+
+
+    <div class='character-container' [hidden]="toggleToLootSheet" >
+        <div class="character-header-container" >
+            <h3 class="character-header-text">
+                Characters
+            </h3>  
+            <button mat-raised-button color="primary" (click)="addEditCharacter('Add',{})" class="character-header-button"><fa-icon [icon]="plusGlyph"></fa-icon>Add New Character</button>
+        </div>
+
+        <user-roster-grid [characters]="characters" (ToggleToLootSheetEvent)="ToggleToLootSheet($event)" (editCharacterEvent)="addEditCharacter('Edit',$event)" (refreshData)="refresh()" ></user-roster-grid>     
+    </div>
+</div>
+
+<app-loot-sheet (ReturnToCharactersEvent)="ReturnToCharactersPage()" [events]="eventsSubject.asObservable()" [hidden]="!toggleToLootSheet"></app-loot-sheet>

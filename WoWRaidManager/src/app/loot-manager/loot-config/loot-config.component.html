@@ -1,0 +1,183 @@
+<div class="mainContainer">
+    <div class="item-header">
+        <div class="item-dropdown">
+            <form [formGroup]="MatSelectForm">
+                <mat-form-field appearance="fill" class="item-slector">
+                    <mat-label>Item</mat-label>
+                    <mat-select #myselect (selectionChange)="setChosenItem($event.value)"
+                        formControlName="item_selector">
+                        <mat-option *ngFor="let item of items" [value]="item">
+                            {{item.item_name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </form>
+        </div>
+
+        <button mat-raised-button type="button" color="primary" class="prev-button" (click)="selectPreviousItem()"
+            [disabled]="prev_button_disabled">
+            <fa-icon [icon]="leftGlyph" class="leftGlyph"></fa-icon> Prev
+        </button>
+        <button mat-raised-button type="button" color="primary" class="next-button" (click)="selectNextItem()"
+            [disabled]="next_button_disabled">Next <fa-icon [icon]="rightGlyph" class="rightGlyph">
+            </fa-icon></button>
+
+
+
+
+    </div>
+    <hr>
+
+    <div class="content-pane">
+        <form [formGroup]="SpecSelectorForm" [hidden]="hideItemDetailsPane" class="spec-form">
+            <div class="wowhead-link">
+                <a [href]="itemLink" [rel]="tooltipLink" class="q4">{{chosenItem.item_name}}</a>
+            </div>
+            <table class="spec-selector-table">
+                <tr class="character-class-tr">
+                    <td class="character-class-text-td">
+                        Death Knight:
+                    </td>
+                    <td class="character-spec-td">
+                        <mat-checkbox class="spec-check" formControlName="dk_blood_cb" type="checkbox">Blood
+                        </mat-checkbox>
+                        <mat-checkbox class="spec-check" formControlName="dk_frost_cb" type="checkbox">Frost
+                        </mat-checkbox>
+                        <mat-checkbox class="spec-check" formControlName="dk_unholy_cb" type="checkbox">Unholy
+                        </mat-checkbox>
+                    </td>
+                </tr>
+                <tr class="character-class-tr">
+                    <td class="character-class-text-td">
+                        Druid:
+                    </td>
+                    <td class="character-spec-td">
+                        <mat-checkbox class="spec-check" formControlName="druid_balance_cb" type="checkbox">Balance
+                        </mat-checkbox>
+                        <mat-checkbox class="spec-check" formControlName="druid_feral_bear_cb" type="checkbox">Feral -
+                            Bear</mat-checkbox>
+                        <mat-checkbox class="spec-check" formControlName="druid_feral_cat_cb" type="checkbox">Feral -
+                            Cat</mat-checkbox>
+                        <mat-checkbox class="spec-check" formControlName="druid_restoration_cb" type="checkbox">
+                            Restoration</mat-checkbox>
+                    </td>
+                </tr>
+                <tr class="character-class-tr">
+                    <td class="character-class-text-td">
+                        Hunter:
+                    </td>
+                    <td class="character-spec-td">
+                        <mat-checkbox class="spec-check" formControlName="hunter_allspecs_cb" type="checkbox">All Specs
+                        </mat-checkbox>
+                    </td>
+                </tr>
+                <tr class="character-class-tr">
+                    <td class="character-class-text-td">
+                        Mage:
+                    </td>
+                    <td class="character-spec-td">
+                        <mat-checkbox class="spec-check" formControlName="mage_allspecs_cb" type="checkbox">All Specs
+                        </mat-checkbox>
+                    </td>
+                </tr>
+                <tr class="character-class-tr">
+                    <td class="character-class-text-td">
+                        Priest:
+                    </td>
+                    <td class="character-spec-td">
+                        <mat-checkbox class="spec-check" formControlName="priest_holy_cb" type="checkbox">Holy
+                        </mat-checkbox>
+                        <mat-checkbox class="spec-check" formControlName="priest_discipline_cb" type="checkbox">
+                            Discipline</mat-checkbox>
+                        <mat-checkbox class="spec-check" formControlName="priest_shadow_cb" type="checkbox">Shadow
+                        </mat-checkbox>
+                    </td>
+                </tr>
+                <tr class="character-class-tr">
+                    <td class="character-class-text-td">
+                        Paladin:
+                    </td>
+                    <td class="character-spec-td">
+                        <mat-checkbox class="spec-check" formControlName="paladin_holy_cb" type="checkbox">Holy
+                        </mat-checkbox>
+                        <mat-checkbox class="spec-check" formControlName="paladin_retribution_cb" type="checkbox">
+                            Retribution</mat-checkbox>
+                        <mat-checkbox class="spec-check" formControlName="paladin_protection_cb" type="checkbox">
+                            Protection</mat-checkbox>
+                    </td>
+                </tr>
+                <tr class="character-class-tr">
+                    <td class="character-class-text-td">
+                        Rogue:
+                    </td>
+                    <td class="character-spec-td">
+                        <mat-checkbox class="spec-check" formControlName="rogue_allspecs_cb" type="checkbox">All Specs
+                        </mat-checkbox>
+                    </td>
+                </tr>
+                <tr class="character-class-tr">
+                    <td class="character-class-text-td">
+                        Shaman:
+                    </td>
+                    <td class="character-spec-td">
+                        <mat-checkbox class="spec-check" formControlName="shaman_enhancement_cb" type="checkbox">
+                            Enhancement</mat-checkbox>
+                        <mat-checkbox class="spec-check" formControlName="shaman_elemental_cb" type="checkbox">Elemental
+                        </mat-checkbox>
+                        <mat-checkbox class="spec-check" formControlName="shaman_restoration_cb" type="checkbox">
+                            Restoration</mat-checkbox>
+                    </td>
+                </tr>
+                <tr class="character-class-tr">
+                    <td class="character-class-text-td">
+                        Warlock:
+                    </td>
+                    <td class="character-spec-td">
+                        <mat-checkbox class="spec-check" formControlName="warlock_allspecs_cb" type="checkbox">All Specs
+                        </mat-checkbox>
+                    </td>
+                </tr>
+                <tr class="character-class-tr">
+                    <td class="character-class-text-td">
+                        Warrior:
+                    </td>
+                    <td class="character-spec-td">
+                        <mat-checkbox class="spec-check" formControlName="warrior_arms_cb" type="checkbox">Arms
+                        </mat-checkbox>
+                        <mat-checkbox class="spec-check" formControlName="warrior_fury_cb" type="checkbox">Fury
+                        </mat-checkbox>
+                        <mat-checkbox class="spec-check" formControlName="warrior_protection_cb" type="checkbox">
+                            Protection</mat-checkbox>
+                    </td>
+                </tr>
+            </table>
+
+            <form [formGroup]="RankingSelectForm">
+                <mat-form-field appearance="fill" class="item-slector">
+                    <mat-label>Item Ranking</mat-label>
+                    <mat-select #myselect formControlName="ranking_selector">
+                        <mat-option *ngFor="let rank of rankings" [value]="rank.ranking">
+                            {{rank.ranking_string}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </form>
+            <form [formGroup]="SheetLimitSelectForm">
+                <mat-form-field appearance="fill" class="item-slector">
+                    <mat-label>Occurrence Allowed</mat-label>
+                    <mat-select #myselect formControlName="sheet_limit_selector">
+                        <mat-option *ngFor="let limit of limits" [value]="limit.limit">
+                            {{limit.limit_string}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </form>
+
+            <div class="formButtons">
+                <button mat-raised-button type="button" color="primary" class="prev-button">Cancel</button>
+                <button mat-raised-button type="button" color="primary" class="next-button"
+                    (click)="formSubmit()">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>

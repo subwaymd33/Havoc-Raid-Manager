@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { ICharacter, IClasses, ISpecs } from 'src/app/shared/interfaces';
+import { CharWithActionModel } from 'src/app/user-page/user-page.component';
 
 
 @Component({
@@ -17,15 +18,15 @@ export class ModalComponent implements OnInit {
   hideMainSelector = true;
   specData: ISpecs[] = []
   action: string;
-  local_data: any;
+  character: CharWithActionModel;
   reactiveForm: FormGroup;
   characterNameDisabled=true;
   classesDisabled=true;
+  completedAction:boolean = false;
   ngOnInit() {
 
   }
 
-  mainCharacters: [];
 
   classesData: IClasses[] = [
     { value: 'class-01', viewValue: 'Death Knight' },
@@ -127,10 +128,10 @@ export class ModalComponent implements OnInit {
     }
   }
 
-  constructor(public dialogRef: MatDialogRef<ModalComponent>, @Inject(MAT_DIALOG_DATA) public data: ICharacter, builder: FormBuilder) {
-    this.local_data = { ...data };
-    this.action = this.local_data.action;
-    this.mainCharacters = this.local_data.mainCharacterList
+  constructor(public dialogRef: MatDialogRef<ModalComponent>, @Inject(MAT_DIALOG_DATA) public data: CharWithActionModel) {
+    this.character = data;
+    
+    this.action = data.action
 
     this.reactiveForm = new FormGroup({
       characterName: new FormControl([{disabled: true}, Validators.required]),
@@ -138,8 +139,10 @@ export class ModalComponent implements OnInit {
       specs: new FormControl('', Validators.required),
       mainRB: new FormControl('', Validators.required),
       offSpecs: new FormControl(''),
-      mainCharacters: new FormControl(''),
+      main: new FormControl(''),
     })
+
+    this.reactiveForm.controls['main'].setValue(this.character.char.mainsCharacterName)
 
     if (this.action == 'Edit') {
       this.reactiveForm.controls['characterName'].disable()
@@ -150,34 +153,31 @@ export class ModalComponent implements OnInit {
       this.reactiveForm.controls['characterName'].enable()
       this.reactiveForm.controls['classes'].enable()
       this.reactiveForm.controls['specs'].disable()
-      this.reactiveForm.controls['offSpecs'].disable()
-      
-      
+      this.reactiveForm.controls['offSpecs'].disable()   
     }
   }
 
   onNoClick(): void {
-    this.dialogRef.close({ event: 'cancel', data: this.local_data });
+    this.dialogRef.close({ completeAction: false, data: this.character });
   }
 
 
 
   doAction() {
     //adding character name
-    this.local_data.data.charName = this.reactiveForm.controls['characterName'].value;
+    this.character.char.charName = this.reactiveForm.controls['characterName'].value;
 
     //Adding Spec Name
     this.classesData.forEach(element => {
       if (element.value == this.reactiveForm.controls['classes'].value) {
-        this.specData.forEach(i => {
-          if (i.value == this.reactiveForm.controls['specs'].value) {
-            let str: string = i.viewValue + " " + element.viewValue;
-            this.local_data.data.primarySpec.specName = str;
+        this.specData.forEach(spec => {
+          if (spec.value == this.reactiveForm.controls['specs'].value) {
+            let str: string = spec.viewValue + " " + element.viewValue;
+            this.character.char.primarySpec.specName = str;
           }
-          console.log(this.reactiveForm.controls['offSpecs'].value)
-          if (i.value == this.reactiveForm.controls['offSpecs'].value) {
-            let str: string = i.viewValue + " " + element.viewValue;
-            this.local_data.data.offSpec.specName = str;
+          if (spec.value == this.reactiveForm.controls['offSpecs'].value) {
+            let str: string = spec.viewValue + " " + element.viewValue;
+            this.character.char.offSpec.specName = str;
           }
         })
 
@@ -186,41 +186,42 @@ export class ModalComponent implements OnInit {
 
     //adding main or alt
     if (this.reactiveForm.controls['mainRB'].value == "main") {
-      this.local_data.data.main = 'Main'
-      this.local_data.data.mainsCharacterName = this.reactiveForm.controls['characterName'].value
+      this.character.char.main = true
+      this.character.char.mainsCharacterName = this.reactiveForm.controls['characterName'].value
     } else {
-      this.local_data.data.main = 'Alternative'
-      this.local_data.data.mainsCharacterName = this.reactiveForm.controls['mainCharacters'].value
+      this.character.char.main = false
+      this.character.char.mainsCharacterName = this.reactiveForm.controls['main'].value
     }
 
+    
     //this.local_data.name = this.classes.value
-    this.dialogRef.close({ event: this.action, data: this.local_data.data });
+    this.dialogRef.close({ data: this.character, completeAction:true});
   }
 
   setDataForEdit() {
-    this.reactiveForm.controls['characterName'].setValue(this.local_data.charName)
+    this.reactiveForm.controls['characterName'].setValue(this.character.char.charName)
 
     this.classesData.forEach(element => {
-      if (element.viewValue.includes(this.local_data.primarySpec.specName.split(' ').pop()!)) {
+      if (element.viewValue.includes(this.character.char.primarySpec.specName.split(' ').pop()!)) {
         this.reactiveForm.controls['classes'].setValue(element.value)
       }
     })
     this.setSpecBoxValues(this.reactiveForm.controls['classes'])
 
     this.specData.forEach(element => {
-      if (element.viewValue.includes(this.local_data.primarySpec.specName.split(' ').shift()!)) {
+      if (element.viewValue.includes(this.character.char.primarySpec.specName.substring(0,this.character.char.primarySpec.specName.lastIndexOf(" ")))) {
         this.reactiveForm.controls['specs'].setValue(element.value)
       }
-      if (this.local_data.offSpec.specName) {
-        if (element.viewValue.includes(this.local_data.offSpec.specName.split(' ').shift()!)) {
-          this.reactiveForm.controls['specs'].setValue(element.value)
+      if (this.character.char.offSpec.specName) {
+        if (element.viewValue.includes(this.character.char.offSpec.specName.substring(0,this.character.char.offSpec.specName.lastIndexOf(" ")))) {
+          this.reactiveForm.controls['offSpecs'].setValue(element.value)
         }
       }
 
 
     })
 
-    if (this.local_data.main == 'Main') {
+    if (this.character.char.main == true) {
       this.reactiveForm.controls['mainRB'].setValue("main")
     } else {
       this.reactiveForm.controls['mainRB'].setValue("alt")
@@ -231,6 +232,7 @@ export class ModalComponent implements OnInit {
   RBChange(data: any) {
     if (data.value == 'main') {
       this.hideMainSelector = true
+     
     } else {
       this.hideMainSelector = false
     }

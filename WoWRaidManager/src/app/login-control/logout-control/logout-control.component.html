@@ -1,6 +1,6 @@
 <div class="logoff-container">
     <div class="username-container">
-        <span>Welcome: {{username}}</span>
+        <fa-icon [icon]="userGylph" (click)="displayUserPage()" class="userIcon"></fa-icon>
     </div>
     <div class="logout-container">
         <button mat-button class="discord-button" (click)="logoff()">Logout</button>

@@ -21,24 +21,40 @@ app.use(
 
 app.get('/roster', db.getRoster);
 app.get('/roster/:id', db.getRosterbyID);
+app.get('/roster/user/:user_id', db.getRosterbyUser);
 app.get('/spec', db.getAllSpecs)
 app.get('/spec/:baseClass/:spec', db.getSpecUID)
 app.get('/buffs', db.getBuffTable)
 app.get('/user/:user_id', db.getUserbyID)
 app.get('/session/:user_id', db.getSessionbyID)
-
+app.get('/items', db.getItems)
+app.get('/specToItem', db.getSpecToItem)
+app.get('/specData', db.getSpecData)
+app.get('/config', db.getConfig)
+app.get('/lootSheet/:charName', db.getLootSheetByCharName)
+app.get('/character/:charName', db.getCharUIDByCharName)
+app.get('/sheetLock/:charUID', db.getsheetLockByCharUID)
+app.get('/masterLootsheet', db.getMasterLootSheet)
+app.get('/raids', db.getRaids)
+app.get('/raidWeeks', db.getRaidWeeks)
+app.get('/officers', db.getOfficers)
 
 app.patch('/roster',db.updateCharacter)
 app.patch('/session',db.updateSession)
+app.patch('/config', db.updateConfig)
+app.patch('/updateSheetLimitandRanking', db.updateSheetLimitandRanking)
+
+app.patch('/updateRaidWeek', db.updateRaidWeek)
 
 app.post('/roster', db.insertCharacter)
 app.post('/user', db.insertUser)
 app.post('/session', db.insertSession)
+app.post('/specToItem', db.insertSpecToItem)
+app.post('/lootsheet', db.insertLootSheet)
+app.post('/sheetLock', db.insertSheetLock)
+app.post('/raid', db.insertRaid)
 
 app.delete('/roster/:charName', db.deleteCharacter)
-
-
-
 
 app.listen(port, () => {
     console.log(`App running on port ${port}.`)

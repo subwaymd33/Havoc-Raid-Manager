@@ -1,0 +1,83 @@
+.item-header {
+    display: flex;
+    align-items: baseline;
+}
+
+.item-dropdown {
+
+    padding-right: 10px;
+}
+
+.item-slector {
+    width: 300px;
+}
+
+.prev-button {
+    margin-right: 10px;
+}
+
+.spec-form {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.content-pane {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.wowhead-link {
+    font-size: 25px;
+    margin-bottom: 15px;
+}
+
+.spec-selector-pane {
+    border: 1px;
+    display: flex;
+    flex-direction: column;
+    width: 80vw;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.spec-check {
+    margin-left: 5px;
+    margin-right: 5px;
+    width: 120px
+}
+
+.spec-selector-table {
+    width: 70vw;
+}
+
+.character-class-tr {
+    width: 10vw;
+}
+
+.character-class-text-td {
+    width: 20vw;
+    text-align: right;
+    padding-right: 10px;
+    font-size: 20px;
+}
+
+.character-spec-td {
+    padding-top: 8px;
+    width: 50vw
+}
+
+.formButtons {
+    padding-top: 30px;
+}
+
+.myInput {
+    height: 50px !important;
+    padding: 10px !important;
+  }
+
+.mainContainer{
+    margin-top: 15px;
+}

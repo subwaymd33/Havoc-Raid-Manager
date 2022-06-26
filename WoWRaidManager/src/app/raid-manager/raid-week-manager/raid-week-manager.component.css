@@ -1,0 +1,22 @@
+.controls{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+.radioGroup{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10vh;
+}
+
+.daysRB{ 
+    padding-right: 15px;
+}
+
+.MainContentContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

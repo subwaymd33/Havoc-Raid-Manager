@@ -23,6 +23,20 @@ import { OptimizedRaidDisplayComponent } from './raid-generator/optimized-raid-d
 import { ProgressSpinnerComponent } from './raid-generator/progress-spinner/progress-spinner.component';
 import { LoginControlComponent } from './login-control/login-control.component';
 import { LogoutControlComponent } from './login-control/logout-control/logout-control.component';
+import { UserPageComponent } from './user-page/user-page.component';
+import { UserRosterGridComponent } from './user-page/user_character_grid/user-roster-grid.component';
+import { LootConfigComponent } from './loot-manager/loot-config/loot-config.component';
+import { LootManagerComponent } from './loot-manager/loot-manager.component';
+import { PhaseManagerComponent } from './loot-manager/phase-manager/phase-manager.component';
+import { LootSheetComponent } from './loot-sheet/loot-sheet.component';
+import { MasterLootSheetComponent } from './master-loot-sheet/master-loot-sheet.component';
+import { RaidManagerComponent } from './raid-manager/raid-manager.component';
+import { AddonImportModalComponent } from './raid-manager/modals/addon-import-modal/addon-import-modal.component';
+import { AddAttendanceModalComponent } from './raid-manager/modals/add-attendance-modal/add-attendance-modal.component';
+import { RaidManagerControllerComponent } from './raid-manager/raid-manager-controller/raid-manager-controller.component';
+import { RaidWeekManagerComponent } from './raid-manager/raid-week-manager/raid-week-manager.component';
+import { OfficerGuardService } from './shared/guards/officer-guard';
+import { LogonGuardService } from './shared/guards/logon-guard';
 
 
 
@@ -38,7 +52,20 @@ import { LogoutControlComponent } from './login-control/logout-control/logout-co
     OptimizedRaidDisplayComponent,
     ProgressSpinnerComponent,
     LoginControlComponent,
-    LogoutControlComponent
+    LogoutControlComponent,
+    UserPageComponent,
+    UserRosterGridComponent,
+    LootConfigComponent,
+    LootManagerComponent,
+    PhaseManagerComponent,
+    LootSheetComponent,
+    MasterLootSheetComponent,
+    RaidManagerComponent,
+    AddonImportModalComponent,
+    AddAttendanceModalComponent,
+    RaidManagerControllerComponent,
+    RaidWeekManagerComponent
+    
   ],
   imports: [
     BrowserModule,
@@ -51,11 +78,11 @@ import { LogoutControlComponent } from './login-control/logout-control/logout-co
     AngularMaterialModule,
     FontAwesomeModule,
     ReactiveFormsModule,
-    MatNativeDateModule,
+    MatNativeDateModule
    
   ],
   entryComponents: [],
-  providers: [FilterService, TrackByService, SorterService],
+  providers: [FilterService, TrackByService, SorterService, OfficerGuardService,LogonGuardService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

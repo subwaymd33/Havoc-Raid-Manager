@@ -1,0 +1,61 @@
+<div class="container">
+    <div class="row grid-container">
+        <div width="100%">
+            <div class="table">
+
+                <table mat-table matSort #charTbSort="matSort" [dataSource]="dataSource" class="mat-elevation-z8" >
+
+                    <ng-container matColumnDef="icon">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Class Icon</th>
+                        <td mat-cell *matCellDef="let character"><img [src]="getSpecImage(character.primarySpec.specName)" class="grid-image" alt="Customer Image" />  </td>                       
+                    </ng-container>
+                    <!-- charName Column -->
+                    <ng-container matColumnDef="charName">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Character Name </th>
+                        <td mat-cell *matCellDef="let character"> {{character.charName}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="spec">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Specialization </th>
+                        <td mat-cell *matCellDef="let character"> {{character.primarySpec.specName}} </td>       
+                    </ng-container>
+
+                    <ng-container matColumnDef="offSpec">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Off-Spec </th>
+                        <td mat-cell *matCellDef="let character"> {{character.offSpec.specName}} </td>       
+                    </ng-container>
+
+                    <ng-container matColumnDef="main">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+                        <td mat-cell *matCellDef="let character"> {{StatusCellDisplay(character.main)}} </td>       
+                    </ng-container>
+
+                    <ng-container matColumnDef="mainsCharacterName">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Main's Name </th>
+                        <td mat-cell *matCellDef="let character"> {{mainCharacterNameCellDisplay(character.mainsCharacterName, character.main)}} </td>       
+                    </ng-container>
+
+                    <ng-container matColumnDef="editButton">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let character"><button mat-raised-button color="primary" (click)="editCharacter(character)">Edit</button></td>     
+                    </ng-container>
+
+                    <ng-container matColumnDef="lootSheetButton">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let character"><button mat-raised-button color="primary" (click)="displayLootSheet(character)">Loot Sheet</button></td>     
+                    </ng-container>
+
+                    <ng-container matColumnDef="deleteButton">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let character"><button mat-raised-button color="warn" (click)="deleteCharacter(character)">Delete</button></td>     
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                </table>
+                <mat-paginator #paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
+            </div>
+        </div>
+    </div>
+</div>

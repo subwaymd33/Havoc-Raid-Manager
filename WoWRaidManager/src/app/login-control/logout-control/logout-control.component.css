@@ -12,3 +12,7 @@
     padding-right: 10px;
     font-size: 17px;
 }
+.userIcon{
+    font-size: 40px;
+    cursor:pointer;
+}

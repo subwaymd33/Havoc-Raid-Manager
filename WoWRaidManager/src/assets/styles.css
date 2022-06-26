@@ -13,7 +13,7 @@ main {
     padding-top: 60px;
 }
 
-/* Ensure display:flex and others don't override a [hidden] */
+
 [hidden] { 
     display: none !important; 
 }
@@ -188,3 +188,10 @@ a:hover, a:focus {
     from {transform: rotate(0deg);}
     to {transform: rotate(359deg);}
   }
+
+  .tooltip{
+    background: #b71c1c;
+    width:450px;
+    white-space: pre-line;
+  }
+

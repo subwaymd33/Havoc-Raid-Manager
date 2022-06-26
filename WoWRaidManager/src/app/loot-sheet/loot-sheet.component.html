@@ -1,0 +1,120 @@
+<div class=" mainContainer">
+
+    <div class="headerContainer">
+
+        <form [formGroup]="HeaderFormGroup" class="headerForm">
+            <button mat-raised-button type="button" color="primary" class="back" (click)="ReturnToCharacters()">
+                <fa-icon cdkDragHandle [icon]="backArrow" class="arrowGlyph"></fa-icon>
+            </button>
+
+            <mat-form-field appearance="fill" class="spec-selector">
+                <mat-label>Phase</mat-label>
+                <mat-select #phaseSpecSelector formControlName="phase_selector" (selectionChange)="ChangePhase($event)">
+                    <mat-option *ngFor="let phase of phases" [value]="phase">
+                        {{phase}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="fill" class="spec-selector">
+                <mat-label>Main Spec</mat-label>
+                <mat-select #mainSpecSelector (selectionChange)="setMainSpec($event.value)"
+                    formControlName="main_spec_selector">
+                    <mat-option value="0">None</mat-option>
+                    <mat-option *ngFor="let spec of filteredSpecs" [value]="spec">
+                        {{spec.spec}} {{spec.base_class}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="fill" class="spec-selector">
+                <mat-label>Off Spec</mat-label>
+                <mat-select #offSpecSelector (selectionChange)="setOffSpec($event.value)"
+                    formControlName="off_spec_selector">
+                    <mat-option value="0">None</mat-option>
+                    <mat-option *ngFor="let spec of filteredSpecs" [value]="spec">
+                        {{spec.spec}} {{spec.base_class}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+        </form>
+
+
+
+    </div>
+    <hr>
+
+    <div class="contentContainer">
+
+        <div class="div-sheetContainer">
+
+            <div class="SheetButtons" [hidden]="isSheetforPhaseLocked">
+                <button mat-raised-button type="button" color="primary" class="Save" (click)="SaveSheet()"
+                    [disabled]="disableSaveButton">Save</button>
+                <button mat-raised-button type="button" color="primary" class="Revert" (click)="RevertSheetChanges()"
+                    [disabled]="disableRevertChangesButton">Revert Changes</button>
+                <button mat-raised-button type="button" color="warn" class="Submit" (click)="SubmitSheet()"
+                    [disabled]="disableSubmitButton">Submit Sheet</button>
+            </div>
+
+            <div [hidden]="!isSheetforPhaseLocked" class="readOnlyText">
+                <h3>Sheet is locked and cannot be changed.</h3>
+            </div>
+            <div class="sheetTable">
+                <div *ngFor="let slot of SlotItem" class="slotRow">
+                    <div class="div-error">
+                        <fa-icon [icon]="warningGlyph" class="warningGlyph" [hidden]="slot.hideError"
+                            [matTooltip]="getErrorsForTooltip(slot)" matTooltipClass="tooltip"
+                            matTooltipPosition="above"></fa-icon>
+                    </div>
+                    <div class="div-slot" id="header-{{slot.slot}}">
+                        {{slot.slot}}
+                    </div>
+                    <div class="div-column" cdkDropList [cdkDropListData]="slot.column_one_item_list"
+                        [id]="slot.column_one_id" (cdkDropListDropped)="dropToColumn($event)"
+                        [cdkDropListConnectedTo]="list_ids" [cdkDropListDisabled]="isSheetforPhaseLocked">
+                        <div [class]="getItemClassName(item)" *ngFor="let item of slot.column_one_item_list" cdkDrag>
+                            <fa-icon cdkDragHandle [icon]="justifyGlyph" class="justifyGlyph"></fa-icon>
+                            <div class="link"> <a href="https://wotlkdb.com?item={{item.wowhead_link}}"
+                                    rel="item=${{item.wowhead_link}}" class="q4">{{item.item_name}}</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="div-column" cdkDropList [cdkDropListData]="slot.column_two_item_list"
+                        [id]="slot.column_two_id" (cdkDropListDropped)="dropToColumn($event)"
+                        [cdkDropListConnectedTo]="list_ids" [cdkDropListDisabled]="isSheetforPhaseLocked">
+                        <div [class]="getItemClassName(item)" *ngFor="let item of slot.column_two_item_list" cdkDrag>
+                            <fa-icon cdkDragHandle [icon]="justifyGlyph" class="justifyGlyph"></fa-icon>
+                            <div class="link"> <a href="https://wotlkdb.com?item={{item.wowhead_link}}"
+                                    rel="item=${{item.wowhead_link}}" class="q4">{{item.item_name}}</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+            <div class="itemsContainer">
+
+                <div class="unassignedItemContainer" *ngFor="let bucket of UnassignedBucket">
+                    <div class="unassignedItemContainer-header">
+                        <h2>{{bucket.slot}}</h2>
+                    </div>
+
+                    <div cdkDropList class="unassignedItemsHolder" [cdkDropListData]="bucket.items" [id]='bucket.slot'
+                        [cdkDropListConnectedTo]="list_ids" (cdkDropListDropped)="drop($event)"
+                        [cdkDropListDisabled]="isSheetforPhaseLocked">
+                        <div *ngFor="let item of bucket.items" [class]="getItemClassName(item)" cdkDrag>
+                            <fa-icon cdkDragHandle [icon]="justifyGlyph" class="justifyGlyph"></fa-icon>
+                            <div class="link"> <a href="https://wotlkdb.com?item={{item.wowhead_link}}"
+                                    rel="item=${{item.wowhead_link}}" class="q4"><span>{{item.item_name}}</span></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+  
+    </div>
+</div>

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { SessionModel } from './models/sessionModel';
 import { SessionService } from './services/session.service';
+import { UserService } from './services/user.service';
 import { UserAuthService } from './services/userAuth.service';
 
 @Component({
@@ -12,18 +14,28 @@ export class LoginControlComponent implements OnInit {
   data = "";
 
 
-  constructor(public authService: UserAuthService, private sessionService: SessionService) { }
+  constructor(public authService: UserAuthService, private sessionService: SessionService, private userService:UserService, private router:Router) { }
 
   ngOnInit(): void {
   }
 
   logon() {
-    console.log(localStorage.getItem("dID"))
     if (localStorage.getItem("dID") == null) {
       this.authService.getDiscordCode()
+      this.authService.SetLogon(true);
     } else {
       //this route will be if we already know the users dicord ID
       this.LogonwithKnownDiscordID()
+      this.userService.GetOfficers().subscribe(data=>{
+        var arr:String[] = data
+        arr.forEach(item=>{
+          if(localStorage.getItem("dID")==item){
+            this.authService.SetAdmin(true)
+          }
+        })
+        this.authService.SetLogon(true);
+        this.router.navigate(['/userPage'])
+      })
     }
   }
 

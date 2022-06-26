@@ -1,0 +1,91 @@
+.MainContentContainer{
+    display: flex;
+    flex-direction: row;
+}
+
+.AttendancePanel{
+    width: 50vw;
+    border-right: 1px solid black;
+}
+.AttendancePanelHeader{
+    text-align: center;
+    font-size: larger;
+    font-weight: bold;
+    text-decoration:underline;
+}
+.ItemDropPanel{
+    width:50vw
+}
+.ItemDropPanelHeader{
+    text-align: center;
+    font-size: larger;
+    font-weight: bold;
+    text-decoration:underline;
+}
+.attendanceItems{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.dropItems{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.attendanceSelect{
+    display: flex;
+    align-items: center;
+    height: 20px;
+    font-size: 10px;
+    padding-top: 0em;
+    padding-left: 4px;
+}
+.characterName{
+    margin-right: 5px;
+    text-align: right;
+    width: 10vw;
+}
+.characterNameItems{
+    margin-right: 5px;
+    text-align: right;
+    width: 30%;
+}
+.attendanceItemWrapper{
+display: flex;
+flex-direction: column;
+flex-wrap: wrap;
+height: 70vh;
+justify-content: flex-start;
+}
+.itemStyle{
+    font-weight: bolder;
+}
+.itemDrops{
+    width: 70%;
+}
+.controls{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+.submit-button{
+    margin-left: 10px;
+}
+.attendSelectorDiv{
+    width:35%;
+    height: 20px;
+    font-size: 10px;
+    padding-top: 0em;
+    border: 1px solid black;
+}
+.addAttendButton{
+    padding-left: 10px;
+    color: green;
+    cursor: pointer;
+}

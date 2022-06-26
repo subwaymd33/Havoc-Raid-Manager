@@ -1,0 +1,55 @@
+<div class="mainContainer">
+    <form [formGroup]="PhaseFormGroup">
+
+
+        <div class="phaseContainer">
+            <h3>Phase 1 (Naxxaramus, Eye of Eternity, Obsidian Sanctum)</h3>
+            <hr>
+            <div class="checkboxContainer">
+                <mat-checkbox class="phase-check" formControlName="p1_enable_cb" type="checkbox" (change)="p1_enable_cb_change($event)" >Enable Phase 1 Loot
+                    Sheets
+                </mat-checkbox>
+                <mat-checkbox class="phase-check" formControlName="p1_show_in_master_cb" type="checkbox" (change)="p1_show_in_master_cb_change($event)">Show Phase 1 Loot in Master Sheet
+                </mat-checkbox>
+            </div>
+        </div>
+        <div class="phaseContainer">
+            <h3>Phase 2 (Ulduar)</h3>
+            <hr>
+            <div class="checkboxContainer">
+                <mat-checkbox class="phase-check" formControlName="p2_enable_cb" type="checkbox" (change)="p2_enable_cb_change($event)">Enable Phase 2 Loot
+                    Sheets
+                </mat-checkbox>
+                <mat-checkbox class="phase-check" formControlName="p2_show_in_master_cb" type="checkbox" (change)="p2_show_in_master_cb_change($event)">Show Phase 2 Loot in Master Sheet
+                </mat-checkbox>
+            </div>
+        </div>
+        <div class="phaseContainer">
+            <h3>Phase 3 (Trial of the Grand Crusader, Onyxia's Lair)</h3>
+            <hr>
+            <div class="checkboxContainer">
+                <mat-checkbox class="phase-check" formControlName="p3_enable_cb" type="checkbox" (change)="p3_enable_cb_change($event)">Enable Phase 3 Loot
+                    Sheets
+                </mat-checkbox>
+                <mat-checkbox class="phase-check" formControlName="p3_show_in_master_cb" type="checkbox" (change)="p3_show_in_master_cb_change($event)">Show Phase 3 Loot in Master Sheet
+                </mat-checkbox>
+            </div>
+        </div>
+        <div class="phaseContainer">
+            <h3>Phase 4 (Ice Crown Citedal, The Ruby Sanctum)</h3>
+            <hr>
+            <div class="checkboxContainer">
+                <mat-checkbox class="phase-check" formControlName="p4_enable_cb" type="checkbox" (change)="p4_enable_cb_change($event)">Enable Phase 4 Loot
+                    Sheets
+                </mat-checkbox>
+                <mat-checkbox class="phase-check" formControlName="p4_show_in_master_cb" type="checkbox" (change)="p4_show_in_master_cb_change($event)">Show Phase 4 Loot in Master Sheet
+                </mat-checkbox>
+            </div>
+        </div>
+    </form>
+    <div class="formButtons">
+        <button mat-raised-button type="button" color="primary" class="prev-button" (click)="resetForm()">Cancel</button>
+        <button mat-raised-button type="button" color="primary" class="next-button" (click)="formSubmit()">Save</button>
+    </div>
+
+</div>

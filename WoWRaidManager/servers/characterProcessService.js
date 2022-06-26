@@ -29,12 +29,15 @@ app.get('/processRoster', (request, response) => {
 
   var resp = fetch("http://127.0.0.1:3000/roster").then(res => res.json()).then(json => {
 
+    
     for (let i in json) {
       var obj = new Object();
       obj.charName = json[i]['charName'];
+     
       if (json[i]['main']) {
         obj.main = 'Main'
       } else {
+       
         obj.main = 'Alternate'
       }
       if (json[i]['mainsName']) {
@@ -73,21 +76,77 @@ app.get('/processRoster', (request, response) => {
   });
 });
 
+app.get('/getCharUID/:charName', (request, response) => {
+  var resp = fetch(`http://127.0.0.1:3000/character/${request.params.charName}`).then(res => res.json()).then(json => {
+      response.send(json);
+  });
+});
+
+app.get('/processRoster/:user_id', (request, response) => {
+  const charArray = new Array();
+
+  var resp = fetch(`http://localhost:3000/roster/user/${request.params.user_id}`).then(res => res.json()).then(json => {
+    try {
+      for (let i in json) {
+        var obj = new Object();
+        obj.charName = json[i]['charName'];
+        if (json[i]['main']==true) {
+          obj.main = true
+        } else {
+          obj.main = false
+        }
+        if (json[i]['mainsName']) {
+          obj.mainsCharacterName = json[i]['mainsName']
+        } else {
+          obj.mainsCharacterName = ""
+        }
+  
+        specMapping.forEach(element => {
+          if (element.specUID == json[i]['specUID']) {
+            var primarySpecObj = new Object();
+            primarySpecObj.specName = element.name;
+            primarySpecObj.role = checkRole(element.role)
+            primarySpecObj.buffs = buffMapping.find(element => { return element.specUID == json[i]['specUID'] }).buffs
+            obj.primarySpec = primarySpecObj;
+  
+          }
+          if (element.specUID == json[i]['offSpecUID']) {
+            var offSpecObj = new Object();
+            offSpecObj.specName = element.name;
+            offSpecObj.role = checkRole(element.role)
+            offSpecObj.buffs = buffMapping.find(element => { return element.specUID == json[i]['offSpecUID'] }).buffs
+            obj.offSpec = offSpecObj;
+          }
+        });
+  
+        if (!obj.offSpec) {
+          var offSpecObj = new Object();
+          offSpecObj.specName = null
+          offSpecObj.role = null
+          obj.offSpec = offSpecObj;
+        }
+        charArray.push(obj)
+      }
+     
+      response.status(200).json(charArray);
+    } catch (error) {
+      console.log(error)
+    }
+  });
+});
+
 
 app.post('/insertCharacter', (request, response) => {
 
-  console.log(request.body.charName)
-  console.log(request.body.name)
   let boolMain;
   let mainsName;
-  if (request.body.main == 'Main') {
+  if (request.body.main == true) {
     boolMain = true;
     mainsName = request.body.charName
   } else {
     boolMain = false;
     mainsName = request.body.mainsCharacterName
   }
-  console.log("MainsName: " + mainsName)
 
   let specUID;
   specMapping.forEach(element => {
@@ -98,7 +157,7 @@ app.post('/insertCharacter', (request, response) => {
 
   let offSpecUID;
   specMapping.forEach(element => {
-    if (element.name == request.body.offSpec.offSpecName) {
+    if (element.name == request.body.offSpec.specName) {
       offSpecUID = element.specUID;
     }
   });
@@ -116,7 +175,8 @@ app.post('/insertCharacter', (request, response) => {
         specUID: specUID,
         main: boolMain,
         offspecUID: offSpecUID,
-        mainsName: mainsName
+        mainsName: mainsName,
+        userOwner: request.body.userOwner
       })
     }
   ).then((resp) => {
@@ -127,6 +187,7 @@ app.post('/insertCharacter', (request, response) => {
     }
   }).catch((err) => {
     console.error(err); // handle error
+    response.status(400)
   });
 
 
@@ -135,10 +196,13 @@ app.post('/insertCharacter', (request, response) => {
 
 app.patch('/updateCharacter', (request, response) => {
   let boolMain;
-  if (request.body.main == 'Main') {
+  let mainsName;
+  if (request.body.main == true) {
     boolMain = true;
+    mainsName = request.body.charName
   } else {
     boolMain = false;
+    mainsName = request.body.mainsCharacterName
   }
 
   let specUID, offSpecUID;
@@ -146,7 +210,6 @@ app.patch('/updateCharacter', (request, response) => {
     if (element.name == request.body.primarySpec.specName) {
       specUID = element.specUID;
     }
-    console.log(request.body.offSpec.specName)
     if (element.name == request.body.offSpec.specName) {
       offSpecUID = element.specUID;
     }
@@ -163,6 +226,7 @@ app.patch('/updateCharacter', (request, response) => {
         charName: request.body.charName,
         specUID: specUID,
         main: boolMain,
+        mainsName: mainsName,
         offspecUID: offSpecUID
       })
     }

@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { OverlayModule } from '@angular/cdk/overlay';
+import {CdkStepperModule} from '@angular/cdk/stepper';
+import {CdkTableModule} from '@angular/cdk/table';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { PortalModule } from '@angular/cdk/portal';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -33,6 +36,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {MatDialogModule} from '@angular/material/dialog';
+import { BrowserModule } from '@angular/platform-browser'
 
 const materialModules = [
   CdkTreeModule,
@@ -67,7 +71,11 @@ const materialModules = [
   MatRadioModule,
   MatDatepickerModule,
   MatTooltipModule,
-  MatDialogModule
+  MatDialogModule,
+  CdkStepperModule,
+  CdkTableModule,
+  DragDropModule,
+  BrowserModule
 ];
 @NgModule({
   imports: [

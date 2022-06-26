@@ -1,0 +1,23 @@
+.phaseContainer {
+    display: flex;
+flex-direction: column;
+padding-top: 25px;
+padding-bottom: 25px;
+}
+.checkboxContainer{
+    margin-left: 50px;
+    display:flex;
+}
+
+.phase-check{
+    padding-right: 30px;
+}
+
+.mainContainer{
+    margin-top: 15px;
+    margin-left: 50px;
+}
+.prev-button {
+    margin-right: 10px;
+    margin-left: 50px
+}

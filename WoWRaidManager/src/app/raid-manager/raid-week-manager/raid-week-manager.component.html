@@ -1,0 +1,42 @@
+<div class="controls">
+    <div class="RaidWeekSelector">
+        <mat-form-field appearance="fill">
+            <mat-label>Select a Week</mat-label>
+            <mat-select (selectionChange)="ChangedSelectedRaidWeek($event)">
+                <mat-option *ngFor="let week of raidWeeks" [value]="week">
+                    {{week.start_dt| date:'yyyy-MM-dd'}} - {{week.end_dt| date:'yyyy-MM-dd'}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div clas="buttons">
+        <button mat-raised-button class="submit-button" (click)=SaveWeek() color="primary"
+            [disabled]="submitButtonDisabled">Save Raid</button>
+    </div>
+</div>
+
+<hr>
+
+<div class="MainContentContainer" [hidden]="hideWeekData">
+  
+
+
+    <form [formGroup]="DaysRBFormGroup" >
+        <span>Main Attendance Req</span>
+        <mat-radio-group class="radioGroup" formControlName="daysRBGroup" (change)="enableSave($event)">
+            <mat-radio-button class="daysRB" [value]=0 >0</mat-radio-button>
+            <mat-radio-button class="daysRB" [value]=1 >1</mat-radio-button>
+            <mat-radio-button class="daysRB" [value]=2 >2</mat-radio-button>
+            <mat-radio-button class="daysRB" [value]=3 >3</mat-radio-button>  
+        </mat-radio-group>
+
+        <span>Alt Attendance Req</span>
+        <mat-radio-group class="radioGroup" formControlName="dayssRBGroup" (change)="enableSave($event)">
+            <mat-radio-button class="daysRB" [value]=0 >0</mat-radio-button>
+            <mat-radio-button class="daysRB" [value]=1 >1</mat-radio-button>
+            <mat-radio-button class="daysRB" [value]=2 >2</mat-radio-button>
+            <mat-radio-button class="daysRB" [value]=3 >3</mat-radio-button>  
+        </mat-radio-group>
+    </form>
+
+</div>

@@ -1,0 +1,35 @@
+<div class="modal-header">
+  <h4 class="modal-title">Paste Import String From Addon</h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="CloseDialog()"></button>
+</div>
+<form [formGroup]="InputFormGroup" class="modal-body">
+  <div class="modal-body">
+    <mat-form-field appearance="outline" class="form-field">
+      <mat-label>Raid Name</mat-label>
+      <input matInput formControlName="name" name="name">
+      <mat-error *ngIf="InputFormGroup.value">This field is required</mat-error>
+    </mat-form-field>
+    <!-- <input matInput placeholder="Raid Name" class="RaidName" formControlName="name"> -->
+    <mat-form-field appearance="fill" class="selector">
+      <mat-label>Phase</mat-label>
+      <mat-select #phaseSpecSelector formControlName="phase_selector">
+        <mat-option value="1">1</mat-option>
+        <mat-option value="2">2</mat-option>
+        <mat-option value="3">3</mat-option>
+        <mat-option value="4">4</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="form-field">
+      <mat-label>Paste Import String Here</mat-label>
+      <textarea matInput formControlName="import_string" name="import_string" class="importBox" ></textarea>
+      <mat-error *ngIf="InputFormGroup.value">This field is required</mat-error>
+    </mat-form-field>
+
+
+
+  </div>
+  <div class="modal-footer">
+    <button mat-raised-button type="submit" color="primary" (click)="Import()" [disabled]="!InputFormGroup.valid">Import</button>
+  </div>
+</form>

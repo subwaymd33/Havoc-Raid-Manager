@@ -1,0 +1,63 @@
+<div class="mainContainer">
+    <div class="headerContainer">
+        <div>
+            <mat-form-field appearance="fill" class="selector">
+                <mat-label>Phase</mat-label>
+                <mat-select #phaseSpecSelector (selectionChange)="ChangePhase($event)" [disabled]="disablePhaseSelector">
+                    
+                    <mat-option *ngFor="let phase of phases" [value]="phase">
+                        {{phase}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field appearance="fill" class="selector">
+                <mat-label>Raid</mat-label>
+                <mat-select #raidSpecSelector (selectionChange)="SelectRaid($event)" [disabled]="disableRaidSelector">
+                    <mat-option>None</mat-option>
+                    <mat-option *ngFor="let raid of uniqueRaids" [value]="raid">
+                        {{raid}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field appearance="fill" class="selector">
+                <mat-label>Boss</mat-label>
+                <mat-select #raidSpecSelector (selectionChange)="SelectBoss($event)" [disabled]="disableBossSelector">
+                    <mat-option>None</mat-option>
+                    <mat-option *ngFor="let boss of bossesForRaid" [value]="boss">
+                        {{boss}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <hr>
+    </div>
+    <div class="RaidRow" *ngFor="let raid of filterRaids()">
+        <div class="RaidLabel">
+            <span>{{raid}}: Loot Rankings</span>
+        </div>
+
+        <div class="BossRow" *ngFor="let boss of filterBossesToRaid(raid)">
+            <div class="BossLabel">
+                <span>{{boss}}</span>
+            </div>
+            <div class="BossItems" *ngFor="let item of filterItemsToBoss(boss)">
+                <div class="BossItemsLabel">
+                    <span>{{item.item_name}}</span>
+                </div>
+                <div class="ItemsTable">
+                    <div class="ItemsTable" *ngFor="let sheetCell of filterAndFormatSheetCells(item.item_id)"
+                        class="SheetCell spec-{{sheetCell.specUID}}">
+                        <span>{{sheetCell.charName}}: {{sheetCell.displayValue}}</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+</div>

@@ -58,21 +58,18 @@
     </mat-form-field>
   </div>
 
-  <div class="dialogRowsTwoItems">
-    <mat-form-field appearance="fill" [hidden]="hideMainSelector">
-      <mat-label>Main Character</mat-label>
-      <mat-select formControlName="mainCharacters" >
-        <mat-option *ngFor="let char of mainCharacters" [value]="char">
-          {{char}}
-        </mat-option>
-      </mat-select>
+
+  <div class="dialogRowsTwoItems" [hidden]="hideMainSelector">
+    <mat-form-field appearance="standard" >
+      <mat-label class="charEntryLabel">Main's Name</mat-label>
+      <input formControlName="main" matInput  readonly >
     </mat-form-field>
   </div>
 
 
   <div mat-dialog-actions class="dialogRows">
-    <button mat-raised-button type="button" (click)="onNoClick()" color="warn">Cancel</button>
-    <button mat-raised-button type="submit" color="primary"
+    <button mat-raised-button type="button" (click)="onNoClick()" mat-dialog-close color="warn">Cancel</button>
+    <button mat-raised-button type="submit" color="primary" [mat-dialog-close]="true"
       [disabled]="!reactiveForm.valid">{{action}}</button>
   </div>
 

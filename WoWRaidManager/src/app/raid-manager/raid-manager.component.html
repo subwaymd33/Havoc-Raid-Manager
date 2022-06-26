@@ -1,0 +1,58 @@
+<div class="controls">
+    <div class="existingRaidSelector">
+        <mat-form-field appearance="fill">
+            <mat-label>Select an Existing Raid</mat-label>
+            <mat-select (selectionChange)="ChangedSelectedRaid($event)">
+              <mat-option *ngFor="let raid of existingRaids" [value]="raid" >
+                {{raid.raid_name}} : {{raid.raid_date}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+    </div>
+    <div clas="buttons">
+        <button mat-raised-button class="import-button" (click)=CreateRaid() color="primary">Paste Raid Info</button>
+        <button mat-raised-button class="submit-button" (click)=SaveRaid() color="primary" [disabled]="submitButtonDisabled">Save Raid</button>
+    
+    </div>
+
+</div>
+
+
+<hr>
+
+<div class="MainContentContainer">
+    <div class="AttendancePanel">
+        <div class="AttendancePanelHeader">
+            <span>Attendance</span>
+            
+            <fa-icon [icon]="plusGlyph" class="addAttendButton" (click)="AddAttendanceRecord()"[hidden]=hideAddAttendance></fa-icon>
+        </div>
+        <div class="attendanceItemWrapper">
+            <div class="attendanceItems" *ngFor="let record of workingRaid.attendance, let i = index">
+                <div class="characterName">{{record.char_name}}:</div>
+                <div class="attendSelectorDiv">
+                    <mat-select matNativeControl  required class="attendanceSelect" (selectionChange)="AttendanceChange(record, $event.value)" value="present">
+                        <!-- <mat-option *ngFor="let obj of attendOptions" [value]="obj">{{obj}}</mat-option> -->
+                        <mat-option value="present" selected>Present</mat-option>
+                        <mat-option value="absent">Absent</mat-option>
+                        <mat-option value="vaca">Vacation Credit</mat-option>
+                    </mat-select>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="ItemDropPanel">
+        <div class="ItemDropPanelHeader">
+            <span>Item Drops</span>
+        </div>
+        <div class="dropItems" *ngFor="let record of workingRaid.drops">
+            <div class="characterNameItems">
+                {{record.char_name}}:
+            </div>
+            <div class="itemDrops">
+                <a [href]="getDBLink(record)" [rel]="getItemLink(record)" class="q4 itemStyle">{{getItemName(record)}}</a>
+            </div>
+        </div>
+    </div>
+</div>

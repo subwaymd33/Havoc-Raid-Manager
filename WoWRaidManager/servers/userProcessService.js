@@ -21,12 +21,7 @@ app.use(cors({
 
 }));
 
-
-
 app.post('/insertUser', (request, response) => {
-
-    console.log(request.body.user_id)
-    console.log(request.body.user_name)
 
     fetch("http://127.0.0.1:3000/user",
         {
@@ -38,6 +33,7 @@ app.post('/insertUser', (request, response) => {
             body: JSON.stringify({
                 user_id: request.body.user_id,
                 user_name: request.body.user_name,
+                role: request.body.role
             })
         }
     ).then((resp) => {
@@ -121,6 +117,16 @@ app.patch('/updateSession', (request, response) => {
 
 
 })
+
+app.get('/getOfficers', (request, response) => {
+    fetch("http://127.0.0.1:3000/officers").then(res => res.json()).then(json => {
+        const strArray = new Array();
+        for (let i in json) {
+            strArray.push(json[i]['user_id'])
+        }
+        response.send(strArray);
+    });
+});
 
 app.listen(port, () => {
     console.log(`App running on port ${port}.`)

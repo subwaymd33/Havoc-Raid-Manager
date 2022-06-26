@@ -5,6 +5,7 @@ export class Characters {
     mainsCharacterName: string;
     primarySpec: SpecData;
     offSpec: SpecData;
+    userOwner:string;
     
 
     constructor(charName: string, main: boolean, mainsCharacterName:string, primarySpec: SpecData, offSpec: SpecData) {

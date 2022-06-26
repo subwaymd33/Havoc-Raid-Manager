@@ -1,0 +1,116 @@
+.headerContainer{
+    display: flex;
+    flex-direction: row;
+}
+.selector{
+    margin-right: 15px;
+}
+
+.RaidRow {
+    display: flex;
+    flex-direction: column;
+}
+
+.RaidLabel span {
+    font-size: 32px;
+    font-weight: bolder;
+}
+
+.BossRow {
+    font-size: 12;
+}
+
+.BossLabel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 25vw;
+    text-align: right;
+    font-size: 24px;
+
+}
+
+.BossItems {
+    width: 99vw;
+    font-size: 12px;
+    text-align: right;
+    display: flex;
+    flex-direction: row;
+}
+
+.BossItemsLabel {
+    width: 15vw;
+    
+    text-align: right;
+    font-size: 12px;
+    margin-right: 1vw;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+}
+.ItemsTable{
+    width:80vw;
+    display: flex;
+    flex-direction: row;
+    padding-right: 5px;   
+      background-color: #dadce0;
+      border: 1px;
+    border-color: #e5e5e5;
+    border-style: solid;
+}
+.SheetCell{
+    display: flex;
+    flex-direction: row;
+    width: auto;
+    font-weight: bold;
+    align-items: center;
+    justify-content: center;
+    margin-right: 5px; 
+    padding: 3px;
+    border: 1px ;
+    border-color: #e5e5e5;
+    border-style: solid;
+}
+
+
+/* DK */
+.spec-25,.spec-26,.spec-1 {
+    background-color: #c30000 ;
+}
+/* Druid */
+.spec-27,.spec-4,.spec-19,.spec-5 {
+    background-color: #ff6600  ;
+}
+/* Hunter */
+.spec-10,.spec-11,.spec-12 {
+    background-color: #7dd17d  ;
+}
+/* Mage */
+.spec-13,.spec-14,.spec-15 {
+    background-color: #33ccff  ;
+}
+/* Paladin */
+.spec-3,.spec-8,.spec-30 {
+    background-color: #f392f3 ;
+}
+/* Priest */
+.spec-20,.spec-7,.spec-6 {
+    background-color: #999999  ;
+}
+/* Rogue */
+.spec-24,.spec-23,.spec-22 {
+    background-color: #d7d700  ;
+}
+/* Shaman */
+.spec-31,.spec-9,.spec-21 {
+    background-color: #4545f5  ;
+}
+/* WArlock */
+.spec-16,.spec-17,.spec-18 {
+    background-color: #6600cc  ;
+}
+/* Warrior */
+.spec-28,.spec-29,.spec-2 {
+    background-color: #cc9933  ;
+}

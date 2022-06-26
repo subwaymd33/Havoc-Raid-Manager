@@ -1,0 +1,13 @@
+.modal-body{
+    display: flex;
+    flex-direction: column;
+    width :100%
+}
+
+.RaidName{
+    margin-bottom: 20px;
+}
+
+.importBox{
+    height: 180px;
+}

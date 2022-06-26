@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, Observable } from 'rxjs';
-import { Characters } from '../roster/models/Characters';
 import { ICharacter } from '../shared/interfaces';
 
 @Injectable({
@@ -19,7 +18,16 @@ export class RosterService {
   // every HTTTP call returns Observable object
 
   getRoster(): Observable<ICharacter[]> {
-    return this.http.get<ICharacter[]>(this.URL)
+    return this.http.get<ICharacter[]>('http://localhost:3001/processRoster')
+      .pipe(
+        map(characters => {
+          return characters;
+        })
+      );
+  }
+
+  getRosterforUser(user_id:string): Observable<ICharacter[]> {
+    return this.http.get<ICharacter[]>(`http://localhost:3001/processRoster/${user_id}`)
       .pipe(
         map(characters => {
           return characters;
@@ -46,5 +54,14 @@ export class RosterService {
     const body = JSON.stringify(char);
     return this.http.patch<any>("http://localhost:3001/updateCharacter", body, { 'headers': headers })
 
+  }
+
+  getCharUIDByCharName(charName:string): Observable<any[]> {
+    return this.http.get<any[]>(`http://localhost:3001/getCharUID/${charName}`)
+      .pipe(
+        map(data => {
+          return data;
+        })
+      );
   }
 }
