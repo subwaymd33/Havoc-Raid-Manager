@@ -1,9 +1,10 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
-import { ICharacter, IClasses, ISpecs } from 'src/app/shared/interfaces';
+import { IClasses, ISpecs } from 'src/app/shared/interfaces';
 import { CharWithActionModel } from 'src/app/user-page/user-page.component';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -26,7 +27,11 @@ export class ModalComponent implements OnInit {
   ngOnInit() {
 
   }
-
+  ranks: IClasses[] = [
+    { value: 'rank-1', viewValue: environment.MAIN_RAIDER_RANK_NAME },
+    { value: 'rank-2', viewValue: environment.SOCIAL_RAIDER_RANK_NAME },
+    { value: 'rank-3', viewValue: environment.ALT_RAIDER_RANK_NAME },
+  ]
 
   classesData: IClasses[] = [
     { value: 'class-01', viewValue: 'Death Knight' },
@@ -127,7 +132,13 @@ export class ModalComponent implements OnInit {
   
     }
   }
-
+  setRankBoxValues(data: any) {
+    if (data.value == 'rank-1') {
+      this.hideMainSelector = true
+    } else {
+      this.hideMainSelector = false
+    }
+  }
   constructor(public dialogRef: MatDialogRef<ModalComponent>, @Inject(MAT_DIALOG_DATA) public data: CharWithActionModel) {
     this.character = data;
     
@@ -137,12 +148,20 @@ export class ModalComponent implements OnInit {
       characterName: new FormControl([{disabled: true}, Validators.required]),
       classes: new FormControl({disabled: true}, Validators.required),
       specs: new FormControl('', Validators.required),
-      mainRB: new FormControl('', Validators.required),
+      rank: new FormControl('', Validators.required),
       offSpecs: new FormControl(''),
       main: new FormControl(''),
     })
 
-    this.reactiveForm.controls['main'].setValue(this.character.char.mainsCharacterName)
+    if(this.character.char.rank==environment.MAIN_RAIDER_RANK_NAME){
+      this.reactiveForm.controls['rank'].setValue('rank-1')
+    }else if(this.character.char.rank==environment.SOCIAL_RAIDER_RANK_NAME){
+      this.reactiveForm.controls['rank'].setValue('rank-2')
+    }else{
+      this.reactiveForm.controls['rank'].setValue('rank-3')
+      this.reactiveForm.controls['main'].setValue(this.character.char.mainsCharacterName)
+      
+    }
 
     if (this.action == 'Edit') {
       this.reactiveForm.controls['characterName'].disable()
@@ -184,12 +203,18 @@ export class ModalComponent implements OnInit {
       }
     })
 
+
+
+
     //adding main or alt
-    if (this.reactiveForm.controls['mainRB'].value == "main") {
-      this.character.char.main = true
+    if (this.reactiveForm.controls['rank'].value == "rank-1") {
+      this.character.char.rank = environment.MAIN_RAIDER_RANK_NAME
       this.character.char.mainsCharacterName = this.reactiveForm.controls['characterName'].value
-    } else {
-      this.character.char.main = false
+    } else if(this.reactiveForm.controls['rank'].value == "rank-2"){
+      this.character.char.rank = environment.SOCIAL_RAIDER_RANK_NAME
+      this.character.char.mainsCharacterName = this.reactiveForm.controls['characterName'].value
+    }else{
+      this.character.char.rank = environment.ALT_RAIDER_RANK_NAME
       this.character.char.mainsCharacterName = this.reactiveForm.controls['main'].value
     }
 
@@ -221,21 +246,16 @@ export class ModalComponent implements OnInit {
 
     })
 
-    if (this.character.char.main == true) {
-      this.reactiveForm.controls['mainRB'].setValue("main")
-    } else {
-      this.reactiveForm.controls['mainRB'].setValue("alt")
+    if (this.character.char.rank == environment.MAIN_RAIDER_RANK_NAME) {
+      this.reactiveForm.controls['rank'].setValue("rank-1")
+    } else if(this.character.char.rank == environment.SOCIAL_RAIDER_RANK_NAME){
+      this.reactiveForm.controls['rank'].setValue("rank-2")
+    }else{
+      this.reactiveForm.controls['rank'].setValue("rank-3")
     }
 
-  }
 
-  RBChange(data: any) {
-    if (data.value == 'main') {
-      this.hideMainSelector = true
-     
-    } else {
-      this.hideMainSelector = false
-    }
+
   }
 
 };

@@ -17,12 +17,15 @@
       <!-- <label *ngIf="characterName.invalid" [ngClass]="'error'"> Name required</label> -->
     </div>
   </div>
-
   <div class="dialogRows">
-    <mat-radio-group aria-label="Select an option" formControlName="mainRB" class="radioButtons" (change)="RBChange($event)" >
-      <mat-radio-button value="main">Main</mat-radio-button>
-      <mat-radio-button value="alt">Alt</mat-radio-button>
-    </mat-radio-group>
+    <mat-form-field appearance="fill" class="items">
+      <mat-label>Rank</mat-label>
+      <mat-select formControlName="rank" (selectionChange)="setRankBoxValues($event)" >
+        <mat-option *ngFor="let rank of ranks" [value]="rank.value">
+          {{rank.viewValue}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
   </div>
 
   <div class="dialogRows">

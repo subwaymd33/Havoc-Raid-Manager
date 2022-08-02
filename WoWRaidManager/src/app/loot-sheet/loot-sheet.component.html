@@ -48,7 +48,7 @@
         <div class="div-sheetContainer">
 
             <div class="SheetButtons" [hidden]="isSheetforPhaseLocked">
-                <button mat-raised-button type="button" color="primary" class="Save" (click)="SaveSheet()"
+                <button mat-raised-button type="button" color="primary" class="Save" (click)="SaveSheet(true)"
                     [disabled]="disableSaveButton">Save</button>
                 <button mat-raised-button type="button" color="primary" class="Revert" (click)="RevertSheetChanges()"
                     [disabled]="disableRevertChangesButton">Revert Changes</button>

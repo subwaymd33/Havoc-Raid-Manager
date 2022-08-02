@@ -4,18 +4,20 @@ import { Observable, Subscription } from 'rxjs';
 import { Items } from '../loot-manager/loot-config/models/items';
 import { ItemToSpec } from '../loot-manager/loot-config/models/ItemToSpec';
 import { specData } from '../loot-manager/loot-config/models/specData';
-import { LootService } from '../loot-manager/loot-config/services/loot.service';
+import { LootService } from '../services/loot.service';
 import { ConfigModel } from '../models/configModel';
-import { ConfigService } from '../service/config.service';
+import { ConfigService } from '../services/config.service';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { LootSheetTableRow } from '../loot-manager/loot-config/models/LootSheetTableRow';
 import { unassignedItemsBucket } from '../loot-manager/loot-config/models/unassignedItemsBucket';
 import { faAlignJustify, faTriangleExclamation, faArrowCircleLeft, faGripLinesVertical } from '@fortawesome/free-solid-svg-icons';
 import { lootSheetInitiateModel } from '../user-page/models/lootSheetInitiateModel';
 import { rawSheetDataRow } from '../loot-manager/loot-config/models/rawSheetDataRow';
-import { RosterService } from '../service/roster.service';
+import { RosterService } from '../services/roster.service';
 import { sheetLockModel } from '../loot-manager/loot-config/models/sheetLockModel';
 import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
+import { environment } from 'src/environments/environment';
+import { SnackbarService } from '../services/snackbar.service';
 
 
 @Component({
@@ -29,6 +31,7 @@ export class LootSheetComponent implements OnInit {
   @Output() ReturnToCharactersEvent = new EventEmitter<any>();
   @Input() characterClass: string;
   @Input() characterName: string;
+
   @Input() events: Observable<lootSheetInitiateModel>;
 
   HeaderFormGroup: FormGroup;
@@ -51,7 +54,8 @@ export class LootSheetComponent implements OnInit {
   workingCharacterSheetObject: rawSheetDataRow[] = [];
   originalCharacterSheetObject: rawSheetDataRow[] = [];
   charUID: number;
-  SheetLock: sheetLockModel[] = [];
+  charRank: string;
+  sheetLock: sheetLockModel[] = [];
   isSheetforPhaseLocked: boolean = false;
   disableSubmitButton: boolean = true;
   disableSaveButton: boolean = true;
@@ -60,7 +64,7 @@ export class LootSheetComponent implements OnInit {
 
 
 
-  constructor(private lootService: LootService, private configService: ConfigService, private characterService: RosterService,private _snackBar: MatSnackBar) {
+  constructor(private lootService: LootService, private configService: ConfigService, private characterService: RosterService, private _snackBarService: SnackbarService) {
     this.HeaderFormGroup = new FormGroup({
       phase_selector: new FormControl(""),
       main_spec_selector: new FormControl(""),
@@ -68,46 +72,41 @@ export class LootSheetComponent implements OnInit {
     })
 
 
-    for (let i = 50; i > 25; i--) {
-      var newSlotItem: LootSheetTableRow = new LootSheetTableRow("", "", "", [], [], true, []);
-      newSlotItem.slot = i.toString();
-      newSlotItem.column_one_id = (i.toString() + '-1');
-      this.list_ids.push(newSlotItem.column_one_id)
-      newSlotItem.column_two_id = (i.toString() + '-2');
-      this.list_ids.push(newSlotItem.column_two_id)
-      this.SlotItem.push(newSlotItem)
-    }
-    for (let i = 25; i > 0; i--) {
-      var newSlotItem: LootSheetTableRow = new LootSheetTableRow("", "", "", [], [], true, []);
-      newSlotItem.slot = "25";
-      newSlotItem.column_one_id = ('25-1-' + i.toString());
-      this.list_ids.push(newSlotItem.column_one_id)
-      newSlotItem.column_two_id = ('25-2-' + i.toString());
-      this.list_ids.push(newSlotItem.column_two_id)
-      this.SlotItem.push(newSlotItem)
-    }
+
+    // for (let i = 50; i > 25; i--) {
+    //   var newSlotItem: LootSheetTableRow = new LootSheetTableRow("", "", "", [], [], true, []);
+    //   newSlotItem.slot = i.toString();
+    //   newSlotItem.column_one_id = (i.toString() + '-1');
+    //   this.list_ids.push(newSlotItem.column_one_id)
+    //   newSlotItem.column_two_id = (i.toString() + '-2');
+    //   this.list_ids.push(newSlotItem.column_two_id)
+    //   this.SlotItem.push(newSlotItem)
+    // }
+    // for (let i = 25; i > 0; i--) {
+    //   var newSlotItem: LootSheetTableRow = new LootSheetTableRow("", "", "", [], [], true, []);
+    //   newSlotItem.slot = "25";
+    //   newSlotItem.column_one_id = ('25-1-' + i.toString());
+    //   this.list_ids.push(newSlotItem.column_one_id)
+    //   newSlotItem.column_two_id = ('25-2-' + i.toString());
+    //   this.list_ids.push(newSlotItem.column_two_id)
+    //   this.SlotItem.push(newSlotItem)
+    // }
 
   }
 
   ngOnInit(): void {
 
-    this.lootService.getSpecData().subscribe(data => {
-      this.specs = data
-      this.filteredSpecs = this.specs;
-    })
+    this.specs = this.filteredSpecs = this.lootService.getSpecData();
+
     this.lootService.getSpecToItem().subscribe(data => {
 
       this.itemToSpecData = data
     })
-    this.lootService.getItems().subscribe(data => {
-      this.items = data;
-    })
 
+    this.items = this.lootService.getItems()
 
-    this.configService.getConfig().subscribe(data => {
-      this.configs = data
-      this.setPhaseDropdown()
-    })
+    this.configs = this.configService.getConfigs()
+    this.setPhaseDropdown()
 
     this.eventsSubscription = this.events.subscribe((data) => this.setFilteredSpecs(data));
 
@@ -132,12 +131,13 @@ export class LootSheetComponent implements OnInit {
 
   setFilteredSpecs(dataIn: lootSheetInitiateModel) {
     this.filteredSpecs = this.specs.filter(spec => spec.base_class == dataIn.className)
+    this.charRank = dataIn.rank
     if (this.characterName != dataIn.charName) {
       this.HeaderFormGroup.controls['phase_selector'].setValue(0)
       this.HeaderFormGroup.controls['off_spec_selector'].setValue(0)
       this.HeaderFormGroup.controls['main_spec_selector'].setValue(0)
 
-      this.SheetLock.splice(0);
+      this.sheetLock.splice(0);
       this.UnassignedBucket.splice(0);
       this.mainSpecItemtoSpec.splice(0);
       this.offSpecItemtoSpec.splice(0);
@@ -157,11 +157,55 @@ export class LootSheetComponent implements OnInit {
         this.originalCharacterSheetObject = JSON.parse(JSON.stringify(data))
       })
       this.lootService.getSheetLock(this.charUID).subscribe(data => {
-        this.SheetLock = data
+        this.sheetLock = data
         this.ProcessSheet()
       })
 
     })
+
+    this.SlotItem.splice(0)
+    this.list_ids.splice(0)
+
+    if (this.charRank == environment.MAIN_RAIDER_RANK_NAME) {
+      for (let i = 50; i > 25; i--) {
+        var newSlotItem: LootSheetTableRow = new LootSheetTableRow("", "", "", [], [], true, []);
+        newSlotItem.slot = i.toString();
+        newSlotItem.column_one_id = (i.toString() + '-1');
+        this.list_ids.push(newSlotItem.column_one_id)
+        newSlotItem.column_two_id = (i.toString() + '-2');
+        this.list_ids.push(newSlotItem.column_two_id)
+        this.SlotItem.push(newSlotItem)
+      }
+    } else {
+      for (let i = 0; i < 2; i++) {
+        var newSlotItem: LootSheetTableRow = new LootSheetTableRow("", "", "", [], [], true, []);
+        newSlotItem.slot = "49";
+        newSlotItem.column_one_id = ('49-1-' + i.toString());
+        this.list_ids.push(newSlotItem.column_one_id)
+        newSlotItem.column_two_id = ('49-2-' + i.toString());
+        this.list_ids.push(newSlotItem.column_two_id)
+        this.SlotItem.push(newSlotItem)
+      }
+      for (let i = 48; i > 25; i--) {
+        var newSlotItem: LootSheetTableRow = new LootSheetTableRow("", "", "", [], [], true, []);
+        newSlotItem.slot = i.toString();
+        newSlotItem.column_one_id = (i.toString() + '-1');
+        this.list_ids.push(newSlotItem.column_one_id)
+        newSlotItem.column_two_id = (i.toString() + '-2');
+        this.list_ids.push(newSlotItem.column_two_id)
+        this.SlotItem.push(newSlotItem)
+      }
+    }
+
+    for (let i = 25; i > 0; i--) {
+      var newSlotItem: LootSheetTableRow = new LootSheetTableRow("", "", "", [], [], true, []);
+      newSlotItem.slot = "25";
+      newSlotItem.column_one_id = ('25-1-' + i.toString());
+      this.list_ids.push(newSlotItem.column_one_id)
+      newSlotItem.column_two_id = ('25-2-' + i.toString());
+      this.list_ids.push(newSlotItem.column_two_id)
+      this.SlotItem.push(newSlotItem)
+    }
 
 
   }
@@ -207,23 +251,21 @@ export class LootSheetComponent implements OnInit {
         item.is_offspec = true
       }
       if (this.mainSpecItemtoSpec.find(its => item.item_id == its.item_id)) {
-        item.is_offspec = false    
+        item.is_offspec = false
       }
-      if(item.item_name.includes("OffSpec")){
-        item.is_offspec=true
+      if (item.item_name.includes("OffSpec")) {
+        item.is_offspec = true
       }
-
 
       //this code will load the sheet based on the sheet object for the character
-      this.disableSaveButton = false;
       if (this.originalCharacterSheetObject.filter(sheet => sheet.item_id == item.item_id)) {
         var foundSheetObjects = this.originalCharacterSheetObject.filter(sheet => sheet.item_id == item.item_id)
         foundSheetObjects.forEach(founditem => {
-          if (founditem.slot.includes("-1")) {
-            this.SlotItem.find(si => si.slot == founditem.slot.substring(0, founditem.slot.indexOf("-")))?.column_one_item_list.push(item)
+          if (founditem.slot.substring(2,4)=="-1") {
+            this.SlotItem.find(si => si.column_one_id == founditem.slot)?.column_one_item_list.push(item)
             timesItemAdded += 1
           } else {
-            this.SlotItem.find(si => si.slot == founditem.slot.substring(0, founditem.slot.indexOf("-")))?.column_two_item_list.push(item)
+            this.SlotItem.find(si => si.column_two_id == founditem.slot)?.column_two_item_list.push(item)
             timesItemAdded += 1
           }
         })
@@ -259,14 +301,14 @@ export class LootSheetComponent implements OnInit {
 
       for (let i = timesItemAdded; i < item.sheet_limit; i++) {
 
-        if(item.item_name.includes("Protector"||"Vanquisher"||"Conqueror") && i>0){
+        if (item.item_name.includes("Protector" || "Vanquisher" || "Conqueror") && i > 0) {
           var itemCopy = JSON.parse(JSON.stringify(item))
-          itemCopy.is_offspec=true
+          itemCopy.is_offspec = true
           this.PlaceInBucket(itemCopy);
-        }else{
-           this.PlaceInBucket(item);
+        } else {
+          this.PlaceInBucket(item);
         }
-       
+
       }
 
     })
@@ -283,7 +325,7 @@ export class LootSheetComponent implements OnInit {
         }
       }
 
-      
+
     })
 
 
@@ -323,6 +365,7 @@ export class LootSheetComponent implements OnInit {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
       if (event.container.data.length == 0) {
+        this.disableSaveButton = false;
         this.disableRevertChangesButton = false;
         transferArrayItem(
           event.previousContainer.data,
@@ -363,6 +406,7 @@ export class LootSheetComponent implements OnInit {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
       this.disableRevertChangesButton = false
+      this.disableSaveButton = false
       transferArrayItem(
         event.previousContainer.data,
         event.container.data,
@@ -388,7 +432,7 @@ export class LootSheetComponent implements OnInit {
     this.selectedPhase = parseInt(data.value.substring(data.value.lastIndexOf(" ") + 1))
 
     //see if sheet is readonly
-    if (this.SheetLock.find(sl => sl.phase == this.selectedPhase && sl.locked == 'true')) {
+    if (this.sheetLock.find(sl => sl.phase == this.selectedPhase && sl.locked == 'true')) {
       this.isSheetforPhaseLocked = true
       this.HeaderFormGroup.controls['off_spec_selector'].disable()
       this.HeaderFormGroup.controls['main_spec_selector'].disable()
@@ -398,13 +442,13 @@ export class LootSheetComponent implements OnInit {
       this.HeaderFormGroup.controls['off_spec_selector'].enable()
       this.HeaderFormGroup.controls['main_spec_selector'].enable()
     }
-    if (this.SheetLock.length > 0) {
-      if (this.SheetLock.find(sl => sl.phase == this.selectedPhase)!.mainspec) {
-        var ret: number = this.SheetLock.find(sl => sl.phase == this.selectedPhase)!.mainspec
+    if (this.sheetLock.length > 0) {
+      if (this.sheetLock.find(sl => sl.phase == this.selectedPhase)!.mainspec) {
+        var ret: number = this.sheetLock.find(sl => sl.phase == this.selectedPhase)!.mainspec
         this.setMainSpec(this.filteredSpecs.find(spec => spec.specUID == ret)!)
       }
-      if (this.SheetLock.find(sl => sl.phase == this.selectedPhase)!.offspec) {
-        var ret: number = this.SheetLock.find(sl => sl.phase == this.selectedPhase)!.offspec
+      if (this.sheetLock.find(sl => sl.phase == this.selectedPhase)!.offspec) {
+        var ret: number = this.sheetLock.find(sl => sl.phase == this.selectedPhase)!.offspec
         this.setOffSpec(this.filteredSpecs.find(spec => spec.specUID == ret)!)
       }
     }
@@ -540,8 +584,8 @@ export class LootSheetComponent implements OnInit {
   }
 
   SubmitSheet() {
-    if (this.SheetLock.find(sl => sl.phase = this.selectedPhase)) {
-      this.SheetLock.find(sl => sl.phase = this.selectedPhase)!.locked = 'true'
+    if (this.sheetLock.find(sl => sl.phase = this.selectedPhase)) {
+      this.sheetLock.find(sl => sl.phase = this.selectedPhase)!.locked = 'true'
     } else {
       var mainSpecUID;
       if (typeof this.HeaderFormGroup.controls['main_spec_selector'].value.specUID != 'undefined') {
@@ -555,23 +599,48 @@ export class LootSheetComponent implements OnInit {
       } else {
         offSpecUID = 0
       }
-      this.SheetLock.push(new sheetLockModel(this.charUID, this.selectedPhase, "true", mainSpecUID, offSpecUID))
+      this.sheetLock.push(new sheetLockModel(this.charUID, this.selectedPhase, "true", mainSpecUID, offSpecUID))
     }
     this.isSheetforPhaseLocked = true
     this.HeaderFormGroup.controls['off_spec_selector'].disable()
     this.HeaderFormGroup.controls['main_spec_selector'].disable()
 
-    this.lootService.updateSheetLock(this.SheetLock).subscribe(data => {
-      this.SaveSheet()
+    this.lootService.updateSheetLock(this.sheetLock).subscribe(data => {
+      this.SaveSheet(false)
     })
   }
-  SaveSheet() {
+  SaveSheet(fromHTML: boolean) {
 
     if (this.workingCharacterSheetObject.length > 0) {
-      this.lootService.saveLootSheet(this.workingCharacterSheetObject).subscribe(data => {
+      if (fromHTML) {
+        if (this.sheetLock.find(sl => sl.phase = this.selectedPhase)) {
+          this.sheetLock.find(sl => sl.phase = this.selectedPhase)!.locked = 'false'
+        } else {
+          var mainSpecUID;
+          if (typeof this.HeaderFormGroup.controls['main_spec_selector'].value.specUID != 'undefined') {
+            mainSpecUID = this.HeaderFormGroup.controls['main_spec_selector'].value.specUID
+          } else {
+            mainSpecUID = 0
+          }
+          var offSpecUID
+          if (typeof this.HeaderFormGroup.controls['off_spec_selector'].value.specUID != 'undefined') {
+            offSpecUID = this.HeaderFormGroup.controls['off_spec_selector'].value.specUID
+          } else {
+            offSpecUID = 0
+          }
+          this.sheetLock.push(new sheetLockModel(this.charUID, this.selectedPhase, "false", mainSpecUID, offSpecUID))
+        }
+      }
+      this.lootService.updateSheetLock(this.sheetLock).subscribe(data => {
+        console.log(this.workingCharacterSheetObject)
+        this.lootService.saveLootSheet(this.workingCharacterSheetObject).subscribe(data => {
+          this.originalCharacterSheetObject = JSON.parse(JSON.stringify(this.workingCharacterSheetObject))
+          this.disableSaveButton = true;
+          this._snackBarService.openSnackBar("Sheet Saved")
+        })
+
       })
-      this.originalCharacterSheetObject = JSON.parse(JSON.stringify(this.workingCharacterSheetObject))
-      this.openSnackBar()
+
     }
   }
   RevertSheetChanges() {
@@ -580,16 +649,5 @@ export class LootSheetComponent implements OnInit {
 
   ReturnToCharacters() {
     this.ReturnToCharactersEvent.emit('back');
-  }
-
-  horizontalPosition: MatSnackBarHorizontalPosition = 'center';
-  verticalPosition: MatSnackBarVerticalPosition = 'bottom';
-  durationInSeconds = 5;
-  openSnackBar() {
-    this._snackBar.open('Saved', 'OK', {
-      horizontalPosition: this.horizontalPosition,
-      verticalPosition: this.verticalPosition,
-      duration: this.durationInSeconds * 1000
-    });
   }
 }

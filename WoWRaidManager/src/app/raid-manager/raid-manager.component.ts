@@ -1,15 +1,17 @@
 import { Component, OnInit, ViewChildren } from '@angular/core';
-import { raidService } from './service/raid.service';
 import { v4 as uuidv4 } from 'uuid';
 import { AttendanceModel } from './models/AttendanceModel';
 import { RaidDropModel } from './models/RaidDropModel';
-import { LootService } from '../loot-manager/loot-config/services/loot.service';
+import { LootService } from '../services/loot.service';
 import { Items } from '../loot-manager/loot-config/models/items';
 import { RaidModel } from './models/RaidModel';
 import { AddonImportModalComponent } from './modals/addon-import-modal/addon-import-modal.component';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import {  faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import { AddAttendanceModalComponent } from './modals/add-attendance-modal/add-attendance-modal.component';
+import { MasterLootSheetModel } from '../loot-manager/loot-config/models/MasterLootSheetModel';
+import { raidService } from '../services/raid.service';
+import { SnackbarService } from '../services/snackbar.service';
 
 
 export interface DialogData {
@@ -38,14 +40,13 @@ export class RaidManagerComponent implements OnInit {
   dialogConfig = new MatDialogConfig();
   modalDialogImport: MatDialogRef<AddonImportModalComponent, any> | undefined;
   modalDialogAttendance: MatDialogRef<AddAttendanceModalComponent, any> | undefined;
+  masterLootSheet: MasterLootSheetModel[]=[];
 
-
-  constructor(private raidService: raidService, private lootService: LootService, private matDialog: MatDialog) { }
+  constructor(private raidService: raidService, private lootService: LootService, private matDialog: MatDialog, private snackBarService:SnackbarService) { }
 
   ngOnInit(): void {
-    this.lootService.getItems().subscribe(items => {
-      this.items = items;
-    })
+    this.items = this.lootService.getItems()
+    this.masterLootSheet = this.lootService.getMasterLootsheet()
     this.workingRaid = new RaidModel("", new Date(), "")
   }
   ngAfterViewInit(): void {
@@ -54,9 +55,7 @@ export class RaidManagerComponent implements OnInit {
         this.modalDialogImport?.close()
       }
     }
-    this.raidService.getRaids().subscribe(raids=>{
-      this.existingRaids = raids
-    })
+    this.existingRaids = this.raidService.getRaids()
 
   }
 
@@ -77,8 +76,19 @@ export class RaidManagerComponent implements OnInit {
 
   SaveRaid(){
 
+    //code to make sure you are taking the higest ranked item in cases of multiple item_id matches
+    this.workingRaid.drops.forEach(drop=>{
+      var foundMatches = this.masterLootSheet.filter(sheetRow => sheetRow.charName==drop.char_name && sheetRow.item_id==drop.item_id && sheetRow.aquired=='false');
+      if (foundMatches.length==1){
+        drop.slot_id_to_update = foundMatches[0].slot
+      }else{
+        foundMatches.sort((a,b)=>parseInt(b.slot.substring(0,2))-parseInt(a.slot.substring(0,2)))
+        drop.slot_id_to_update = foundMatches[0].slot
+      }
+    })
+
     this.raidService.insertNewRaid(this.workingRaid).subscribe(data =>{
-      console.log(data)
+      this.snackBarService.openSnackBar("Raid Saved")
     })
   }
 
@@ -135,7 +145,6 @@ export class RaidManagerComponent implements OnInit {
     newRaid.drops = drops;
     newRaid.attendance = attendance
     this.workingRaid = newRaid;
-    console.log(newRaid);
   }
 
   getDBLink(rdm: RaidDropModel) {

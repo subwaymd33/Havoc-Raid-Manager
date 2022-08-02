@@ -1,16 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { Items } from '../loot-manager/loot-config/models/items';
 import { MasterLootSheetModel } from '../loot-manager/loot-config/models/MasterLootSheetModel';
-import { LootService } from '../loot-manager/loot-config/services/loot.service';
+import { LootService } from '../services/loot.service';
 import { ConfigModel } from '../models/configModel';
 import { RaidModel } from '../raid-manager/models/RaidModel';
-import { raidService } from '../raid-manager/service/raid.service';
-import { ConfigService } from '../service/config.service';
+import { ConfigService } from '../services/config.service';
 import * as moment from 'moment';
 import { RaidWeekModel } from '../raid-manager/models/RaidWeekModel';
 import { AttendanceModelWithDate } from './models/AttendanceModelWithDate';
 import { AttendanceModiferObject } from './models/AttendanceModiferObject';
 import { CharacterAttendancePercentageModel } from './models/CharacterAttendancePercentageModel';
+import { raidService } from '../services/raid.service';
+import { Timer } from 'ag-grid-community';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -46,58 +48,80 @@ export class MasterLootSheetComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.configs = this.configService.getConfigs()
+    this.setPhaseDropdown()
 
-    this.configService.getConfig().subscribe(data => {
-      this.configs = data
-      this.setPhaseDropdown()
 
-    });
+    this.items = this.lootService.getItems()
 
-    this.lootService.getItems().subscribe(data => {
-      this.items = data
+    this.masterLootSheet = this.lootService.getMasterLootsheet()
+    console.log(this.masterLootSheet)
+
+    // this.lootService.getMasterLootsheet().subscribe(data => {
+    //   this.masterLootSheet = data
+    // })
+
+    this.allRaids = this.raidService.getRaids()
+    this.RaidWeeks = this.raidService.getWeeks();
+
+    var prevTuesday = new Date();
+    prevTuesday.setDate(prevTuesday.getDate() - (prevTuesday.getDay() + 5) % 7);
+    prevTuesday.setHours(10, 0, 0)
+    var SixteenWeekWindowDate = new Date()
+    SixteenWeekWindowDate.setDate(prevTuesday.getDate() - 112);
+    SixteenWeekWindowDate.setHours(10, 0, 0)
+    prevTuesday = (moment(prevTuesday.setHours(10, 0, 0)).toDate())
+
+    var WeekObjectsToUse: RaidWeekModel[] = []
+    this.RaidWeeks.forEach(week => {
+      if (WeekObjectsToUse.length < 16) {
+        if (moment(week.start_dt).toDate() >= SixteenWeekWindowDate && moment(week.end_dt).toDate() <= prevTuesday) {
+          WeekObjectsToUse.push(week)
+        }
+      }
     })
+    this.RaidWeeks = WeekObjectsToUse
+    this.GenerateCharacterAttendanceModifier()
 
-    this.lootService.getMasterLootsheet().subscribe(data => {
-      this.masterLootSheet = data
+    // this.raidService.getRaids().subscribe(raids => {
+    //   this.allRaids = raids;
+    //   this.RaidWeeks = this.raidService.getWeeks();
 
-    })
+    //   var prevTuesday = new Date();
+    //   prevTuesday.setDate(prevTuesday.getDate() - (prevTuesday.getDay() + 5) % 7);
+    //   prevTuesday.setHours(10, 0, 0)
+    //   var SixteenWeekWindowDate = new Date()
+    //   SixteenWeekWindowDate.setDate(prevTuesday.getDate() - 112);
+    //   SixteenWeekWindowDate.setHours(10, 0, 0)
+    //   prevTuesday = (moment(prevTuesday.setHours(10, 0, 0)).toDate())
 
-    this.raidService.getRaids().subscribe(raids => {
-      this.allRaids = raids;
-      this.raidService.getRaidWeeks().subscribe(data => {
-        this.RaidWeeks = data
-
-        var prevTuesday = new Date();
-        prevTuesday.setDate(prevTuesday.getDate() - (prevTuesday.getDay() + 5) % 7);
-        prevTuesday.setHours(10, 0, 0)
-        var SixteenWeekWindowDate = new Date()
-        SixteenWeekWindowDate.setDate(prevTuesday.getDate() - 112);
-        SixteenWeekWindowDate.setHours(10, 0, 0)
-        prevTuesday = (moment(prevTuesday.setHours(10, 0, 0)).toDate())
-
-        var WeekObjectsToUse: RaidWeekModel[] = []
-        this.RaidWeeks.forEach(week => {
-          if (WeekObjectsToUse.length < 16) {
-            if (moment(week.start_dt).toDate() >= SixteenWeekWindowDate && moment(week.end_dt).toDate() <= prevTuesday) {
-              WeekObjectsToUse.push(week)
-            }
-          }
-        })
-        this.RaidWeeks = WeekObjectsToUse
-        this.GenerateCharacterAttendanceModifier()
-      })
-
-    })
+    //   var WeekObjectsToUse: RaidWeekModel[] = []
+    //   this.RaidWeeks.forEach(week => {
+    //     if (WeekObjectsToUse.length < 16) {
+    //       if (moment(week.start_dt).toDate() >= SixteenWeekWindowDate && moment(week.end_dt).toDate() <= prevTuesday) {
+    //         WeekObjectsToUse.push(week)
+    //       }
+    //     }
+    //   })
+    //   this.RaidWeeks = WeekObjectsToUse
+    //   this.GenerateCharacterAttendanceModifier()
+    // })
   }
 
 
   GenerateCharacterAttendanceModifier() {
+
     var allChars: string[] = [];
-    this.masterLootSheet.forEach(sheet => {
-      if (allChars.length == 0 || allChars.filter(name => name == sheet.charName).length == 1) {
-        allChars.push(sheet.charName)
+
+    for (let i = 0; i < this.masterLootSheet.length; i++) {
+      if (i == 0) {
+        allChars.push(this.masterLootSheet[i].charName)
+      } else {
+        if (allChars.filter(name => name == this.masterLootSheet[i].charName).length == 0) {
+          allChars.push(this.masterLootSheet[i].charName)
+        }
       }
-    })
+    }
 
     var prevTuesday = new Date();
     prevTuesday.setDate(prevTuesday.getDate() - (prevTuesday.getDay() + 5) % 7);
@@ -117,6 +141,8 @@ export class MasterLootSheetComponent implements OnInit {
     allChars.forEach(char => {
       var filteredAttendanceByChar: AttendanceModelWithDate[] = [];
 
+      var char_rank = this.masterLootSheet.find(sheet => sheet.charName == char)!.char_rank
+
       this.allRaids.forEach(raid => {
         if (moment(raid.raid_date).toDate() > SixteenWeekWindowDate && moment(raid.raid_date).toDate() < prevTuesday) {
           var AttModelArray = raid.attendance.filter(att => att.char_name == char)
@@ -134,22 +160,32 @@ export class MasterLootSheetComponent implements OnInit {
 
 
       var newObj: AttendanceModiferObject = new AttendanceModiferObject(char, (this.RaidWeeks.filter(week => week.req_raids_for_attendance).length * 2), 0)
- 
-      var tieBreakerCount: number = 0;     
+
+      var tieBreakerCount: number = 0;
       //var weeksMetFullAttend:number = 0;
       this.RaidWeeks.forEach(week => {
         //code to check required attendance based on days
+        var checkAttend: number;
+        if (char_rank == environment.MAIN_RAIDER_RANK_NAME || char_rank == environment.SOCIAL_RAIDER_RANK_NAME) {
+          console.log("main/sea raider")
+          checkAttend = week.req_raids_for_attendance
+        } else {
+          console.log("Alt Raider")
+          checkAttend = week.alt_req_raids_for_attendance
+        }
 
-        if(week.req_raids_for_attendance ==0){
+        
+
+        if (checkAttend == 0) {
           newObj.weeks_present_for_raids += 2
-        }else if(week.req_raids_for_attendance==1){
-          if (filteredAttendanceByChar.filter(row => moment(row.raid_date).toDate() >= moment(week.start_dt).toDate() && moment(row.raid_date).toDate() <= moment(week.end_dt).toDate() && row.present == true).length >= week.req_raids_for_attendance) {
+        } else if (checkAttend == 1) {
+          if (filteredAttendanceByChar.filter(row => moment(row.raid_date).toDate() >= moment(week.start_dt).toDate() && moment(row.raid_date).toDate() <= moment(week.end_dt).toDate() && row.present == true).length >= checkAttend) {
             newObj.weeks_present_for_raids += 2
           }
-        }else if(week.req_raids_for_attendance==2){
-          if (filteredAttendanceByChar.filter(row => moment(row.raid_date).toDate() >= moment(week.start_dt).toDate() && moment(row.raid_date).toDate() <= moment(week.end_dt).toDate() && row.present == true).length >= week.req_raids_for_attendance) {
+        } else if (checkAttend == 2) {
+          if (filteredAttendanceByChar.filter(row => moment(row.raid_date).toDate() >= moment(week.start_dt).toDate() && moment(row.raid_date).toDate() <= moment(week.end_dt).toDate() && row.present == true).length >= checkAttend) {
             newObj.weeks_present_for_raids += 2
-          } else if(filteredAttendanceByChar.filter(row => moment(row.raid_date).toDate() >= moment(week.start_dt).toDate() && moment(row.raid_date).toDate() <= moment(week.end_dt).toDate() && row.present == true).length == 1){
+          } else if (filteredAttendanceByChar.filter(row => moment(row.raid_date).toDate() >= moment(week.start_dt).toDate() && moment(row.raid_date).toDate() <= moment(week.end_dt).toDate() && row.present == true).length == 1) {
             newObj.weeks_present_for_raids += 1
           }
         }
@@ -158,36 +194,47 @@ export class MasterLootSheetComponent implements OnInit {
         //  if (filteredAttendanceByChar.filter(row => moment(row.raid_date).toDate() >= moment(week.start_dt).toDate() && moment(row.raid_date).toDate() <= moment(week.end_dt).toDate() && row.present == true).length >= week.req_raids_for_attendance) {
         //   weeksMetFullAttend+=1
         //  }
-    
+
         //code to check the two week tiebreaker -------not checking against req attendance
+
         if (moment(week.start_dt).toDate() >= TwoWeekWindowDate) {
-          if (filteredAttendanceByChar.filter(row => moment(row.raid_date).toDate() >= moment(week.start_dt).toDate() && moment(row.raid_date).toDate() <= moment(week.end_dt).toDate() && row.present == true).length >= week.req_raids_for_attendance) {
-            tieBreakerCount +=1;
+          if (checkAttend == 0) {
+            tieBreakerCount += 1;
+          } else {
+            if (filteredAttendanceByChar.filter(row => moment(row.raid_date).toDate() >= moment(week.start_dt).toDate() && moment(row.raid_date).toDate() <= moment(week.end_dt).toDate() && row.present == true).length >= checkAttend) {
+              tieBreakerCount += 1;
+            }
           }
         }
       });
-
       var tieBreaker: boolean = false;
-      if (tieBreakerCount==2){
-        tieBreaker=true;
+      if (tieBreakerCount == 2) {
+        tieBreaker = true;
       }
 
       // var badLuckProtection: boolean = false;
       // if (weeksMetFullAttend>=9){
       //   badLuckProtection=true
       // }
+      var rankBonus: number;
+      if (char_rank == environment.MAIN_RAIDER_RANK_NAME) {
+        rankBonus = environment.MAIN_RAIDER_LOOT_BONUS
+      } else if (char_rank == environment.SOCIAL_RAIDER_RANK_NAME) {
+        rankBonus = environment.SOCIAL_RAIDER_LOOT_BONUS
+      } else {
+        rankBonus = environment.ALT_RAIDER_LOOT_BONUS
+      }
 
 
       //use this row when checking days out of 16 ayttendnace
-      console.log("MOD: "+mod)
-      console.log("Attend: " +newObj.weeks_present_for_raids)
-      this.CharacterAttendancePercentage.push(new CharacterAttendancePercentageModel(char, newObj.weeks_present_for_raids / 16, tieBreaker))
-
+      this.CharacterAttendancePercentage.push(new CharacterAttendancePercentageModel(char, (newObj.weeks_present_for_raids + mod) / 16, tieBreaker, rankBonus))
 
       //use this row when checking week attendance
-     // this.CharacterAttendancePercentage.push(new CharacterAttendancePercentageModel(char, newObj.weeks_present_for_raids / newObj.weeks_to_check_against, tieBreaker))
+      // this.CharacterAttendancePercentage.push(new CharacterAttendancePercentageModel(char, newObj.weeks_present_for_raids / newObj.weeks_to_check_against, tieBreaker))
 
     })
+
+    console.log(this.CharacterAttendancePercentage)
   }
 
 
@@ -223,6 +270,10 @@ export class MasterLootSheetComponent implements OnInit {
     this.itemsInPhase = this.items.filter(item => item.item_phase == this.selectedPhase)
 
     this.disableRaidSelector = false;
+
+    //regrab the raids from the DB
+    this.raidService.getRaidsFromDB();
+
     this.PopulateMasterSheetForPhase()
   }
   SelectRaid(data: any) {
@@ -295,17 +346,20 @@ export class MasterLootSheetComponent implements OnInit {
 
     cellsForItem.forEach(cell => {
       cell.displayValue = parseInt(cell.slot.substring(0, cell.slot.indexOf("-")))
-      var percentForCharacter: number | undefined = this.CharacterAttendancePercentage.find(char => char.char_name == cell.charName)?.bonus
+      var workingChar = this.CharacterAttendancePercentage.find(char => char.char_name == cell.charName)!
+      var percentForCharacter: number | undefined = workingChar.bonus
       if (typeof percentForCharacter != 'undefined') {
         cell.displayValue += percentForCharacter
       }
 
-      var tiebreaker: boolean | undefined = this.CharacterAttendancePercentage.find(char => char.char_name == cell.charName)?.tiebreaker
+      var tiebreaker: boolean | undefined = workingChar.tiebreaker
       if (typeof tiebreaker != 'undefined') {
         if (tiebreaker) {
           cell.displayValue += .5
         }
       }
+
+      cell.displayValue += workingChar.rankBonus
     })
 
     cellsForItem = cellsForItem.sort((a, b) => b.displayValue - a.displayValue)
@@ -313,23 +367,4 @@ export class MasterLootSheetComponent implements OnInit {
     return cellsForItem
   }
 
-  calculateSlotValue(charName: string, slot: string) {
-    var sheetValue = parseInt(slot.substring(0, slot.indexOf("-")))
-
-    //apply the modifier for attendance
-    var percentForCharacter: number | undefined = this.CharacterAttendancePercentage.find(char => char.char_name == charName)?.bonus
-    if (typeof percentForCharacter != 'undefined') {
-      sheetValue += percentForCharacter
-    }
-
-    var tiebreaker: boolean | undefined = this.CharacterAttendancePercentage.find(char => char.char_name == charName)?.tiebreaker
-    if (typeof tiebreaker != 'undefined') {
-      if (tiebreaker) {
-        sheetValue += .5
-      }
-
-    }
-
-    return sheetValue;
-  }
 }

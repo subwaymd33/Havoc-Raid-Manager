@@ -7,6 +7,7 @@ const fetch = require('node-fetch');
 const cors = require('cors');
 const lodash = require('lodash')
 const { Worker } = require("worker_threads");
+require('dotenv').config();
 
 
 specMapping = new Array();
@@ -25,82 +26,25 @@ app.use(cors({
 }));
 
 app.get('/processRoster', (request, response) => {
-  const charArray = new Array();
 
-  var resp = fetch("http://127.0.0.1:3000/roster").then(res => res.json()).then(json => {
+  try {
+    const charArray = new Array();
 
-    
-    for (let i in json) {
-      var obj = new Object();
-      obj.charName = json[i]['charName'];
-     
-      if (json[i]['main']) {
-        obj.main = 'Main'
-      } else {
-       
-        obj.main = 'Alternate'
-      }
-      if (json[i]['mainsName']) {
-        obj.mainsCharacterName = json[i]['mainsName']
-      } else {
-        obj.mainsCharacterName = ""
-      }
+    fetch("http://127.0.0.1:3000/roster").then(res => res.json()).then(json => {
 
-      specMapping.forEach(element => {
-        if (element.specUID == json[i]['specUID']) {
-          var primarySpecObj = new Object();
-          primarySpecObj.specName = element.name;
-          primarySpecObj.role = checkRole(element.role)
-          primarySpecObj.buffs = buffMapping.find(element => { return element.specUID == json[i]['specUID'] }).buffs
-          obj.primarySpec = primarySpecObj;
 
-        }
-        if (element.specUID == json[i]['offSpecUID']) {
-          var offSpecObj = new Object();
-          offSpecObj.specName = element.name;
-          offSpecObj.role = checkRole(element.role)
-          offSpecObj.buffs = buffMapping.find(element => { return element.specUID == json[i]['offSpecUID'] }).buffs
-          obj.offSpec = offSpecObj;
-        }
-      });
-
-      if (!obj.offSpec) {
-        var offSpecObj = new Object();
-        offSpecObj.specName = null
-        offSpecObj.role = null
-        obj.offSpec = offSpecObj;
-      }
-      charArray.push(obj)
-    }
-    response.status(200).json(charArray);
-  });
-});
-
-app.get('/getCharUID/:charName', (request, response) => {
-  var resp = fetch(`http://127.0.0.1:3000/character/${request.params.charName}`).then(res => res.json()).then(json => {
-      response.send(json);
-  });
-});
-
-app.get('/processRoster/:user_id', (request, response) => {
-  const charArray = new Array();
-
-  var resp = fetch(`http://localhost:3000/roster/user/${request.params.user_id}`).then(res => res.json()).then(json => {
-    try {
       for (let i in json) {
         var obj = new Object();
         obj.charName = json[i]['charName'];
-        if (json[i]['main']==true) {
-          obj.main = true
-        } else {
-          obj.main = false
-        }
+
+        obj.rank = json[i]['rank']
+
         if (json[i]['mainsName']) {
           obj.mainsCharacterName = json[i]['mainsName']
         } else {
           obj.mainsCharacterName = ""
         }
-  
+
         specMapping.forEach(element => {
           if (element.specUID == json[i]['specUID']) {
             var primarySpecObj = new Object();
@@ -108,7 +52,7 @@ app.get('/processRoster/:user_id', (request, response) => {
             primarySpecObj.role = checkRole(element.role)
             primarySpecObj.buffs = buffMapping.find(element => { return element.specUID == json[i]['specUID'] }).buffs
             obj.primarySpec = primarySpecObj;
-  
+
           }
           if (element.specUID == json[i]['offSpecUID']) {
             var offSpecObj = new Object();
@@ -118,7 +62,7 @@ app.get('/processRoster/:user_id', (request, response) => {
             obj.offSpec = offSpecObj;
           }
         });
-  
+
         if (!obj.offSpec) {
           var offSpecObj = new Object();
           offSpecObj.specName = null
@@ -127,138 +71,210 @@ app.get('/processRoster/:user_id', (request, response) => {
         }
         charArray.push(obj)
       }
-     
       response.status(200).json(charArray);
-    } catch (error) {
-      console.log(error)
-    }
-  });
+    });
+  } catch (error) {
+    response.status(400).send("Error")
+  }
+
+});
+
+app.get('/getCharUID/:charName', (request, response) => {
+  try {
+    fetch(`http://127.0.0.1:3000/character/${request.params.charName}`).then(res => res.json()).then(json => {
+      response.send(json);
+    });
+  } catch (error) {
+    response.status(400).send("Error")
+  }
+
+});
+
+app.get('/processRoster/:user_id', (request, response) => {
+  try {
+    const charArray = new Array();
+
+    fetch(`http://localhost:3000/roster/user/${request.params.user_id}`).then(res => res.json()).then(json => {
+      try {
+        for (let i in json) {
+          var obj = new Object();
+          obj.charName = json[i]['charName'];
+          obj.rank = json[i]['rank']
+          if (json[i]['mainsName']) {
+            obj.mainsCharacterName = json[i]['mainsName']
+          } else {
+            obj.mainsCharacterName = ""
+          }
+
+          specMapping.forEach(element => {
+            if (element.specUID == json[i]['specUID']) {
+              var primarySpecObj = new Object();
+              primarySpecObj.specName = element.name;
+              primarySpecObj.role = checkRole(element.role)
+              primarySpecObj.buffs = buffMapping.find(element => { return element.specUID == json[i]['specUID'] }).buffs
+              obj.primarySpec = primarySpecObj;
+
+            }
+            if (element.specUID == json[i]['offSpecUID']) {
+              var offSpecObj = new Object();
+              offSpecObj.specName = element.name;
+              offSpecObj.role = checkRole(element.role)
+              offSpecObj.buffs = buffMapping.find(element => { return element.specUID == json[i]['offSpecUID'] }).buffs
+              obj.offSpec = offSpecObj;
+            }
+          });
+
+          if (!obj.offSpec) {
+            var offSpecObj = new Object();
+            offSpecObj.specName = null
+            offSpecObj.role = null
+            obj.offSpec = offSpecObj;
+          }
+          charArray.push(obj)
+        }
+
+        response.status(200).json(charArray);
+      } catch (error) {
+        console.error(error)
+      }
+    });
+  } catch (error) {
+    response.status(400).send("Error")
+  }
+
 });
 
 
 app.post('/insertCharacter', (request, response) => {
-
-  let boolMain;
-  let mainsName;
-  if (request.body.main == true) {
-    boolMain = true;
-    mainsName = request.body.charName
-  } else {
-    boolMain = false;
-    mainsName = request.body.mainsCharacterName
-  }
-
-  let specUID;
-  specMapping.forEach(element => {
-    if (element.name == request.body.primarySpec.specName) {
-      specUID = element.specUID;
-    }
-  });
-
-  let offSpecUID;
-  specMapping.forEach(element => {
-    if (element.name == request.body.offSpec.specName) {
-      offSpecUID = element.specUID;
-    }
-  });
-
-
-  fetch("http://127.0.0.1:3000/roster",
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        'responseType': 'text'
-      },
-      method: 'POST',
-      body: JSON.stringify({
-        charName: request.body.charName,
-        specUID: specUID,
-        main: boolMain,
-        offspecUID: offSpecUID,
-        mainsName: mainsName,
-        userOwner: request.body.userOwner
-      })
-    }
-  ).then((resp) => {
-    if (resp.status != 200) {
-      throw Error("Cannot insert the requested character");
+  try {
+    let mainsName;
+    if (request.body.rank == process.env.MAIN_RAIDER_RANK_NAME) {
+      boolMain = true;
+      mainsName = request.body.charName
     } else {
-      response.status(200).send({ status: 200, message: `Character inserted with name : ${request.body.charName}` })
+      boolMain = false;
+      mainsName = request.body.mainsCharacterName
     }
-  }).catch((err) => {
-    console.error(err); // handle error
-    response.status(400)
-  });
+
+    let specUID;
+    specMapping.forEach(element => {
+      if (element.name == request.body.primarySpec.specName) {
+        specUID = element.specUID;
+      }
+    });
+
+    let offSpecUID;
+    specMapping.forEach(element => {
+      if (element.name == request.body.offSpec.specName) {
+        offSpecUID = element.specUID;
+      }
+    });
 
 
-
+    fetch("http://127.0.0.1:3000/roster",
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'responseType': 'text'
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          charName: request.body.charName,
+          specUID: specUID,
+          rank: request.body.rank,
+          offspecUID: offSpecUID,
+          mainsName: mainsName,
+          userOwner: request.body.userOwner
+        })
+      }
+    ).then((resp) => {
+      if (resp.status != 200) {
+        throw Error("Cannot insert the requested character");
+      } else {
+        response.status(200).send({ status: 200, message: `Character inserted with name : ${request.body.charName}` })
+      }
+    }).catch((err) => {
+      console.error(err); // handle error
+      response.status(400)
+    });
+  } catch (error) {
+    response.status(400).send("Error during Database Call")
+  }
 })
 
 app.patch('/updateCharacter', (request, response) => {
-  let boolMain;
-  let mainsName;
-  if (request.body.main == true) {
-    boolMain = true;
-    mainsName = request.body.charName
-  } else {
-    boolMain = false;
-    mainsName = request.body.mainsCharacterName
+  try {
+    let mainsName;
+    if (request.body.rank == "Havoc Turtle") {
+      mainsName = request.body.charName
+    } else {
+      mainsName = request.body.mainsCharacterName
+    }
+
+    let specUID, offSpecUID;
+    specMapping.forEach(element => {
+      if (element.name == request.body.primarySpec.specName) {
+        specUID = element.specUID;
+      }
+      if (element.name == request.body.offSpec.specName) {
+        offSpecUID = element.specUID;
+      }
+    });
+
+    fetch("http://127.0.0.1:3000/roster",
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'responseType': 'text'
+        },
+        method: 'PATCH',
+        body: JSON.stringify({
+          charName: request.body.charName,
+          specUID: specUID,
+          rank: request.body.rank,
+          mainsName: mainsName,
+          offspecUID: offSpecUID
+        })
+      }
+    ).then((resp) => {
+      if (resp.status != 200) {
+
+        throw Error("Cannot insert the requested character");
+      } else {
+        response.status(200).send({ status: 200, message: `Character updated with name : ${request.body.charName}` })
+      }
+    }).catch((err) => {
+      console.error(err); // handle error
+      response.status(400).send("Error during Database Call")
+    });
+  } catch (error) {
+    response.status(400).send("Error")
   }
 
-  let specUID, offSpecUID;
-  specMapping.forEach(element => {
-    if (element.name == request.body.primarySpec.specName) {
-      specUID = element.specUID;
-    }
-    if (element.name == request.body.offSpec.specName) {
-      offSpecUID = element.specUID;
-    }
-  });
-
-  fetch("http://127.0.0.1:3000/roster",
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        'responseType': 'text'
-      },
-      method: 'PATCH',
-      body: JSON.stringify({
-        charName: request.body.charName,
-        specUID: specUID,
-        main: boolMain,
-        mainsName: mainsName,
-        offspecUID: offSpecUID
-      })
-    }
-  ).then((resp) => {
-    if (resp.status != 200) {
-
-      throw Error("Cannot insert the requested character");
-    } else {
-      response.status(200).send({ status: 200, message: `Character updated with name : ${request.body.charName}` })
-    }
-  }).catch((err) => {
-    console.error(err); // handle error
-  });
 })
 
 app.delete('/deleteCharacter/:charName', (request, response) => {
-  console.log("delete:" + request.params.charName)
+  try {
+    fetch("http://127.0.0.1:3000/roster/" + request.params.charName,
+      {
+        method: 'DELETE'
+      }
+    ).then((resp) => {
+      if (resp.status != 200) {
 
-  fetch("http://127.0.0.1:3000/roster/" + request.params.charName,
-    {
-      method: 'DELETE'
-    }
-  ).then((resp) => {
-    if (resp.status != 200) {
+        throw Error("Cannot delete your item from list");
+      } else {
+        response.status(200).send({ status: 200, message: `Character deleted with name : ${request.params.charName}` })
+      }
+    }).catch((err) => {
+      console.error(err); // handle error
+      response.status(400).send("Error during Database Call")
+    });
+  } catch (error) {
+    response.status(400).send("Error")
+  }
 
-      throw Error("Cannot delete your item from list");
-    } else {
-      response.status(200).send({ status: 200, message: `Character deleted with name : ${request.params.charName}` })
-    }
-  }).catch((err) => {
-    console.error(err); // handle error
-  });
+
 })
 
 app.post('/processRaidComp', (request, response) => {
@@ -269,11 +285,11 @@ app.post('/processRaidComp', (request, response) => {
   let rangedCount = request.body.rDPSCount;
   let raidSize = request.body.raidSize
 
-console.log(tankCount)
-console.log(healerCount)
-console.log(meleeCount)
-console.log(rangedCount)
-console.log(raidSize)
+  console.log(tankCount)
+  console.log(healerCount)
+  console.log(meleeCount)
+  console.log(rangedCount)
+  console.log(raidSize)
 
   EmptyArray = {}
   try {
@@ -285,16 +301,16 @@ console.log(raidSize)
     optimalRaidWeight = getOptimalRaidWeight(buffMapping)
     console.log("Best Possible Raid Weight Value: " + optimalRaidWeight)
 
-    const worker = new Worker("./raidProcessWorker.js", { workerData: { raidRoster: charArray, optimalWeight: optimalRaidWeight, tankCount: tankCount, healerCount: healerCount, meleeCount: meleeCount, rangedCount: rangedCount, raidSize: raidSize} });
+    const worker = new Worker("./raidProcessWorker.js", { workerData: { raidRoster: charArray, optimalWeight: optimalRaidWeight, tankCount: tankCount, healerCount: healerCount, meleeCount: meleeCount, rangedCount: rangedCount, raidSize: raidSize } });
 
-      var ReturnObj;
+    var ReturnObj;
 
     worker.on("message", result => {
       if (result.type == 'log') {
         console.log(result.obj);
-      } else if(result.type=='obj'){
+      } else if (result.type == 'obj') {
         ReturnObj = result.obj
-      }else{
+      } else {
         //console.log(result);
       }
     });
@@ -309,7 +325,7 @@ console.log(raidSize)
       response.status(200).json(ReturnObj)
       //response.status(200).json("all Results")
     })
-    
+
 
 
     // try {
@@ -473,43 +489,49 @@ function checkRole(data) {
 }
 app.listen(port, () => {
   console.log(`App running on port ${port}.`)
-  fetch("http://127.0.0.1:3000/spec").then(res => res.json()).then(json => {
-    for (let i in json) {
-      var obj = new Object();
-      obj.specUID = json[i]['specUID'];
-      obj.name = json[i]['name'];
-      obj.role = json[i]['role']
-      specMapping.push(obj)
-    }
-  })
 
-  fetch("http://127.0.0.1:3000/buffs").then(res => res.json()).then(json => {
-    for (let i in json) {
-      var found = buffMapping.find(element => {
-        return element.specUID == json[i]['specUID'];
-      });
-      if (found) {
-        var addObj = buffMapping.find(element => {
-          return element.specUID == json[i]['specUID'];
-        });
-        var buffOBJ = new Object();
-        buffOBJ.buffCode = json[i]['buffCode'];
-        buffOBJ.buffText = json[i]['buffText'];
-        buffOBJ.buffName = json[i]['buffName'];
-        buffOBJ.buffWeight = json[i]['buffWeight'];
-        addObj.buffs.push(buffOBJ);
-      } else {
+  try {
+    fetch("http://127.0.0.1:3000/spec").then(res => res.json()).then(json => {
+      for (let i in json) {
         var obj = new Object();
         obj.specUID = json[i]['specUID'];
-        obj.buffs = new Array();
-        var buffOBJ = new Object();
-        buffOBJ.buffCode = json[i]['buffCode'];
-        buffOBJ.buffText = json[i]['buffText'];
-        buffOBJ.buffName = json[i]['buffName'];
-        buffOBJ.buffWeight = json[i]['buffWeight'];
-        obj.buffs.push(buffOBJ);
-        buffMapping.push(obj)
+        obj.name = json[i]['name'];
+        obj.role = json[i]['role']
+        specMapping.push(obj)
       }
-    }
-  })
+    })
+
+    fetch("http://127.0.0.1:3000/buffs").then(res => res.json()).then(json => {
+      for (let i in json) {
+        var found = buffMapping.find(element => {
+          return element.specUID == json[i]['specUID'];
+        });
+        if (found) {
+          var addObj = buffMapping.find(element => {
+            return element.specUID == json[i]['specUID'];
+          });
+          var buffOBJ = new Object();
+          buffOBJ.buffCode = json[i]['buffCode'];
+          buffOBJ.buffText = json[i]['buffText'];
+          buffOBJ.buffName = json[i]['buffName'];
+          buffOBJ.buffWeight = json[i]['buffWeight'];
+          addObj.buffs.push(buffOBJ);
+        } else {
+          var obj = new Object();
+          obj.specUID = json[i]['specUID'];
+          obj.buffs = new Array();
+          var buffOBJ = new Object();
+          buffOBJ.buffCode = json[i]['buffCode'];
+          buffOBJ.buffText = json[i]['buffText'];
+          buffOBJ.buffName = json[i]['buffName'];
+          buffOBJ.buffWeight = json[i]['buffWeight'];
+          obj.buffs.push(buffOBJ);
+          buffMapping.push(obj)
+        }
+      }
+    })
+  } catch (error) {
+    response.status(400).send("Error")
+  }
+
 });

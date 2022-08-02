@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import { ConfigModel } from 'src/app/models/configModel';
-import { ConfigService } from 'src/app/service/config.service';
+import { ConfigService } from 'src/app/services/config.service';
+import { SnackbarService } from 'src/app/services/snackbar.service';
 
 @Component({
   selector: 'app-phase-manager',
@@ -27,7 +28,7 @@ export class PhaseManagerComponent implements OnInit {
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
   durationInSeconds = 5;
 
-  constructor(private configService: ConfigService, private _snackBar: MatSnackBar) {
+  constructor(private configService: ConfigService, private snackBarService: SnackbarService) {
     this.PhaseFormGroup = new FormGroup({
       p1_enable_cb: new FormControl(false),
       p1_show_in_master_cb: new FormControl(false),
@@ -41,56 +42,53 @@ export class PhaseManagerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
-    this.configService.getConfig().subscribe(data => {
-      this.configs = data;
-      this.resetForm();
-    })
+this.configs = this.configService.getConfigs()
+this.resetForm()
   }
 
 
   formSubmit() {
     if (this.p1_enable_cb_changed) {
-      this.configService.updateCharacter(this.configs.find(conf => (conf.name === "p1_enable_cb"))!).subscribe(data => {
+      this.configService.updateConfig(this.configs.find(conf => (conf.name === "p1_enable_cb"))!).subscribe(data => {
         console.log(data)
       })
     }
     if (this.p2_enable_cb_changed) {
-      this.configService.updateCharacter(this.configs.find(conf => (conf.name === "p2_enable_cb"))!).subscribe(data => {
+      this.configService.updateConfig(this.configs.find(conf => (conf.name === "p2_enable_cb"))!).subscribe(data => {
         console.log(data)
       })
     }
     if (this.p3_enable_cb_changed) {
-      this.configService.updateCharacter(this.configs.find(conf => (conf.name === "p3_enable_cb"))!).subscribe(data => {
+      this.configService.updateConfig(this.configs.find(conf => (conf.name === "p3_enable_cb"))!).subscribe(data => {
         console.log(data)
       })
     }
     if (this.p4_enable_cb_changed) {
-      this.configService.updateCharacter(this.configs.find(conf => (conf.name === "p4_enable_cb"))!).subscribe(data => {
+      this.configService.updateConfig(this.configs.find(conf => (conf.name === "p4_enable_cb"))!).subscribe(data => {
         console.log(data)
       })
     }
     if (this.p1_show_in_master_cb_changed) {
-      this.configService.updateCharacter(this.configs.find(conf => (conf.name === "p1_show_in_master_cb"))!).subscribe(data => {
+      this.configService.updateConfig(this.configs.find(conf => (conf.name === "p1_show_in_master_cb"))!).subscribe(data => {
         console.log(data)
       })
     }
     if (this.p2_show_in_master_cb_changed) {
-      this.configService.updateCharacter(this.configs.find(conf => (conf.name === "p2_show_in_master_cb"))!).subscribe(data => {
+      this.configService.updateConfig(this.configs.find(conf => (conf.name === "p2_show_in_master_cb"))!).subscribe(data => {
         console.log(data)
       })
     }
     if (this.p3_show_in_master_cb_changed) {
-      this.configService.updateCharacter(this.configs.find(conf => (conf.name === "p3_show_in_master_cb"))!).subscribe(data => {
+      this.configService.updateConfig(this.configs.find(conf => (conf.name === "p3_show_in_master_cb"))!).subscribe(data => {
         console.log(data)
       })
     }
     if (this.p4_show_in_master_cb_changed) {
-      this.configService.updateCharacter(this.configs.find(conf => (conf.name === "p4_show_in_master_cb"))!).subscribe(data => {
+      this.configService.updateConfig(this.configs.find(conf => (conf.name === "p4_show_in_master_cb"))!).subscribe(data => {
         console.log(data)
       })
     }
-    this.openSnackBar();
+    this.snackBarService.openSnackBar("Saved");
   }
 
   p1_enable_cb_change(data: any) {
@@ -202,14 +200,5 @@ export class PhaseManagerComponent implements OnInit {
         }
       }
     })
-  }
-
-
-  openSnackBar() {
-    this._snackBar.open('Saved', 'OK', {
-      horizontalPosition: this.horizontalPosition,
-      verticalPosition: this.verticalPosition,
-      duration: this.durationInSeconds * 1000
-    });
   }
 }

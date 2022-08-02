@@ -46,7 +46,9 @@
             </div>
             <div class="BossItems" *ngFor="let item of filterItemsToBoss(boss)">
                 <div class="BossItemsLabel">
-                    <span>{{item.item_name}}</span>
+                    <a href="https://wotlkdb.com?item={{item.wowhead_link}}"
+                                    rel="item=${{item.wowhead_link}}" class="q4">{{item.item_name}}</a>
+                    
                 </div>
                 <div class="ItemsTable">
                     <div class="ItemsTable" *ngFor="let sheetCell of filterAndFormatSheetCells(item.item_id)"

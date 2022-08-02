@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SessionModel } from './models/sessionModel';
-import { SessionService } from './services/session.service';
-import { UserService } from './services/user.service';
-import { UserAuthService } from './services/userAuth.service';
+import { SessionService } from '../services/session.service';
+import { UserAuthService } from '../services/userAuth.service';
+import { UserService } from '../services/user.service';
+
 
 @Component({
   selector: 'app-login-control',

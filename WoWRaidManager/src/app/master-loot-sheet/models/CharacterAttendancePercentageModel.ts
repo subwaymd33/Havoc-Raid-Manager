@@ -3,8 +3,9 @@ export class CharacterAttendancePercentageModel {
     percentage: number;
     bonus:number;
     tiebreaker:boolean;
+    rankBonus:number;
 
-    constructor(char_name: string, percentage:number, tiebreaker:boolean) {
+    constructor(char_name: string, percentage:number, tiebreaker:boolean,rankBonus:number) {
         this.char_name = char_name;
         this.percentage = percentage;
         if (percentage >=.9){
@@ -16,6 +17,7 @@ export class CharacterAttendancePercentageModel {
         }else{
             this.bonus=0
         }
-        this.tiebreaker=tiebreaker
+        this.tiebreaker=tiebreaker;
+        this.rankBonus = rankBonus;
     }
 }

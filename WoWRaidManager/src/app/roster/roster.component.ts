@@ -1,6 +1,6 @@
 import { Component, ComponentRef, OnInit } from '@angular/core';
-import { FilterService } from '../service/filter.service';
-import { RosterService } from '../service/roster.service';
+import { FilterService } from '../services/filter.service';
+import { RosterService } from '../services/roster.service';
 import { ICharacter } from '../shared/interfaces';
 import { faUser, faPlus, faAlignJustify, faThLarge } from '@fortawesome/free-solid-svg-icons';
 import { Characters } from '../roster/models/Characters';
@@ -96,10 +96,10 @@ export class RosterComponent implements OnInit {
     if (action == 'Add') {
 
       var buffdata: Buffs[] = []
-      var testCharacter = new Characters('', false, "", new SpecData('', '', buffdata), new SpecData('', '', buffdata));
+      var testCharacter = new Characters('', "", "", new SpecData('', '', buffdata), new SpecData('', '', buffdata));
       obj.data = testCharacter;
     } else {
-      var compMain = obj.main;
+      var compMain = obj.rank;
       var compPrimarySpecName = obj.primarySpec.specName;
       var compOffSpecName = obj.offSpec.specName;
     }
@@ -126,7 +126,7 @@ export class RosterComponent implements OnInit {
                   console.log(element)
                   element.primarySpec.specName = result.data.primarySpec.specName;
                   element.offSpec.specName = result.data.offSpec.specName;
-                  element.main = result.data.main;
+                  element.rank = result.data.rank;
                 }
               })
               this.characters = [...this.characters];  //refresh the dataSource
@@ -146,7 +146,7 @@ export class RosterComponent implements OnInit {
   }
 
   compareDataBeforeUpdate(obj: ICharacter, retObj: ICharacter): boolean {
-    if (obj.charName == retObj.charName && obj.main == retObj.main && obj.primarySpec.specName == retObj.primarySpec.specName && obj.offSpec.specName == retObj.offSpec.specName) {
+    if (obj.charName == retObj.charName && obj.rank == retObj.rank && obj.primarySpec.specName == retObj.primarySpec.specName && obj.offSpec.specName == retObj.offSpec.specName) {
       return false;
     } else {
       return true;

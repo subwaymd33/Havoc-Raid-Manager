@@ -3,8 +3,9 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ICharacter } from 'src/app/shared/interfaces';
 import { MatSort, SortDirection } from '@angular/material/sort';
-import { RosterService } from 'src/app/service/roster.service';
-import { SorterService } from 'src/app/service/sorter.service';
+import { RosterService } from 'src/app/services/roster.service';
+import { SorterService } from 'src/app/services/sorter.service';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -37,11 +38,11 @@ export class RosterGridComponent implements OnInit {
   constructor(private rosterService: RosterService, private sorterService: SorterService) {
   }
 
-  mainCharacterNameCellDisplay(name: string, main: string): string {
-    if (main == 'Alternate') {
-      return name;
-    } else {
+  mainCharacterNameCellDisplay(name: string, rank: string): string {
+    if (rank == environment.MAIN_RAIDER_RANK_NAME||rank==environment.SOCIAL_RAIDER_RANK_NAME) {
       return "";
+    } else {
+      return name;
     }
   }
 
@@ -63,7 +64,7 @@ export class RosterGridComponent implements OnInit {
         case 'spec':
           return row.primarySpec.specName;
         case 'main':
-          return row.main.toString();
+          return row.rank;
         case 'spec':
           return row.offSpec.specName;
         case 'mainsCharacterName':

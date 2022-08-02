@@ -7,7 +7,7 @@ import { SpecData } from '../roster/models/SpecData';
 
 export interface ICharacter {
     charName: string;
-    main: boolean;
+    rank: string;
     mainsCharacterName: string;
     primarySpec: SpecData;
     offSpec: SpecData;

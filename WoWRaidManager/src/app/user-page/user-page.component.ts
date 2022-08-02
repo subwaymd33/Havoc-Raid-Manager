@@ -4,12 +4,14 @@ import { ModalComponent } from '../roster/modal/modal/modal.component';
 import { Buffs } from '../roster/models/Buffs';
 import { Characters } from '../roster/models/Characters';
 import { SpecData } from '../roster/models/SpecData';
-import { RosterService } from '../service/roster.service';
+import { RosterService } from '../services/roster.service';
 import { ICharacter } from '../shared/interfaces';
 import { faUser, faPlus, faAlignJustify, faThLarge } from '@fortawesome/free-solid-svg-icons';
 import { ignoreElements, Subject } from 'rxjs';
 import { lootSheetInitiateModel } from './models/lootSheetInitiateModel';
 import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
+import { environment } from 'src/environments/environment';
+import { SnackbarService } from '../services/snackbar.service';
 
 
 export class CharWithActionModel {
@@ -48,12 +50,8 @@ export class UserPageComponent implements OnInit {
 
   modalDialogImport: MatDialogRef<ModalComponent, any> | undefined;
 
-  horizontalPosition: MatSnackBarHorizontalPosition = 'center';
-  verticalPosition: MatSnackBarVerticalPosition = 'bottom';
-  durationInSeconds = 5;
 
-
-  constructor(private rosterService: RosterService, public dialog: MatDialog, private _snackBar: MatSnackBar) { }
+  constructor(private rosterService: RosterService, public dialog: MatDialog, private snackBarService: SnackbarService) { }
 
   ngOnInit(): void {
     this.discordID = localStorage.getItem("dID")!
@@ -91,10 +89,10 @@ export class UserPageComponent implements OnInit {
       dialogRef = this.dialog.open(ModalComponent, {
         height: '500px',
         width: '400px',
-        data: { char: new Characters('', false, this.characters.find(char => char.main == true)!.charName, new SpecData('', '', buffdata), new SpecData('', '', buffdata)), action: "Add" }
+        data: { char: new Characters('', "", this.characters.find(char => char.rank == environment.MAIN_RAIDER_RANK_NAME)!.charName, new SpecData('', '', buffdata), new SpecData('', '', buffdata)), action: "Add" }
       });
     } else {
-      var compMain = obj.main;
+      var compRank = obj.rank;
       var compPrimarySpecName = obj.primarySpec.specName;
       var compOffSpecName = obj.offSpec.specName;
       dialogRef = this.dialog.open(ModalComponent, {
@@ -113,24 +111,23 @@ export class UserPageComponent implements OnInit {
             this.rosterService.addCharacter(result.data.char).subscribe(data => {
               this.characters.push(result.data.char)
               this.characters = [...this.characters];  //refresh the dataSource
-              this.openSnackBar("Successfully added: " + result.data.char.charName + ".")
+              this.snackBarService.openSnackBar("Successfully added: " + result.data.char.charName + ".")
+              
             })
           } else if (result.data.action == 'Edit') {
-            if (compMain != result.data.char.main || compPrimarySpecName != result.data.char.primarySpec.specName || compOffSpecName != result.data.char.offSpec.specName) {
+            if (compRank != result.data.char.rank || compPrimarySpecName != result.data.char.primarySpec.specName || compOffSpecName != result.data.char.offSpec.specName) {
               this.rosterService.updateCharacter(result.data.char).subscribe(data => {
                 this.characters.forEach(element => {
                   if (element.charName == result.data.char.charName) {
                     element.primarySpec.specName = result.data.char.primarySpec.specName;
                     element.offSpec.specName = result.data.char.offSpec.specName;
-                    console.log(result.data.char.main)
-                    element.main = result.data.char.main;
+                    element.rank = result.data.char.rank;
                   }
                 })
                 this.characters = [...this.characters];  //refresh the dataSource
               })
             }
-
-            this.openSnackBar("Successfully updated: " + result.data.char.charName + ".")
+            this.snackBarService.openSnackBar("Successfully updated: " + result.data.char.charName + ".")
           }
 
         }
@@ -160,7 +157,7 @@ export class UserPageComponent implements OnInit {
   ToggleToLootSheet(data: any) {
     var char: ICharacter = data;
 
-    this.lootSheetInitModel = new lootSheetInitiateModel(char.primarySpec.specName.substring(char.primarySpec.specName.lastIndexOf(" ") + 1), char.primarySpec.specName, char.offSpec.specName, char.charName)
+    this.lootSheetInitModel = new lootSheetInitiateModel(char.primarySpec.specName.substring(char.primarySpec.specName.lastIndexOf(" ") + 1), char.primarySpec.specName, char.offSpec.specName, char.charName, char.rank)
 
     this.characterName = char.charName
     this.toggleToLootSheet = true;
@@ -173,13 +170,5 @@ export class UserPageComponent implements OnInit {
 
   ReturnToCharactersPage() {
     this.toggleToLootSheet = false;
-  }
-
-  openSnackBar(text: string) {
-    this._snackBar.open(text, 'OK', {
-      horizontalPosition: this.horizontalPosition,
-      verticalPosition: this.verticalPosition,
-      duration: this.durationInSeconds * 1000
-    });
   }
 }

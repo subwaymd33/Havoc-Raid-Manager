@@ -3,7 +3,8 @@ import { ICharacter } from 'src/app/shared/interfaces';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { Observable } from 'rxjs';
-import { RosterService } from 'src/app/service/roster.service';
+import { RosterService } from 'src/app/services/roster.service';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -31,7 +32,7 @@ export class RosterCardComponent implements OnInit {
   constructor(public rosterService: RosterService) {
   }
 
-  ngOnChanges(changes: ICharacter[]) {
+  ngOnChanges() {
     if (this.dataSource) {
       this.dataSource = new MatTableDataSource(this.characters);
       this.dataSource.paginator = this.paginator;
@@ -143,9 +144,9 @@ export class RosterCardComponent implements OnInit {
     return returnValue;
   }
 
-  mainCharacterNameDisplay(name:string, main:string):string{
-    if (main=='Main'){
-      return "Main Character"
+  mainCharacterNameDisplay(name:string, rank:string):string{
+    if (rank==environment.MAIN_RAIDER_RANK_NAME||rank==environment.SOCIAL_RAIDER_RANK_NAME){
+      return rank
     
     }else{
       return "Alt Character. Main is " + name +"."
@@ -202,14 +203,5 @@ export class RosterCardComponent implements OnInit {
 
   editCharacter(char:ICharacter){
     this.editCharacterEvent.emit(char)
-  }
-
-
-  getMainAltText(char: ICharacter) :string{
-    if(char.main){
-      return "Main";
-    }else{
-      return "Alternate";
-    }
   }
 }

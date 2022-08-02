@@ -1,16 +1,16 @@
 import { SpecData } from './SpecData';
 export class Characters {
     charName: string;
-    main: boolean;
+    rank: string;
     mainsCharacterName: string;
     primarySpec: SpecData;
     offSpec: SpecData;
     userOwner:string;
     
 
-    constructor(charName: string, main: boolean, mainsCharacterName:string, primarySpec: SpecData, offSpec: SpecData) {
+    constructor(charName: string, rank: string, mainsCharacterName:string, primarySpec: SpecData, offSpec: SpecData) {
         this.charName = charName;
-        this.main = main;
+        this.rank = rank;
         this.mainsCharacterName = mainsCharacterName
         this.primarySpec = primarySpec;
         this.offSpec = offSpec;

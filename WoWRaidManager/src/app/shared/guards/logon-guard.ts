@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from "@angular/router";
-import { Observable, of } from "rxjs";
-import { UserAuthService } from "src/app/login-control/services/userAuth.service";
+import {  CanActivate } from "@angular/router";
+import { UserAuthService } from "src/app/services/userAuth.service";
+
 
 
 @Injectable({
@@ -12,7 +12,7 @@ export class LogonGuardService implements CanActivate {
 
   constructor(private userAuthService: UserAuthService) { }
 
-  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+  canActivate(): boolean {
 
     return this.userAuthService.isLoggedIn();
   }

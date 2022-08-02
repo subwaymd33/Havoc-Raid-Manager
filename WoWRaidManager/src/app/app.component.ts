@@ -1,6 +1,8 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { UserAuthService } from './login-control/services/userAuth.service';
+import { ConfigService } from './services/config.service';
+import { LootService } from './services/loot.service';
+import { raidService } from './services/raid.service';
+import { UserAuthService } from './services/userAuth.service';
 
 @Component({
   selector: 'app-root',
@@ -10,18 +12,23 @@ import { UserAuthService } from './login-control/services/userAuth.service';
 
 
 export class AppComponent {
-  isAdmin:boolean;
-  isLogon:boolean;
+  isAdmin: boolean;
+  isLogon: boolean;
   title = 'WoWRaidManager';
 
-  constructor(private userAuthService:UserAuthService){
-    this.userAuthService.adminSubject.subscribe(data=>{
+  constructor(private userAuthService: UserAuthService, private lootService: LootService, private configService:ConfigService, private raidService:raidService) {
+    this.userAuthService.adminSubject.subscribe(data => {
+      this.isAdmin = data
+    });
+    this.userAuthService.logonSubject.subscribe(data => {
+      this.isLogon = data
+    });
 
-      this.isAdmin=data
-    })
-    this.userAuthService.logonSubject.subscribe(data=>{
-      this.isLogon=data
-    })
+    this.lootService.getItemsFromDB().subscribe()
+    this.lootService.getSpecDataFromDB().subscribe()
+    this.configService.getConfigsFromDB().subscribe()
+    this.raidService.getRaidWeeksFromDB().subscribe()
+    this.lootService.getMasterLootsheetFromDB().subscribe()
   }
 
 
@@ -42,6 +49,6 @@ export class AppComponent {
   //   }
   // }
 
-  
+
 
 }

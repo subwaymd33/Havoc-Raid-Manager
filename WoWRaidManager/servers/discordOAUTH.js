@@ -21,9 +21,10 @@ app.use(
 );
 
 app.get('/api/auth/discord/redirect/:code', async (request, response) => {
-    const code = request.params.code;
+
 
     try {
+            const code = request.params.code;
         const formData = new URLSearchParams({
             client_id: process.env.DISCORD_CLIENT_ID,
             client_secret: process.env.DISCORD_CLIENT_SECRET,
@@ -41,15 +42,16 @@ app.get('/api/auth/discord/redirect/:code', async (request, response) => {
             });
         response.send(resp.data);
     } catch (error) {
-        console.log(error);
+        console.error(error);
         response.send(400);
     }
 
 });
 
 app.get('/api/auth/discord/refresh/:token', async (request, response) => {
-    const refresh_token = request.params.token;
+    
     try {
+        const refresh_token = request.params.token;
         const formData = new URLSearchParams({
             client_id: DISCORD_CLIENT_ID,
             client_secret: DISCORD_CLIENT_SECRET,
@@ -66,7 +68,7 @@ app.get('/api/auth/discord/refresh/:token', async (request, response) => {
             });
         response.send(resp.data);
     } catch (error) {
-        console.log(error);
+        console.error(error);
         response.send(400);
     }
 
@@ -85,7 +87,7 @@ app.get('/api/auth/user/:code', async (request, response) => {
             });
         response.send(resp.data)
     } catch (error) {
-        console.log(error);
+        console.error(error);
         response.send(400);
     }
 });
@@ -102,7 +104,7 @@ app.get('/api/auth/user/guild/:code', async (request, response) => {
             });
         response.send(resp.data)
     } catch (error) {
-        console.log(error);
+        console.error(error);
         response.send(400);
     }
 });
@@ -120,13 +122,12 @@ app.get('/api/auth/guilds/:code/:guild_id', async (request, response) => {
             });
         response.send(resp.data)
     } catch (error) {
-        console.log(error);
+        console.error(error);
         response.send(400);
     }
 });
 app.get('/api/auth/guilds/roles/:guild_id', async (request, response) => {
     try {
-        console.log("/api/auth/guilds/:guild_id/roles: " + process.env.DISCORD_BOT_TOKEN)
         var guildID = request.params.guild_id
         const resp = await axios.get(
             `https://discord.com/api/v8/guilds/${guildID}/roles`,
@@ -137,7 +138,7 @@ app.get('/api/auth/guilds/roles/:guild_id', async (request, response) => {
             });
         response.send(resp.data)
     } catch (error) {
-        //console.log(error);
+        console.error(error);
         response.send(400);
     }
 });
@@ -145,7 +146,6 @@ app.get('/api/auth/guilds/roles/:guild_id', async (request, response) => {
 app.get('/api/auth/check/:code', async (request, response) => {
     try {
         var access_token = request.params.code
-        console.log(access_token)
         const resp = await axios.get(
             'https://discord.com/api/v8/oauth2/@me',
             {
@@ -155,7 +155,7 @@ app.get('/api/auth/check/:code', async (request, response) => {
             });
         response.send(resp.data)
     } catch (error) {
-        console.log(error);
+        console.error(error);
         response.send(400);
     }
 });

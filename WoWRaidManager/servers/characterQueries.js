@@ -7,14 +7,14 @@ const pool = new Pool({
   host: process.env.DB_HOST,
   database: process.env.DB_DATABASE,
   password: process.env.DB_PSWD,
-  max: 2000,
+  max: 200,
   port: 5432,
 })
 
 const getRoster = (request, response) => {
   console.log('Processing request: getRoster')
 
-  pool.query("SELECT \"charName\", \"specUID\", main, \"offSpecUID\", \"mainsName\" FROM public.characters", (error, results) => {
+  pool.query("SELECT \"charName\", \"specUID\", rank, \"offSpecUID\", \"mainsName\" FROM public.characters", (error, results) => {
     release()
     if (error) {
       throw error
@@ -27,7 +27,7 @@ const getRoster = (request, response) => {
 const getRosterbyID = (request, response) => {
   console.log('Processing request: getRosterbyID')
   const id = parseInt(request.params.id)
-  pool.query(`SELECT public.characters.\"charName\", public.specs.\"spec\"||' '|| public.specs.base_class as name, public.specs.\"role\",public.raidbuffdebuff.\"buffCode\",public.raidbuffdebuff.\"buffText\",public.characters.main FROM public.characters join public.specs on public.characters.\"specUID\" = public.specs.\"specUID\" join public.\"specToBuffDebuff\" on public.specs.\"specUID\" = public.\"specToBuffDebuff\".\"specUID\" join public.raidbuffdebuff on public.\"specToBuffDebuff\".\"buffDebuffUID\" = public.raidbuffdebuff.\"buffDebuffUID\" where public.characters.\"charUID\" = $1 order by public.raidbuffdebuff.\"buffText\" desc`, [id], (error, results) => {
+  pool.query(`SELECT public.characters.\"charName\", public.specs.\"spec\"||' '|| public.specs.base_class as name, public.specs.\"role\",public.raidbuffdebuff.\"buffCode\",public.raidbuffdebuff.\"buffText\",public.characters.rank FROM public.characters join public.specs on public.characters.\"specUID\" = public.specs.\"specUID\" join public.\"specToBuffDebuff\" on public.specs.\"specUID\" = public.\"specToBuffDebuff\".\"specUID\" join public.raidbuffdebuff on public.\"specToBuffDebuff\".\"buffDebuffUID\" = public.raidbuffdebuff.\"buffDebuffUID\" where public.characters.\"charUID\" = $1 order by public.raidbuffdebuff.\"buffText\" desc`, [id], (error, results) => {
     release()
     if (error) {
       throw error
@@ -40,7 +40,7 @@ const getRosterbyID = (request, response) => {
 const getRosterbyUser = (request, response) => {
   console.log('Processing request: getRosterbyUser')
   const user_id = request.params.user_id
-  pool.query(`SELECT \"charName\", \"specUID\", main, \"offSpecUID\", \"mainsName\" FROM public.characters WHERE \"user\" = $1`, [user_id], (error, results) => {
+  pool.query(`SELECT \"charName\", \"specUID\", rank, \"offSpecUID\", \"mainsName\" FROM public.characters WHERE \"user\" = $1`, [user_id], (error, results) => {
     release()
     if (error) {
       throw error
@@ -52,11 +52,11 @@ const getRosterbyUser = (request, response) => {
 
 const updateCharacter = (request, response) => {
   console.log('Processing request: updateCharacter')
-  const { charName, specUID, main, offspecUID, mainsName } = request.body
+  const { charName, specUID, rank, offspecUID, mainsName } = request.body
 
   pool.query(
-    `UPDATE public.characters SET \"specUID\" = $2, main = $3, \"offSpecUID\" = $4, \"mainsName\"=$5  WHERE \"charName\" = $1`,
-    [charName, specUID, main, offspecUID,mainsName],
+    `UPDATE public.characters SET \"specUID\" = $2, rank = $3, \"offSpecUID\" = $4, \"mainsName\"=$5  WHERE \"charName\" = $1`,
+    [charName, specUID, rank, offspecUID, mainsName],
     (error, results) => {
       release()
       if (error) {
@@ -95,10 +95,10 @@ const getSpecUID = (request, response) => {
 
 const insertCharacter = (request, response) => {
   console.log('Processing request: insertCharacter')
-  const { charName, specUID, main, offspecUID, mainsName, userOwner } = request.body
+  const { charName, specUID, rank, offspecUID, mainsName, userOwner } = request.body
 
   pool.query(
-    `INSERT INTO public.characters(\"charName\", \"specUID\", main, \"offSpecUID\", \"mainsName\", \"user\") VALUES ($1, $2, $3, $4, $5,$6);`, [charName, specUID, main, offspecUID, mainsName, userOwner],
+    `INSERT INTO public.characters(\"charName\", \"specUID\", rank, \"offSpecUID\", \"mainsName\", \"user\") VALUES ($1, $2, $3, $4, $5,$6);`, [charName, specUID, rank, offspecUID, mainsName, userOwner],
     (error, results) => {
       release()
       if (error) {
@@ -316,7 +316,7 @@ const updateSheetLimitandRanking = (request, response) => {
 const getLootSheetByCharName = (request, response) => {
   console.log('Processing request: getLootSheetByCharName')
   const charName = request.params.charName
-  pool.query(`SELECT l.\"charUID\", l.phase, l.item_id, l.slot, l.aquired FROM public.lootsheet l join characters c on c.\"charUID\" = l.\"charUID\" where c.\"charName\" = $1`,[charName], (error, results) => {
+  pool.query(`SELECT l.\"charUID\", l.phase, l.item_id, l.slot, l.aquired FROM public.lootsheet l join characters c on c.\"charUID\" = l.\"charUID\" where c.\"charName\" = $1`, [charName], (error, results) => {
     release()
     if (error) {
       throw error
@@ -343,7 +343,7 @@ const insertLootSheet = (request, response) => {
 const getCharUIDByCharName = (request, response) => {
   console.log('Processing request: getCharUIDByCharName')
   const charName = request.params.charName
-  pool.query(`SELECT \"charUID\" FROM public.characters where \"charName\" = $1`,[charName], (error, results) => {
+  pool.query(`SELECT \"charUID\" FROM public.characters where \"charName\" = $1`, [charName], (error, results) => {
     release()
     if (error) {
       throw error
@@ -355,7 +355,7 @@ const getCharUIDByCharName = (request, response) => {
 const getsheetLockByCharUID = (request, response) => {
   console.log('Processing request: getsheetLockByCharUID')
   const charUID = request.params.charUID
-  pool.query(`SELECT \"charUID\", phase, locked, mainspec, offspec FROM public.sheetlock where \"charUID\" = $1`,[charUID], (error, results) => {
+  pool.query(`SELECT \"charUID\", phase, locked, mainspec, offspec FROM public.sheetlock where \"charUID\" = $1`, [charUID], (error, results) => {
     release()
     if (error) {
       throw error
@@ -383,7 +383,7 @@ const insertSheetLock = (request, response) => {
 const getMasterLootSheet = (request, response) => {
   console.log('Processing request: getMasterLootSheet')
 
-  pool.query("SELECT c.\"charName\",l.phase, l.item_id, l.slot,c.\"charUID\",aquired, c.\"specUID\" from lootsheet l join characters c on c.\"charUID\" = l.\"charUID\" where aquired ='false';", (error, results) => {
+  pool.query("SELECT c.\"charName\",l.phase, l.item_id, l.slot,c.\"charUID\",aquired, c.\"specUID\", c.rank as char_rank from lootsheet l join characters c on c.\"charUID\" = l.\"charUID\" where aquired ='false';", (error, results) => {
     release()
     if (error) {
       throw error
@@ -410,7 +410,7 @@ const insertRaid = (request, response) => {
 const getRaidDropsforRaidID = (request, response) => {
   console.log('Processing request: getRaidDropsforRaidID')
   const raid_id = request.params.raid_id
-  pool.query(`SELECT raid_id, item_id, char_name FROM public.raid_droplist where raid_id = $1`,[raid_id], (error, results) => {
+  pool.query(`SELECT raid_id, item_id, char_name FROM public.raid_droplist where raid_id = $1`, [raid_id], (error, results) => {
     release()
     if (error) {
       throw error
@@ -422,7 +422,7 @@ const getRaidDropsforRaidID = (request, response) => {
 const getRaidAttendanceforRaidID = (request, response) => {
   console.log('Processing request: getRaidAttendanceforRaidID')
   const raid_id = request.params.raid_id
-  pool.query(`SELECT raid_id, char_name, present, used_time_off FROM public.raid_attendance where raid_id = $1`,[raid_id], (error, results) => {
+  pool.query(`SELECT raid_id, char_name, present, used_time_off FROM public.raid_attendance where raid_id = $1`, [raid_id], (error, results) => {
     release()
     if (error) {
       throw error
@@ -446,7 +446,7 @@ const getRaids = (request, response) => {
 const getRaidWeeks = (request, response) => {
   console.log('Processing request: getRaidWeeks')
 
-  pool.query("SELECT week_id, start_dt, end_dt, req_raids_for_attendance from raid_weeks order by start_dt asc;", (error, results) => {
+  pool.query("SELECT week_id, start_dt, end_dt, req_raids_for_attendance,alt_req_raids_for_attendance  from raid_weeks order by start_dt asc;", (error, results) => {
     release()
     if (error) {
       throw error
@@ -457,10 +457,10 @@ const getRaidWeeks = (request, response) => {
 }
 const updateRaidWeek = (request, response) => {
   console.log('Processing request: updateRaidWeek')
-  const { week_id, req_raids_for_attendance } = request.body
+  const { week_id, req_raids_for_attendance, alt_req_raids_for_attendance} = request.body
   pool.query(
-    `UPDATE public.raid_weeks SET req_raids_for_attendance = $2 WHERE week_id = $1`,
-    [week_id, req_raids_for_attendance],
+    `UPDATE public.raid_weeks SET req_raids_for_attendance = $2, alt_req_raids_for_attendance = $3 WHERE week_id = $1`,
+    [week_id, req_raids_for_attendance, alt_req_raids_for_attendance],
     (error, results) => {
       release()
       if (error) {

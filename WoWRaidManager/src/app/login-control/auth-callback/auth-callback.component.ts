@@ -5,9 +5,10 @@ import { accessToken } from '../models/accessToken';
 import { DiscordGuildDetails } from '../models/DiscordGuildDetails';
 import { discordUserData } from '../models/discordUserData';
 import { SessionModel } from '../models/sessionModel';
-import { SessionService } from '../services/session.service';
-import { UserService } from '../services/user.service';
-import { UserAuthService } from '../services/userAuth.service';
+import { SessionService } from '../../services/session.service';
+import { UserAuthService } from 'src/app/services/userAuth.service';
+import { UserService } from 'src/app/services/user.service';
+
 
 @Component({
   selector: 'app-auth-callback',

@@ -18,24 +18,24 @@
 <hr>
 
 <div class="MainContentContainer" [hidden]="hideWeekData">
-  
 
 
-    <form [formGroup]="DaysRBFormGroup" >
-        <span>Main Attendance Req</span>
+
+    <form [formGroup]="DaysRBFormGroup">
+
         <mat-radio-group class="radioGroup" formControlName="daysRBGroup" (change)="enableSave($event)">
-            <mat-radio-button class="daysRB" [value]=0 >0</mat-radio-button>
-            <mat-radio-button class="daysRB" [value]=1 >1</mat-radio-button>
-            <mat-radio-button class="daysRB" [value]=2 >2</mat-radio-button>
-            <mat-radio-button class="daysRB" [value]=3 >3</mat-radio-button>  
+            <mat-label class="rbLabel"> Main Attendance Requirement: </mat-label>
+            <mat-radio-button class="daysRB" [value]=0>0</mat-radio-button>
+            <mat-radio-button class="daysRB" [value]=1>1</mat-radio-button>
+            <mat-radio-button class="daysRB" [value]=2>2</mat-radio-button>
         </mat-radio-group>
-
-        <span>Alt Attendance Req</span>
-        <mat-radio-group class="radioGroup" formControlName="dayssRBGroup" (change)="enableSave($event)">
-            <mat-radio-button class="daysRB" [value]=0 >0</mat-radio-button>
-            <mat-radio-button class="daysRB" [value]=1 >1</mat-radio-button>
-            <mat-radio-button class="daysRB" [value]=2 >2</mat-radio-button>
-            <mat-radio-button class="daysRB" [value]=3 >3</mat-radio-button>  
+    </form>
+    <form [formGroup]="AltDaysRBFormGroup">
+        <mat-radio-group class="radioGroup" formControlName="altDaysRBGroup" (change)="altEnableSave($event)">
+            <mat-label class="rbLabel"> Alt Attendance Requirement: </mat-label>
+            <mat-radio-button class="daysRB" [value]=0>0</mat-radio-button>
+            <mat-radio-button class="daysRB" [value]=1>1</mat-radio-button>
+            <mat-radio-button class="daysRB" [value]=2>2</mat-radio-button>
         </mat-radio-group>
     </form>
 

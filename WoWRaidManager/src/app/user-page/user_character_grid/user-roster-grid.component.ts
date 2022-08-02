@@ -2,11 +2,11 @@ import { Component, Input, OnInit, ChangeDetectionStrategy, ViewChild, Output, E
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ICharacter } from 'src/app/shared/interfaces';
-import { MatSort, SortDirection } from '@angular/material/sort';
-import { RosterService } from 'src/app/service/roster.service';
-import { SorterService } from 'src/app/service/sorter.service';
+import { MatSort } from '@angular/material/sort';
+import { RosterService } from 'src/app/services/roster.service';
+import { SorterService } from 'src/app/services/sorter.service';
 import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
-import { faTruckMedical } from '@fortawesome/free-solid-svg-icons';
+import { SnackbarService } from 'src/app/services/snackbar.service';
 
 
 @Component({
@@ -37,26 +37,14 @@ export class UserRosterGridComponent implements OnInit {
   // MatPaginator Output
   pageEvent: PageEvent;
 
-  horizontalPosition: MatSnackBarHorizontalPosition = 'center';
-  verticalPosition: MatSnackBarVerticalPosition = 'bottom';
-  durationInSeconds = 5;
-
-  constructor(private rosterService: RosterService, private sorterService: SorterService, private _snackBar: MatSnackBar) {
+  constructor(private rosterService: RosterService, private sorterService: SorterService, private snackBarService: SnackbarService) {
   }
 
-  mainCharacterNameCellDisplay(name: string, main: boolean): string {
-    if (main == false) {
+  mainCharacterNameCellDisplay(name: string, rank: string): string {
+    if (rank == 'Alt') {
       return name;
     } else {
       return "";
-    }
-  }
-
-  StatusCellDisplay(main: boolean): string {
-    if (main==true) {
-      return 'Main';
-    } else {
-      return "Alternate";
     }
   }
 
@@ -78,7 +66,7 @@ export class UserRosterGridComponent implements OnInit {
         case 'spec':
           return row.primarySpec.specName;
         case 'main':
-          return row.main.toString();
+          return row.rank;
         case 'spec':
           return row.offSpec.specName;
         case 'mainsCharacterName':
@@ -204,10 +192,10 @@ return 'z'+row.mainsCharacterName
   deleteCharacter(char: ICharacter) {
     this.rosterService.deleteCharacter(char).subscribe(resp => {
       if (resp.status != 200) {
-        this.openSnackBar("Error Deleting: "+ char.charName)
+        this.snackBarService.openSnackBar("Error Deleting: "+ char.charName)
         throw Error("Cannot delete your item from list");
       } else {
-        this.openSnackBar("Deleted: "+ char.charName +" successfully")
+        this.snackBarService.openSnackBar("Deleted: "+ char.charName +" successfully")
         this.refreshData.emit();
       }
     })
@@ -219,13 +207,5 @@ return 'z'+row.mainsCharacterName
 
   displayLootSheet(char:ICharacter){
     this.ToggleToLootSheetEvent.emit(char)
-  }
-
-  openSnackBar(text:string) {
-    this._snackBar.open(text, 'OK', {
-      horizontalPosition: this.horizontalPosition,
-      verticalPosition: this.verticalPosition,
-      duration: this.durationInSeconds * 1000
-    });
   }
 }

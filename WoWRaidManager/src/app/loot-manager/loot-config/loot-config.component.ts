@@ -8,7 +8,8 @@ import { ItemToSpec } from './models/ItemToSpec';
 import { rankingModel } from './models/rankingModel';
 import { LimitModel } from './models/LimitModel';
 import { specData } from './models/specData';
-import { LootService } from './services/loot.service';
+import { LootService } from '../../services/loot.service';
+import { SnackbarService } from 'src/app/services/snackbar.service';
 
 @Component({
   selector: 'app-loot-config',
@@ -37,12 +38,10 @@ export class LootConfigComponent implements OnInit {
   specToItem: ItemToSpec[] = [];
   rankings: rankingModel[] = [new rankingModel(1,"1 - Red"),new rankingModel(2,"2 - Blue"),new rankingModel(3,"3 - Black")]
   limits: LimitModel[] = [new LimitModel(1,"1 Occurrence"),new LimitModel(2,"2 Occurrences"),new LimitModel(3,"3 Occurrences")]
-  horizontalPosition: MatSnackBarHorizontalPosition = 'center';
-  verticalPosition: MatSnackBarVerticalPosition = 'bottom';
-  durationInSeconds = 5;
 
 
-  constructor(private http: HttpClient, private lootService: LootService, private _snackBar: MatSnackBar) {
+
+  constructor(private http: HttpClient, private lootService: LootService, private snackBarService: SnackbarService) {
     this.SpecSelectorForm = new FormGroup({
       dk_blood_cb: new FormControl(false),
       dk_frost_cb: new FormControl(false),
@@ -82,18 +81,12 @@ export class LootConfigComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.lootService.getItems().subscribe(data => {
-      console.log(data);
-      this.items = data;
-    })
 
-    this.lootService.getSpecData().subscribe(data => {
-      console.log(data);
-      this.specData = data;
-    })
+    this.items = this.lootService.getItems()
+
+    this.specData = this.lootService.getSpecData()
 
     this.lootService.getSpecToItem().subscribe(data => {
-      console.log(data);
       this.specToItem = data;
     })
 
@@ -373,18 +366,10 @@ export class LootConfigComponent implements OnInit {
 
       this.lootService.UpdateItemRankingAndSheetLimit(this.chosenItem).subscribe(dt => {
         
-        this.openSnackBar();
+        this.snackBarService.openSnackBar("Saved");
       })
       
     })
-  }
-
-  openSnackBar() {
-    this._snackBar.open('Saved', 'OK', {
-      horizontalPosition: this.horizontalPosition,
-      verticalPosition: this.verticalPosition,
-      duration: this.durationInSeconds * 1000
-    });
   }
 
   selectPreviousItem() {

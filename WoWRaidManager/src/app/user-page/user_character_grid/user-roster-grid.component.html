@@ -26,13 +26,13 @@
                     </ng-container>
 
                     <ng-container matColumnDef="main">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
-                        <td mat-cell *matCellDef="let character"> {{StatusCellDisplay(character.main)}} </td>       
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Rank </th>
+                        <td mat-cell *matCellDef="let character"> {{character.rank}} </td>       
                     </ng-container>
 
                     <ng-container matColumnDef="mainsCharacterName">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header> Main's Name </th>
-                        <td mat-cell *matCellDef="let character"> {{mainCharacterNameCellDisplay(character.mainsCharacterName, character.main)}} </td>       
+                        <td mat-cell *matCellDef="let character"> {{mainCharacterNameCellDisplay(character.mainsCharacterName, character.rank)}} </td>       
                     </ng-container>
 
                     <ng-container matColumnDef="editButton">

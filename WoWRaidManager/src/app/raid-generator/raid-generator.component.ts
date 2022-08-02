@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { RosterService } from '../service/roster.service';
+import { RosterService } from '../services/roster.service';
 import { ICharacter } from '../shared/interfaces';
-import { GeneratorService } from './services/generator.service';
+import { GeneratorService } from '../services/generator.service';
 
 @Component({
   selector: 'app-raid-generator',
