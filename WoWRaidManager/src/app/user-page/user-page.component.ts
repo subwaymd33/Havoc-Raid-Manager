@@ -12,6 +12,7 @@ import { lootSheetInitiateModel } from './models/lootSheetInitiateModel';
 import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import { environment } from 'src/environments/environment';
 import { SnackbarService } from '../services/snackbar.service';
+import { CookieService } from 'ngx-cookie-service';
 
 
 export class CharWithActionModel {
@@ -51,11 +52,11 @@ export class UserPageComponent implements OnInit {
   modalDialogImport: MatDialogRef<ModalComponent, any> | undefined;
 
 
-  constructor(private rosterService: RosterService, public dialog: MatDialog, private snackBarService: SnackbarService) { }
+  constructor(private rosterService: RosterService, public dialog: MatDialog, private snackBarService: SnackbarService, private cookieService: CookieService) { }
 
   ngOnInit(): void {
-    this.discordID = localStorage.getItem("dID")!
-    this.username = localStorage.getItem("username")!
+    this.discordID = this.cookieService.get("dID")!
+    this.username = this.cookieService.get("username")!
     this.getRoster();
   }
 

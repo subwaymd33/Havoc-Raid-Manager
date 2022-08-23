@@ -4,24 +4,26 @@ import { SessionModel } from './models/sessionModel';
 import { SessionService } from '../services/session.service';
 import { UserAuthService } from '../services/userAuth.service';
 import { UserService } from '../services/user.service';
+import { CookieService } from 'ngx-cookie-service';
 
 
 @Component({
   selector: 'app-login-control',
   templateUrl: './login-control.component.html',
-  styleUrls: ['./login-control.component.css']
+  styleUrls: ['./login-control.component.css'],
+  providers: [CookieService]
 })
 export class LoginControlComponent implements OnInit {
   data = "";
 
 
-  constructor(public authService: UserAuthService, private sessionService: SessionService, private userService:UserService, private router:Router) { }
+  constructor(public authService: UserAuthService, private sessionService: SessionService, private userService:UserService, private router:Router, private cookieService: CookieService) { }
 
   ngOnInit(): void {
   }
 
   logon() {
-    if (localStorage.getItem("dID") == null) {
+    if (this.cookieService.get("dID") == null ||this.cookieService.get("dID")=="" ) {
       this.authService.getDiscordCode()
       this.authService.SetLogon(true);
     } else {
@@ -30,7 +32,7 @@ export class LoginControlComponent implements OnInit {
       this.userService.GetOfficers().subscribe(data=>{
         var arr:String[] = data
         arr.forEach(item=>{
-          if(localStorage.getItem("dID")==item){
+          if(this.cookieService.get("dID")==item){
             this.authService.SetAdmin(true)
           }
         })
@@ -41,7 +43,7 @@ export class LoginControlComponent implements OnInit {
   }
 
   LogonwithKnownDiscordID() {
-    var discordID = localStorage.getItem("dID")!.toString()
+    var discordID = this.cookieService.get("dID")!.toString()
 
     var currentSession = new SessionModel(discordID, '', new Date, '')
 
@@ -65,6 +67,7 @@ export class LoginControlComponent implements OnInit {
           //no action needed token is good for long enough
         }
       }
+      this.cookieService.set("isLogon", "true")
       sessionStorage.setItem("isLogon", "true")
     })
 

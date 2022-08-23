@@ -7,6 +7,7 @@ import { RosterService } from 'src/app/services/roster.service';
 import { SorterService } from 'src/app/services/sorter.service';
 import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import { SnackbarService } from 'src/app/services/snackbar.service';
+import { LootService } from 'src/app/services/loot.service';
 
 
 @Component({
@@ -25,7 +26,7 @@ export class UserRosterGridComponent implements OnInit {
 
   @Input() characters: ICharacter[] = [];
 
-  displayedColumns: string[] = ['icon', 'charName', 'spec', 'main', 'mainsCharacterName', 'offSpec','lootSheetButton', 'editButton', 'deleteButton'];
+  displayedColumns: string[] = ['icon', 'charName', 'spec', 'main', 'mainsCharacterName', 'offSpec', 'lootSheetButton', 'editButton', 'deleteButton'];
   //sortedData: ICharacter[];
   dataSource = new MatTableDataSource(this.characters);
 
@@ -37,7 +38,7 @@ export class UserRosterGridComponent implements OnInit {
   // MatPaginator Output
   pageEvent: PageEvent;
 
-  constructor(private rosterService: RosterService, private sorterService: SorterService, private snackBarService: SnackbarService) {
+  constructor(private rosterService: RosterService, private sorterService: SorterService, private snackBarService: SnackbarService, private lootService: LootService) {
   }
 
   mainCharacterNameCellDisplay(name: string, rank: string): string {
@@ -70,12 +71,12 @@ export class UserRosterGridComponent implements OnInit {
         case 'spec':
           return row.offSpec.specName;
         case 'mainsCharacterName':
-          if (row.charName==row.mainsCharacterName){
-return 'z'+row.mainsCharacterName
-          }else{
-            return row.mainsCharacterName   
+          if (row.charName == row.mainsCharacterName) {
+            return 'z' + row.mainsCharacterName
+          } else {
+            return row.mainsCharacterName
           }
-           
+
         default:
           return ""
       }
@@ -190,22 +191,30 @@ return 'z'+row.mainsCharacterName
   }
 
   deleteCharacter(char: ICharacter) {
-    this.rosterService.deleteCharacter(char).subscribe(resp => {
-      if (resp.status != 200) {
-        this.snackBarService.openSnackBar("Error Deleting: "+ char.charName)
-        throw Error("Cannot delete your item from list");
-      } else {
-        this.snackBarService.openSnackBar("Deleted: "+ char.charName +" successfully")
-        this.refreshData.emit();
-      }
+    console.log("Event Handler: Delete")
+
+    this.rosterService.getCharUIDByCharName(char.charName).subscribe(resp1 => {
+      let charUID = resp1[0].charUID;
+      this.rosterService.deleteCharacter(charUID).subscribe(resp => {
+        if (resp.status != 200) {
+
+          this.snackBarService.openSnackBar("Error Deleting: " + char.charName)
+          throw Error("Cannot delete your item from list");
+        } else {
+          this.snackBarService.openSnackBar("Deleted: " + char.charName + " successfully")
+          this.refreshData.emit();
+        }
+      })
     })
+
+
   }
 
   editCharacter(char: ICharacter) {
     this.editCharacterEvent.emit(char)
   }
 
-  displayLootSheet(char:ICharacter){
+  displayLootSheet(char: ICharacter) {
     this.ToggleToLootSheetEvent.emit(char)
   }
 }

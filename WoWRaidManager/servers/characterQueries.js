@@ -167,12 +167,14 @@ const insertUser = (request, response) => {
 }
 
 const getSessionbyID = (request, response) => {
+  console.log('Processing request: getSessionbyID')
   const user_id = request.params.user_id
   pool.query(`SELECT \"user_id\",\"access_token\",\"refresh_token\",\"expiry_time\" from public.sessions where \"user_id\" = $1`, [user_id], (error, results) => {
     release()
     if (error) {
       throw error
     }
+    console.log("Returning: getSessionbyID")
     response.status(200).json(results.rows)
   });
 };
@@ -482,7 +484,22 @@ const getOfficers = (request, response) => {
     response.status(200).json(results.rows)
   });
 }
-
+const deleteCharacterandSheet = (request, response) => {
+  console.log('Processing request: deleteSheetLock')
+  console.log(request.body)
+  const { sql } = request.body
+  pool.query(
+    sql,
+    (error, results) => {
+      release()
+      if (error) {
+        throw error
+      }
+      console.log("Returning: deleteSheetLock")
+      response.status(200).send(`Character and Lootsheet Deleted`)
+    }
+  )
+}
 module.exports = {
   getRoster,
   getRosterbyID,
@@ -517,5 +534,6 @@ module.exports = {
   getRaidWeeks,
   updateRaidWeek,
   updateSheetLimitandRanking,
-  getOfficers
+  getOfficers,
+  deleteCharacterandSheet
 };

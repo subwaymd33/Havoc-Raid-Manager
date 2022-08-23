@@ -617,6 +617,8 @@ export class LootSheetComponent implements OnInit {
           this.sheetLock.find(sl => sl.phase = this.selectedPhase)!.locked = 'false'
         } else {
           var mainSpecUID;
+          console.log(mainSpecUID)
+          console.log(this.HeaderFormGroup.controls['main_spec_selector'].value.specUID)
           if (typeof this.HeaderFormGroup.controls['main_spec_selector'].value.specUID != 'undefined') {
             mainSpecUID = this.HeaderFormGroup.controls['main_spec_selector'].value.specUID
           } else {

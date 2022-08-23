@@ -253,18 +253,34 @@ app.patch('/updateCharacter', (request, response) => {
 
 })
 
-app.delete('/deleteCharacter/:charName', (request, response) => {
+app.delete('/deleteCharacter/:charUID', (request, response) => {
   try {
-    fetch("http://127.0.0.1:3000/roster/" + request.params.charName,
+    console.log("Delete Character")
+    sql = "DELETE FROM public.sheetlock where \"charUID\" = " + request.params.charUID + ";";
+    sqlDelete = "DELETE FROM public.lootsheet where \"charUID\" = " + request.params.charUID + ";";
+    sqlCharDelete = "DELETE FROM public.characters where \"charUID\" = " + request.params.charUID + ";";
+
+    deleteSQLString = sql + sqlDelete + sqlCharDelete;
+
+    console.log(deleteSQLString);
+
+    fetch("http://127.0.0.1:3000/characterAndSheet/",
       {
-        method: 'DELETE'
+        headers: {
+          'Content-Type': 'application/json',
+          'responseType': 'text'
+        },
+        method: 'DELETE',
+        body: JSON.stringify({
+          sql: deleteSQLString,
+        })
       }
     ).then((resp) => {
       if (resp.status != 200) {
 
         throw Error("Cannot delete your item from list");
       } else {
-        response.status(200).send({ status: 200, message: `Character deleted with name : ${request.params.charName}` })
+        response.status(200).send({ status: 200, message: `Character deleted with UID : ${request.params.charUID}` })
       }
     }).catch((err) => {
       console.error(err); // handle error

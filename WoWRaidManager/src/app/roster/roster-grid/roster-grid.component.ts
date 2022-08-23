@@ -6,6 +6,7 @@ import { MatSort, SortDirection } from '@angular/material/sort';
 import { RosterService } from 'src/app/services/roster.service';
 import { SorterService } from 'src/app/services/sorter.service';
 import { environment } from 'src/environments/environment';
+import { LootService } from 'src/app/services/loot.service';
 
 
 @Component({
@@ -35,7 +36,7 @@ export class RosterGridComponent implements OnInit {
   // MatPaginator Output
   pageEvent: PageEvent;
 
-  constructor(private rosterService: RosterService, private sorterService: SorterService) {
+  constructor(private rosterService: RosterService, private sorterService: SorterService, private lootService:LootService) {
   }
 
   mainCharacterNameCellDisplay(name: string, rank: string): string {
@@ -188,13 +189,20 @@ return 'z'+row.mainsCharacterName
   }
 
   deleteCharacter(char: ICharacter) {
-    this.rosterService.deleteCharacter(char).subscribe(resp => {
-      if (resp.status != 200) {
+    console.log("Event Handler: Delete")
 
-        throw Error("Cannot delete your item from list");
-      } else {
-        this.refreshData.emit();
-      }
+    this.rosterService.getCharUIDByCharName(char.charName).subscribe(resp1 => {
+      let charUID = resp1[0].charUID;
+      this.rosterService.deleteCharacter(charUID).subscribe(resp => {
+        if (resp.status != 200) {
+
+
+          throw Error("Cannot delete your item from list");
+        } else {
+
+          this.refreshData.emit();
+        }
+      })
     })
   }
 

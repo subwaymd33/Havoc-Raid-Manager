@@ -36,9 +36,9 @@ export class RosterService {
       );
   }
 
-  deleteCharacter(char: ICharacter): Observable<any> {
+  deleteCharacter(charUID: number): Observable<any> {
     const deleteHeaders = { 'content-type': 'application/json', 'responseType': 'application/json' }
-    return this.http.delete<any>(this.URL + "/deleteCharacter/" + char.charName, { 'headers': deleteHeaders })
+    return this.http.delete<any>(this.URL + "/deleteCharacter/" + charUID, { 'headers': deleteHeaders })
   }
 
   addCharacter(char: ICharacter): Observable<any> {

@@ -55,6 +55,7 @@ app.post('/sheetLock', db.insertSheetLock)
 app.post('/raid', db.insertRaid)
 
 app.delete('/roster/:charName', db.deleteCharacter)
+app.delete('/characterAndSheet', db.deleteCharacterandSheet)
 
 app.listen(port, () => {
     console.log(`App running on port ${port}.`)

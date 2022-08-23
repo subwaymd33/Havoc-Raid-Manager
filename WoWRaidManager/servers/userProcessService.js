@@ -21,7 +21,7 @@ app.use(cors({
 }));
 
 app.get('/checkSession/:sess_id', (request, response) => {
-
+console.log("Check Session " + request.params.sess_id)
     try {
         fetch(`http://127.0.0.1:3000/session/${request.params.sess_id}`).then(res => res.json()).then(json => {
             response.send(json);

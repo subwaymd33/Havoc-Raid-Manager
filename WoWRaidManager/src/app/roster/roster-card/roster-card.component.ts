@@ -5,6 +5,7 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { Observable } from 'rxjs';
 import { RosterService } from 'src/app/services/roster.service';
 import { environment } from 'src/environments/environment';
+import { LootService } from 'src/app/services/loot.service';
 
 
 @Component({
@@ -29,7 +30,7 @@ export class RosterCardComponent implements OnInit {
   // MatPaginator Output
   pageEvent: PageEvent;
 
-  constructor(public rosterService: RosterService) {
+  constructor(public rosterService: RosterService, public lootService: LootService) {
   }
 
   ngOnChanges() {
@@ -191,13 +192,19 @@ export class RosterCardComponent implements OnInit {
 
   deleteCharacter(char: ICharacter) {
     console.log("Event Handler: Delete")
-    this.rosterService.deleteCharacter(char).subscribe(resp => {
-      if (resp.status != 200) {
 
-        throw Error("Cannot delete your item from list");
-      } else {
-        this.refreshData.emit();
-      }
+    this.rosterService.getCharUIDByCharName(char.charName).subscribe(resp1 => {
+      let charUID = resp1[0].charUID;
+      this.rosterService.deleteCharacter(charUID).subscribe(resp => {
+        if (resp.status != 200) {
+
+         
+          throw Error("Cannot delete your item from list");
+        } else {
+      
+          this.refreshData.emit();
+        }
+      })
     })
   }
 

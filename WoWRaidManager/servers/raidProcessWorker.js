@@ -524,12 +524,12 @@ function processTertiaryRaid(subRaid, iteration) {
         // parentPort.postMessage({ obj: raidSize, type: "log" })
 
         if (tankArray.length < tankCount || healerArray.length < healerCount || ((raidSize - (rDPSArray.length + mDPSArray.length)) != (tankArray.length + healerArray.length))) {
-            parentPort.postMessage({ obj: subRaid.length, type: "log" })
-            parentPort.postMessage({ obj: tankArray.length, type: "log" })
-            parentPort.postMessage({ obj: healerArray.length, type: "log" })
-            parentPort.postMessage({ obj: rDPSArray.length, type: "log" })
-            parentPort.postMessage({ obj: mDPSArray.length, type: "log" })
-            parentPort.postMessage({ obj: "No Valid Raid able to be formed based on roles", type: "log" })
+            // parentPort.postMessage({ obj: subRaid.length, type: "log" })
+            // parentPort.postMessage({ obj: tankArray.length, type: "log" })
+            // parentPort.postMessage({ obj: healerArray.length, type: "log" })
+            // parentPort.postMessage({ obj: rDPSArray.length, type: "log" })
+            // parentPort.postMessage({ obj: mDPSArray.length, type: "log" })
+            // parentPort.postMessage({ obj: "No Valid Raid able to be formed based on roles", type: "log" })
             return 0
         }
 

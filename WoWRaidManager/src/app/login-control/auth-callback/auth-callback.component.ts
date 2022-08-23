@@ -8,16 +8,17 @@ import { SessionModel } from '../models/sessionModel';
 import { SessionService } from '../../services/session.service';
 import { UserAuthService } from 'src/app/services/userAuth.service';
 import { UserService } from 'src/app/services/user.service';
-
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-auth-callback',
   templateUrl: './auth-callback.component.html',
-  styleUrls: ['./auth-callback.component.css']
+  styleUrls: ['./auth-callback.component.css'],
+  providers: [CookieService]
 })
 export class AuthCallbackComponent implements OnInit {
 
-  constructor(private route: ActivatedRoute,private _router:Router, private authService: UserAuthService, private userService: UserService, private sessionService: SessionService) { }
+  constructor(private route: ActivatedRoute,private _router:Router, private authService: UserAuthService, private userService: UserService, private sessionService: SessionService, private cookieService: CookieService) { }
 
   ngOnInit(): void {
     const discordCode = this.route.snapshot.queryParamMap.get('code')!.toString();
@@ -30,8 +31,11 @@ export class AuthCallbackComponent implements OnInit {
 
         userData = data
    
+        //this.cookieService.set("isLogon", "true")
+        this.cookieService.set("username", userData.username)
+        
         sessionStorage.setItem("isLogon", "true")
-        sessionStorage.setItem("username", userData.username)
+        //sessionStorage.setItem("username", userData.username)
 
         this.authService.GetDiscordGuilds(access.access_token.toString()).subscribe((data) => {
           console.log("DiscordGuilds")
@@ -54,8 +58,11 @@ export class AuthCallbackComponent implements OnInit {
                     })
                   }
 
-                  localStorage.setItem("dID", userData.id);
-                  localStorage.setItem("username", userData.username)
+                  this.cookieService.set("dID", userData.id)
+                  this.cookieService.set("username", userData.username)
+
+                  //localStorage.setItem("dID", userData.id);
+                  //localStorage.setItem("username", userData.username)
                   this.authService.SetLogon(true);
 
                   var exp_date = new Date()

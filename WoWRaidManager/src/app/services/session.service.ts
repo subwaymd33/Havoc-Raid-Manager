@@ -13,6 +13,7 @@ export class SessionService {
 URL = environment.USER_PROCESS_SERVER_URL
 
     CheckSession(sess:SessionModel): Observable<SessionModel[]> {
+        console.log(sess)
         return this.http.get<SessionModel[]>(this.URL + `/checkSession/${sess.user_id}`).pipe(
             map(ses => {
                 return ses;

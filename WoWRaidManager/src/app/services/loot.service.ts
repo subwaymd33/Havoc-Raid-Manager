@@ -28,7 +28,6 @@ export class LootService {
     return this.specData;
   }
 
-
   getItemsFromDB(): Observable<Items[]> {
     return this.http.get<Items[]>(this.URL + '/getItems')
       .pipe(
@@ -47,8 +46,6 @@ export class LootService {
         })
       );
   }
-
-
 
   getSpecDataFromDB(): Observable<specData[]> {
     return this.http.get<specData[]>('http://localhost:3005/getSpecData')
@@ -117,5 +114,10 @@ export class LootService {
           return mls;
         })
       );
+  }
+
+  deleteLootsheet(charUID: number) {
+    const deleteHeaders = { 'content-type': 'application/json', 'responseType': 'application/json' }
+    return this.http.delete<any>(this.URL + "/deleteLootsheet/" + charUID, { 'headers': deleteHeaders })
   }
 }

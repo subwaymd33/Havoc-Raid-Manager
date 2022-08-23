@@ -10,8 +10,9 @@ import { discordUserData } from '../login-control/models/discordUserData';
 
 
 
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserAuthService {
   adminSubject = new Subject<boolean>();
@@ -91,6 +92,4 @@ export class UserAuthService {
     var resp = this.http.get<accessToken>(this.URL+ `/api/auth/discord/refresh/${token}`).pipe();
     return resp;
   }
-
-
 }
