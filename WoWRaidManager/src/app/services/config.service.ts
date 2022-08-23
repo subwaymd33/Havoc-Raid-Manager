@@ -10,7 +10,7 @@ import { environment } from 'src/environments/environment';
 export class ConfigService {
   private configs:ConfigModel[]=[];
   // URL which returns list of JSON items (API end-point URL)
-URL = environment.CONFIG_PROCESS_SERVER_URL
+URL = environment.BACKEND_SERVER_URL
   constructor(private http: HttpClient) {}
 
   getConfigs(){

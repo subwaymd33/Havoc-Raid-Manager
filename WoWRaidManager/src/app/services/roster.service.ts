@@ -10,7 +10,7 @@ import { environment } from 'src/environments/environment';
 export class RosterService {
 
   // URL which returns list of JSON items (API end-point URL)
-  private readonly URL = environment.CHARACTER_PROCESS_SERVER_URL
+  private readonly URL = environment.BACKEND_SERVER_URL
 
   constructor(private http: HttpClient) { }
 

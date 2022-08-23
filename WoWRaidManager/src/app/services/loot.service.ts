@@ -19,7 +19,7 @@ export class LootService {
   private masterLootSheet: MasterLootSheetModel[]=[];
   constructor(private http: HttpClient) { }
 
-  URL = environment.LOOT_PROCESS_SERVER_URL
+  URL = environment.BACKEND_SERVER_URL
 
   getItems() {
     return this.items;
@@ -39,7 +39,7 @@ export class LootService {
   }
 
   getSpecToItem(): Observable<ItemToSpec[]> {
-    return this.http.get<ItemToSpec[]>('http://localhost:3005/getSpectoItems')
+    return this.http.get<ItemToSpec[]>(this.URL + '/getSpectoItems')
       .pipe(
         map(items => {
           return items;
@@ -48,7 +48,7 @@ export class LootService {
   }
 
   getSpecDataFromDB(): Observable<specData[]> {
-    return this.http.get<specData[]>('http://localhost:3005/getSpecData')
+    return this.http.get<specData[]>(this.URL + '/getSpecData')
       .pipe(
         map(specData => {
           this.specData = specData;

@@ -17,7 +17,7 @@ export class raidService {
 
   constructor(private http: HttpClient) { }
 
-URL = environment.RAID_PROCESS_SERVER_URL
+URL = environment.BACKEND_SERVER_URL
 
   getWeeks() {
     return this.weeks;

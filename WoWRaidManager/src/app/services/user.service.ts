@@ -12,7 +12,7 @@ import { userCheckModel } from '../login-control/models/userCheckModel';
 export class UserService {
     constructor(private http: HttpClient) { }
 
-    URL = environment.USER_PROCESS_SERVER_URL
+    URL = environment.BACKEND_SERVER_URL
 
     CheckUser(id: string): Observable<userCheckModel[]> {
         return this.http.get<userCheckModel[]>(this.URL + `/checkUser/${id}`).pipe(   

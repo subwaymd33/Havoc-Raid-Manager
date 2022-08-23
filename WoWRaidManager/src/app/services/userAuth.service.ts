@@ -41,7 +41,7 @@ export class UserAuthService {
   // this method returns list-of-items in form of Observable
   // every HTTTP call returns Observable object
 
-  URL = environment.AUTH_PROCESS_SERVER_URL
+  URL = environment.BACKEND_SERVER_URL
 
   getDiscordCode() {
     window.location.href = 'https://discord.com/api/oauth2/authorize?client_id=985911105857658950&redirect_uri=http%3A%2F%2Flocalhost%3A4200%2Fcallback&response_type=code&scope=guilds%20identify%20guilds.members.read';

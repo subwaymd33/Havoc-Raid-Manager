@@ -10,7 +10,7 @@ import { SessionModel } from '../login-control/models/sessionModel';
 export class SessionService {
     constructor(private http: HttpClient) { }
 
-URL = environment.USER_PROCESS_SERVER_URL
+URL = environment.BACKEND_SERVER_URL
 
     CheckSession(sess:SessionModel): Observable<SessionModel[]> {
         console.log(sess)
