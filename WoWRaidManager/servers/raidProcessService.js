@@ -25,8 +25,10 @@ app.get('/getRaids', (request, response) => {
     try {
         fetch("http://127.0.0.1:3000/raids").then(res => res.json()).then(raids => {
             var raidArray = new Array()
-            for (let i in raids) {
-                if (raidArray.find(raid => raid.raid_id != raids[i]['raid_id']) || raidArray.length == 0) {
+            for (let i in raids){
+                if (raidArray.some(raid => raid.raid_id==raids[i]['raid_id'])){
+
+                }else{
                     var raidObj = new Object();
                     raidObj.raid_id = raids[i]['raid_id'];
                     raidObj.raid_date = raids[i]['raid_date'];
@@ -35,7 +37,20 @@ app.get('/getRaids', (request, response) => {
                     raidObj.attendance = new Array()
                     raidArray.push(raidObj)
                 }
+            }
 
+
+            for (let i in raids) {
+                // if (raidArray.find(raid => raid.raid_id != raids[i]['raid_id']) || raidArray.length == 0) {
+                //     console.log("condition true")
+                //     var raidObj = new Object();
+                //     raidObj.raid_id = raids[i]['raid_id'];
+                //     raidObj.raid_date = raids[i]['raid_date'];
+                //     raidObj.raid_name = raids[i]['raid_name'];
+                //     raidObj.drops = new Array()
+                //     raidObj.attendance = new Array()
+                //     raidArray.push(raidObj)
+                // }
                 var matchedRaid = raidArray.find(raid => raid.raid_id == raids[i]['raid_id'])
 
                 if (matchedRaid.drops.filter(drop => drop.item_id == raids[i]['item_id']).length == 0) {
@@ -73,7 +88,7 @@ app.get('/getRaidWeeks', (request, response) => {
             response.status(200).send(json);
         });
     } catch (error) {
-        response.status(200).send("error");
+        response.status(400).send("error");
     }
 
 

@@ -1,13 +1,13 @@
 export class rawSheetDataRow{
-    charUID:number;
+    char_name:string;
     phase:number;
     item_id:number;
     slot:string;
     aquired:string;
 
 
-    constructor(charUID:number, phase:number, item_id:number, slot:string, aquired:string){
-        this.charUID = charUID;
+    constructor(char_name:string, phase:number, item_id:number, slot:string, aquired:string){
+        this.char_name = char_name;
         this.phase = phase;
         this.item_id=item_id;
         this.slot = slot;

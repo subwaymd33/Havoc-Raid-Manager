@@ -253,12 +253,12 @@ app.patch('/updateCharacter', (request, response) => {
 
 })
 
-app.delete('/deleteCharacter/:charUID', (request, response) => {
+app.delete('/deleteCharacter/:char_name', (request, response) => {
   try {
     console.log("Delete Character")
-    sql = "DELETE FROM public.sheetlock where \"charUID\" = " + request.params.charUID + ";";
-    sqlDelete = "DELETE FROM public.lootsheet where \"charUID\" = " + request.params.charUID + ";";
-    sqlCharDelete = "DELETE FROM public.characters where \"charUID\" = " + request.params.charUID + ";";
+    sql = "DELETE FROM public.sheetlock where \"char_name\" = '" + request.params.char_name + "';";
+    sqlDelete = "DELETE FROM public.lootsheet where \"char_name\" = '" + request.params.char_name + "';";
+    sqlCharDelete = "DELETE FROM public.characters where \"charName\" = '" + request.params.char_name + "';";
 
     deleteSQLString = sql + sqlDelete + sqlCharDelete;
 

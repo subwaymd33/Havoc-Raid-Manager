@@ -47,6 +47,10 @@ export class RaidManagerComponent implements OnInit {
   ngOnInit(): void {
     this.items = this.lootService.getItems()
     this.masterLootSheet = this.lootService.getMasterLootsheet()
+    this.raidService.getRaidsFromDB().subscribe(ret =>{
+      this.existingRaids = this.raidService.getRaids()
+    })
+    console.log(this.existingRaids)
     this.workingRaid = new RaidModel("", new Date(), "")
   }
   ngAfterViewInit(): void {
@@ -54,8 +58,7 @@ export class RaidManagerComponent implements OnInit {
       if (args.target.tagName === 'BODY') {
         this.modalDialogImport?.close()
       }
-    }
-    this.existingRaids = this.raidService.getRaids()
+    }   
 
   }
 
@@ -78,33 +81,39 @@ export class RaidManagerComponent implements OnInit {
 
     //code to make sure you are taking the higest ranked item in cases of multiple item_id matches
     this.workingRaid.drops.forEach(drop=>{
+      console.log(drop)
+      
       var foundMatches = this.masterLootSheet.filter(sheetRow => sheetRow.charName==drop.char_name && sheetRow.item_id==drop.item_id && sheetRow.aquired=='false');
+      console.log(foundMatches)
       if (foundMatches.length==1){
         drop.slot_id_to_update = foundMatches[0].slot
-      }else{
+      }else if (foundMatches.length==0){
+        console.log("Didnt match to an existing row on lootsheet. Possibly add logic here at some point to indicate this item went off sheet")
+      }
+      else{
         foundMatches.sort((a,b)=>parseInt(b.slot.substring(0,2))-parseInt(a.slot.substring(0,2)))
         drop.slot_id_to_update = foundMatches[0].slot
       }
     })
 
     this.raidService.insertNewRaid(this.workingRaid).subscribe(data =>{
+      this.lootService.getMasterLootsheetFromDB().subscribe()
       this.snackBarService.openSnackBar("Raid Saved")
     })
   }
 
   AttendanceChange(record:AttendanceModel, event:any ) {
-    console.log('record:' , record );
-    console.log('event:' , event );
     if (event.value=="present"){
       record.present=true;
-      record.used_time_off=false
+      record.used_time_off=false;
     }else if(event.value=="absent"){
       record.present=false;
-      record.used_time_off=false
+      record.used_time_off=false;
     }else{
       record.present=true;
-      record.used_time_off=true
+      record.used_time_off=true;
     }
+    this.submitButtonDisabled=false;
  }
  ChangedSelectedRaid(selectedRaid:any){
   this.workingRaid  = selectedRaid.value
@@ -145,6 +154,7 @@ export class RaidManagerComponent implements OnInit {
     newRaid.drops = drops;
     newRaid.attendance = attendance
     this.workingRaid = newRaid;
+    this.hideAddAttendance=false
   }
 
   getDBLink(rdm: RaidDropModel) {

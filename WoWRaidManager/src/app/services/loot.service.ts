@@ -89,8 +89,8 @@ export class LootService {
 
   }
 
-  getSheetLock(charUID: number): Observable<sheetLockModel[]> {
-    return this.http.get<sheetLockModel[]>(this.URL + `/getSheetLock/${charUID}`)
+  getSheetLock(char_name: string): Observable<sheetLockModel[]> {
+    return this.http.get<sheetLockModel[]>(this.URL + `/getSheetLock/${char_name}`)
       .pipe(
         map(sheetLock => {
           return sheetLock;
@@ -116,8 +116,8 @@ export class LootService {
       );
   }
 
-  deleteLootsheet(charUID: number) {
+  deleteLootsheet(char_name: string) {
     const deleteHeaders = { 'content-type': 'application/json', 'responseType': 'application/json' }
-    return this.http.delete<any>(this.URL + "/deleteLootsheet/" + charUID, { 'headers': deleteHeaders })
+    return this.http.delete<any>(this.URL + "/deleteLootsheet/" + char_name, { 'headers': deleteHeaders })
   }
 }

@@ -30,6 +30,7 @@ URL = environment.RAID_PROCESS_SERVER_URL
     return this.http.get<RaidModel[]>(this.URL + '/getRaids')
       .pipe(
         map(raids => {
+          console.log(raids)
           this.raids = raids
           return raids;
         })

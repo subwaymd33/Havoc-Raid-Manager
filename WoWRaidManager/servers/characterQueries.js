@@ -318,7 +318,7 @@ const updateSheetLimitandRanking = (request, response) => {
 const getLootSheetByCharName = (request, response) => {
   console.log('Processing request: getLootSheetByCharName')
   const charName = request.params.charName
-  pool.query(`SELECT l.\"charUID\", l.phase, l.item_id, l.slot, l.aquired FROM public.lootsheet l join characters c on c.\"charUID\" = l.\"charUID\" where c.\"charName\" = $1`, [charName], (error, results) => {
+  pool.query(`SELECT phase, item_id, slot, aquired FROM public.lootsheet where \"char_name\" = $1`, [charName], (error, results) => {
     release()
     if (error) {
       throw error
@@ -354,15 +354,15 @@ const getCharUIDByCharName = (request, response) => {
     response.status(200).json(results.rows)
   });
 }
-const getsheetLockByCharUID = (request, response) => {
-  console.log('Processing request: getsheetLockByCharUID')
-  const charUID = request.params.charUID
-  pool.query(`SELECT \"charUID\", phase, locked, mainspec, offspec FROM public.sheetlock where \"charUID\" = $1`, [charUID], (error, results) => {
+const getSheetLock = (request, response) => {
+  console.log('Processing request: getSheetLock')
+  const char_name = request.params.char_name
+  pool.query(`SELECT phase, locked, mainspec, offspec FROM public.sheetlock where \"char_name\" = $1`, [char_name], (error, results) => {
     release()
     if (error) {
       throw error
     }
-    console.log("Returning: getsheetLockByCharUID")
+    console.log("Returning: getSheetLock")
     response.status(200).json(results.rows)
   });
 }
@@ -385,7 +385,7 @@ const insertSheetLock = (request, response) => {
 const getMasterLootSheet = (request, response) => {
   console.log('Processing request: getMasterLootSheet')
 
-  pool.query("SELECT c.\"charName\",l.phase, l.item_id, l.slot,c.\"charUID\",aquired, c.\"specUID\", c.rank as char_rank from lootsheet l join characters c on c.\"charUID\" = l.\"charUID\" where aquired ='false';", (error, results) => {
+  pool.query("SELECT c.\"charName\",l.phase, l.item_id, l.slot,c.\"charUID\",aquired, c.\"specUID\", c.rank as char_rank from lootsheet l join characters c on c.\"charName\" = l.\"char_name\" where aquired ='false';", (error, results) => {
     release()
     if (error) {
       throw error
@@ -524,7 +524,7 @@ module.exports = {
   getLootSheetByCharName,
   insertLootSheet,
   getCharUIDByCharName,
-  getsheetLockByCharUID,
+  getSheetLock,
   insertSheetLock,
   getMasterLootSheet,
   insertRaid,

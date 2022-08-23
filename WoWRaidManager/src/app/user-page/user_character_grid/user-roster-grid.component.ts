@@ -193,9 +193,7 @@ export class UserRosterGridComponent implements OnInit {
   deleteCharacter(char: ICharacter) {
     console.log("Event Handler: Delete")
 
-    this.rosterService.getCharUIDByCharName(char.charName).subscribe(resp1 => {
-      let charUID = resp1[0].charUID;
-      this.rosterService.deleteCharacter(charUID).subscribe(resp => {
+      this.rosterService.deleteCharacter(char.charName).subscribe(resp => {
         if (resp.status != 200) {
 
           this.snackBarService.openSnackBar("Error Deleting: " + char.charName)
@@ -205,7 +203,7 @@ export class UserRosterGridComponent implements OnInit {
           this.refreshData.emit();
         }
       })
-    })
+  
 
 
   }

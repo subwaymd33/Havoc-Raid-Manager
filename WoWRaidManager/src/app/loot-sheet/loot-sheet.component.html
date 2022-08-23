@@ -75,7 +75,7 @@
                         <div [class]="getItemClassName(item)" *ngFor="let item of slot.column_one_item_list" cdkDrag>
                             <fa-icon cdkDragHandle [icon]="justifyGlyph" class="justifyGlyph"></fa-icon>
                             <div class="link"> <a href="https://wotlkdb.com?item={{item.wowhead_link}}"
-                                    rel="item=${{item.wowhead_link}}" class="q4">{{item.item_name}}</a>
+                                    rel="item=${{item.wowhead_link}}" class="q4" target="_blank">{{item.item_name}}</a>
                             </div>
                         </div>
                     </div>
@@ -86,7 +86,7 @@
                         <div [class]="getItemClassName(item)" *ngFor="let item of slot.column_two_item_list" cdkDrag>
                             <fa-icon cdkDragHandle [icon]="justifyGlyph" class="justifyGlyph"></fa-icon>
                             <div class="link"> <a href="https://wotlkdb.com?item={{item.wowhead_link}}"
-                                    rel="item=${{item.wowhead_link}}" class="q4">{{item.item_name}}</a>
+                                    rel="item=${{item.wowhead_link}}" class="q4" target="_blank">{{item.item_name}}</a>
                             </div>
                         </div>
                     </div>
@@ -109,7 +109,7 @@
                         <div *ngFor="let item of bucket.items" [class]="getItemClassName(item)" cdkDrag>
                             <fa-icon cdkDragHandle [icon]="justifyGlyph" class="justifyGlyph"></fa-icon>
                             <div class="link"> <a href="https://wotlkdb.com?item={{item.wowhead_link}}"
-                                    rel="item=${{item.wowhead_link}}" class="q4"><span>{{item.item_name}}</span></a>
+                                    rel="item=${{item.wowhead_link}}" class="q4" target="_blank"><span>{{item.item_name}}</span></a>
                             </div>
                         </div>
                     </div>

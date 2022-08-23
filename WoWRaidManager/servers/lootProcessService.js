@@ -140,9 +140,9 @@ app.patch('/updateSheetLimitandRanking', (request, response) => {
 
 })
 
-app.get('/getLootSheet/:charName', (request, response) => {
+app.get('/getLootSheet/:char_name', (request, response) => {
     try {
-        fetch(`http://127.0.0.1:3000/lootSheet/${request.params.charName}`).then(res => res.json()).then(json => {
+        fetch(`http://127.0.0.1:3000/lootSheet/${request.params.char_name}`).then(res => res.json()).then(json => {
             response.send(json);
         });
     } catch (error) {
@@ -153,13 +153,14 @@ app.get('/getLootSheet/:charName', (request, response) => {
 
 app.post('/insertLootSheet', (request, response) => {
     try {
+        console.log(request.body)
         var arr = request.body;
-        InsertSQLString = `DELETE FROM lootsheet WHERE \"charUID\" = ${arr[0].charUID};`
+        InsertSQLString = `DELETE FROM lootsheet WHERE \"char_name\" = '${arr[0].char_name}';`
         if (arr[0].specUID == 0) {
 
         } else {
             for (let i = 0; i < arr.length; i++) {
-                str = `INSERT INTO lootsheet (\"charUID\", phase, item_id, slot, aquired) VALUES( ${arr[i].charUID},${arr[i].phase},${arr[i].item_id},'${arr[i].slot}','${arr[i].aquired}');`
+                str = `INSERT INTO lootsheet (char_name, phase, item_id, slot, aquired) VALUES( '${arr[i].char_name}',${arr[i].phase},${arr[i].item_id},'${arr[i].slot}','${arr[i].aquired}');`
                 InsertSQLString = InsertSQLString + str
             }
         }
@@ -190,9 +191,10 @@ app.post('/insertLootSheet', (request, response) => {
     }
 
 })
-app.get('/getSheetLock/:charUID', (request, response) => {
+
+app.get('/getSheetLock/:char_name', (request, response) => {
     try {
-        fetch(`http://127.0.0.1:3000/sheetLock/${request.params.charUID}`).then(res => res.json()).then(json => {
+        fetch(`http://127.0.0.1:3000/sheetLock/${request.params.char_name}`).then(res => res.json()).then(json => {
             response.send(json);
         });
     } catch (error) {
@@ -204,16 +206,15 @@ app.get('/getSheetLock/:charUID', (request, response) => {
 app.post('/insertSheetLock', (request, response) => {
     try {
         var arr = request.body;
-        InsertSQLString = `DELETE FROM sheetlock WHERE \"charUID\" = ${arr[0].charUID};`
+        InsertSQLString = `DELETE FROM sheetlock WHERE \"char_name\" = '${arr[0].char_name}';`
         if (arr[0].specUID == 0) {
 
         } else {
             for (let i = 0; i < arr.length; i++) {
-                str = `INSERT INTO sheetlock (\"charUID\", phase, locked,mainspec, offspec) VALUES( ${arr[i].charUID},${arr[i].phase},'${arr[i].locked}',${arr[i].mainspec},${arr[i].offspec});`
+                str = `INSERT INTO sheetlock (char_name, phase, locked,mainspec, offspec) VALUES('${arr[i].char_name}',${arr[i].phase},'${arr[i].locked}',${arr[i].mainspec},${arr[i].offspec});`
                 InsertSQLString = InsertSQLString + str
             }
         }
-
         fetch("http://127.0.0.1:3000/sheetLock",
             {
                 headers: {
@@ -227,9 +228,9 @@ app.post('/insertSheetLock', (request, response) => {
             }
         ).then((resp) => {
             if (resp.status != 200) {
-                throw Error("Cannot insert the requested lootsheet object");
+                throw Error("Cannot insert the requested sheetlock object");
             } else {
-                response.status(200).send({ status: 200, message: `lootsheet object inserted` })
+                response.status(200).send({ status: 200, message: `sheetlock object inserted` })
             }
         }).catch((err) => {
             console.error(err); // handle error
