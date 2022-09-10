@@ -5,6 +5,7 @@ const port = 3100;
 const fetch = require('node-fetch');
 const cors = require('cors');
 const { Worker } = require("worker_threads");
+const { default: axios } = require('axios');
 require('dotenv').config();
 
 
