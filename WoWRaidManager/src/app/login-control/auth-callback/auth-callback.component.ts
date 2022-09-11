@@ -46,7 +46,7 @@ export class AuthCallbackComponent implements OnInit {
                 var discordRolesArray: DiscordGuildDetails = guildData
                 discordRolesArray.roles.forEach((role: string) => {
                   console.log("Looping Roles: "+ role)
-                  if (role == "827304261725192232") {
+                  if (role == "825857440796508191") {
                     this.authService.SetAdmin(true)
                     userData.role = "officer"
                   }
