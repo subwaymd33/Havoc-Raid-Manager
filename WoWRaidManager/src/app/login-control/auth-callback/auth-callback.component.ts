@@ -21,6 +21,7 @@ export class AuthCallbackComponent implements OnInit {
   constructor(private route: ActivatedRoute,private _router:Router, private authService: UserAuthService, private userService: UserService, private sessionService: SessionService, private cookieService: CookieService) { }
 
   ngOnInit(): void {
+    console.log("entered auth callback")
     const discordCode = this.route.snapshot.queryParamMap.get('code')!.toString();
     var userData: discordUserData;
     var access: accessToken;
@@ -28,14 +29,15 @@ export class AuthCallbackComponent implements OnInit {
     this.authService.GetAccessToken(discordCode.toString()).subscribe((retAccessToken: accessToken) => {
       access = retAccessToken
       this.authService.AuthenticateUser(access.access_token.toString()).subscribe((data: discordUserData) => {
-
+        console.log("Got Past authenticate user")
         userData = data
    
         //this.cookieService.set("isLogon", "true")
         this.cookieService.set("username", userData.username)
         this.cookieService.set("isLogon", "true")
-
+        console.log("Set islogon and username cookies")
         this.authService.GetDiscordGuilds(access.access_token.toString()).subscribe((data) => {
+          console.log("Getdiscordguild check complete. moving to processing")
           data.forEach(guild => {
             console.log("Discord guild code:" + guild)
             if (guild.id == '822219949284130839') {
