@@ -22,10 +22,12 @@ export class AppComponent {
     
     
     this.userAuthService.logonSubject.subscribe(data => {
+      console.log("Trying logon")
       this.isLogon = data
     });
 
     this.userAuthService.adminSubject.subscribe(data => {
+      console.log("Trying Admin")
       this.isAdmin = data
     });
 
