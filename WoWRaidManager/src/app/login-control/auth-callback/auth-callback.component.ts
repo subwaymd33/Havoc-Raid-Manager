@@ -33,13 +33,9 @@ export class AuthCallbackComponent implements OnInit {
    
         //this.cookieService.set("isLogon", "true")
         this.cookieService.set("username", userData.username)
-        
-        sessionStorage.setItem("isLogon", "true")
-        //sessionStorage.setItem("username", userData.username)
+        this.cookieService.set("isLogon", "true")
 
         this.authService.GetDiscordGuilds(access.access_token.toString()).subscribe((data) => {
-          console.log("DiscordGuilds")
-          console.log(data)
           data.forEach(guild => {
             if (guild.id == '822219949284130839') {
               this.authService.GetDiscordGuildsDetails(access.access_token.toString(), guild.id).subscribe(guildData => {

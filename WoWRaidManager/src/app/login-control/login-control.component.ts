@@ -68,7 +68,6 @@ export class LoginControlComponent implements OnInit {
         }
       }
       this.cookieService.set("isLogon", "true")
-      sessionStorage.setItem("isLogon", "true")
     })
 
   }

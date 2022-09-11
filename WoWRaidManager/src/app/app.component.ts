@@ -18,13 +18,17 @@ export class AppComponent {
   isLogon: boolean;
   title = 'WoWRaidManager';
 
-  constructor(private userAuthService: UserAuthService, private lootService: LootService, private configService:ConfigService, private raidService:raidService, private cookieService:CookieService) {
-    this.userAuthService.adminSubject.subscribe(data => {
-      this.isAdmin = data
-    });
+  constructor(private userAuthService: UserAuthService, private lootService: LootService, private configService: ConfigService, private raidService: raidService, private cookieService: CookieService) {
+    
+    
     this.userAuthService.logonSubject.subscribe(data => {
       this.isLogon = data
     });
+
+    this.userAuthService.adminSubject.subscribe(data => {
+      this.isAdmin = data
+    });
+
 
     this.lootService.getItemsFromDB().subscribe()
     this.lootService.getSpecDataFromDB().subscribe()
@@ -32,25 +36,10 @@ export class AppComponent {
     this.raidService.getRaidWeeksFromDB().subscribe()
     this.lootService.getMasterLootsheetFromDB().subscribe()
   }
+  ngOnDestroy() {
+    this.userAuthService.adminSubject.unsubscribe();
+    this.userAuthService.logonSubject.unsubscribe();
 
-
-
-  ///tommorow fix this to call the logon calls 
-  // hideLogoff(){
-  //   if (sessionStorage.getItem("isLogon")=="false"||sessionStorage.getItem("isLogon")==null){
-  //     return true
-  //   }else{
-  //     return false
-  //   }
-  // }
-  // hideLogon(){
-  //   if (sessionStorage.getItem("isLogon")=="true"){
-  //     return true
-  //   }else{
-  //     return false
-  //   }
-  // }
-
-
+  }
 
 }
