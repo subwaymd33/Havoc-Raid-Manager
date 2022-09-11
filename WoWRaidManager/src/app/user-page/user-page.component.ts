@@ -87,11 +87,21 @@ export class UserPageComponent implements OnInit {
     let dialogRef;
     if (action == 'Add') {
       var buffdata: Buffs[] = []
-      dialogRef = this.dialog.open(ModalComponent, {
-        height: '500px',
-        width: '400px',
-        data: { char: new Characters('', "", this.characters.find(char => char.rank == environment.MAIN_RAIDER_RANK_NAME)!.char_name, new SpecData('', '', buffdata), new SpecData('', '', buffdata)), action: "Add" }
-      });
+
+      if (this.characters.length==0){
+        dialogRef = this.dialog.open(ModalComponent, {
+          height: '500px',
+          width: '400px',
+          data: { char: new Characters('', "", "", new SpecData('', '', buffdata), new SpecData('', '', buffdata)), action: "Add" }
+        });
+      }else{
+        dialogRef = this.dialog.open(ModalComponent, {
+          height: '500px',
+          width: '400px',
+          data: { char: new Characters('', "", this.characters.find(char => char.rank == environment.MAIN_RAIDER_RANK_NAME)!.char_name, new SpecData('', '', buffdata), new SpecData('', '', buffdata)), action: "Add" }
+        });
+      }
+
     } else {
       var compRank = obj.rank;
       var compPrimarySpecName = obj.primarySpec.spec_name;
