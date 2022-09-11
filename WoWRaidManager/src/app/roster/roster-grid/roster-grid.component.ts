@@ -24,7 +24,7 @@ export class RosterGridComponent implements OnInit {
 
   @Input() characters: ICharacter[] = [];
 
-  displayedColumns: string[] = ['icon', 'charName', 'spec', 'main', 'mainsCharacterName', 'offSpec', 'editButton', 'deleteButton'];
+  displayedColumns: string[] = ['icon', 'char_name', 'spec', 'main', 'mains_name', 'offSpec', 'editButton', 'deleteButton'];
   //sortedData: ICharacter[];
   dataSource = new MatTableDataSource(this.characters);
 
@@ -59,20 +59,20 @@ export class RosterGridComponent implements OnInit {
     this.dataSource.sortingDataAccessor = (row: ICharacter, columnName: string): string => {
       switch (columnName) {
         case 'icon':
-          return row.primarySpec.specName;
-        case 'charName':
-          return row.charName;
+          return row.primarySpec.spec_name;
+        case 'char_name':
+          return row.char_name;
         case 'spec':
-          return row.primarySpec.specName;
+          return row.primarySpec.spec_name;
         case 'main':
           return row.rank;
         case 'spec':
-          return row.offSpec.specName;
-        case 'mainsCharacterName':
-          if (row.charName==row.mainsCharacterName){
-return 'z'+row.mainsCharacterName
+          return row.offSpec.spec_name;
+        case 'mains_name':
+          if (row.char_name==row.mains_name){
+return 'z'+row.mains_name
           }else{
-            return row.mainsCharacterName   
+            return row.mains_name   
           }
            
         default:
@@ -191,7 +191,7 @@ return 'z'+row.mainsCharacterName
   deleteCharacter(char: ICharacter) {
     console.log("Event Handler: Delete")
 
-    this.rosterService.getCharUIDByCharName(char.charName).subscribe(resp1 => {
+    this.rosterService.getCharUIDByCharName(char.char_name).subscribe(resp1 => {
       let charUID = resp1[0].charUID;
       this.rosterService.deleteCharacter(charUID).subscribe(resp => {
         if (resp.status != 200) {

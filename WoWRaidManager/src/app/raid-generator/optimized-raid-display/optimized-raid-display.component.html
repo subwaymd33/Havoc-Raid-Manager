@@ -9,11 +9,11 @@
                     <mat-card class="charInRaid">
                         <div fxFlex fxLayout="column">
                             <mat-card-header
-                                [style.background-color]="geBackgrounColorforClass(char.primarySpec.specName)">
+                                [style.background-color]="geBackgrounColorforClass(char.primarySpec.spec_name)">
                                 <div mat-card-avatar class="classIconHeaderImage"
-                                    [style.background-image]="getSpecImage(char.primarySpec.specName)"></div>
+                                    [style.background-image]="getSpecImage(char.primarySpec.spec_name)"></div>
                                 <div class="mat-header-div">
-                                    <mat-card-title h1>{{char.charName}}</mat-card-title>
+                                    <mat-card-title h1>{{char.char_name}}</mat-card-title>
                                     <fa-icon class="headerIconCheck" [icon]="facheck" *ngIf="showCheck(char)"></fa-icon>
                                 </div>
 
@@ -32,10 +32,10 @@
                 <span h1>Raid Buffs/Debuffs</span>
             </div>
             <div class="GeneratedBuffs">
-                <div *ngFor="let buff of buffCollection;let i=index" class="BuffButtons" id="buff-buttons-{{buff.buffCode}}" [ngClass]="{active:(i==selectedIndex)}" >
+                <div *ngFor="let buff of buffCollection;let i=index" class="BuffButtons" id="buff-buttons-{{buff.buff_code}}" [ngClass]="{active:(i==selectedIndex)}" >
                     <div>
                         <button class="button" (click)="buffButtonClick(buff, i )"></button>
-                        <span>{{buff.buffName}}</span>
+                        <span>{{buff.buff_name}}</span>
                     </div>
 
                 </div>

@@ -119,7 +119,7 @@ export class LootConfigComponent implements OnInit {
     for (let i = 0; i < this.specToItem.length; i++) {
       if (this.specToItem[i].item_id == this.chosenItem.item_id) {
         for (let j = 0; j < this.specData.length; j++) {
-          if (this.specData[j].specUID == this.specToItem[i].specUID) {
+          if (this.specData[j].spec_uid == this.specToItem[i].spec_uid) {
             this.setSpecCheckbox(this.specData[j])
           }
         }
@@ -128,7 +128,7 @@ export class LootConfigComponent implements OnInit {
   }
 
   setSpecCheckbox(spec: specData) {
-    switch (spec.specUID) {
+    switch (spec.spec_uid) {
       case 1: {
         this.SpecSelectorForm.controls['dk_blood_cb'].setValue(true)
         break;

@@ -8,6 +8,7 @@ import { rawSheetDataRow } from '../loot-manager/loot-config/models/rawSheetData
 import { sheetLockModel } from '../loot-manager/loot-config/models/sheetLockModel';
 import { MasterLootSheetModel } from '../loot-manager/loot-config/models/MasterLootSheetModel';
 import { environment } from 'src/environments/environment';
+import { approvalModel } from '../loot-sheet-approval/models/approvalModel';
 
 
 @Injectable({
@@ -72,8 +73,8 @@ export class LootService {
     return this.http.patch<any>(this.URL + "/updateSheetLimitandRanking", body, { 'headers': headers })
   }
 
-  getLootSheetByCharName(charName: string): Observable<rawSheetDataRow[]> {
-    return this.http.get<rawSheetDataRow[]>(this.URL + `/getLootSheet/${charName}`)
+  getLootSheetByCharName(char_name: string): Observable<rawSheetDataRow[]> {
+    return this.http.get<rawSheetDataRow[]>(this.URL + `/getLootSheet/${char_name}`)
       .pipe(
         map(rawSheetDataRow => {
           return rawSheetDataRow;
@@ -120,4 +121,21 @@ export class LootService {
     const deleteHeaders = { 'content-type': 'application/json', 'responseType': 'application/json' }
     return this.http.delete<any>(this.URL + "/deleteLootsheet/" + char_name, { 'headers': deleteHeaders })
   }
+
+  getSheetLockForApproval(): Observable<sheetLockModel[]> {
+    return this.http.get<sheetLockModel[]>(this.URL + `/getSheetLockForApproval`)
+      .pipe(
+        map(sheetLock => {
+          return sheetLock;
+        })
+      );
+  }
+
+  approveOrDenySheetLock(approvalModel: approvalModel): Observable<any[]> {
+    const headers = { 'content-type': 'application/json', 'responseType': 'application/json' }
+    const body = JSON.stringify(approvalModel);
+    return this.http.patch<any>(this.URL + "/updateSheetlock", body, { 'headers': headers })
+  }
+
+
 }

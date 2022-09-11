@@ -161,7 +161,7 @@ export class OptimizedRaidDisplayComponent implements OnInit {
   }
 
   getStyleList(char: ICharacter) {
-    if (char.primarySpec.buffs.some(b => b.buffName == this.selectedBuffName)) {
+    if (char.primarySpec.buffs.some(b => b.buff_name == this.selectedBuffName)) {
       return { 'box-shadow': '0 0 10px #2ba805' };
     } else {
       return null;
@@ -169,7 +169,7 @@ export class OptimizedRaidDisplayComponent implements OnInit {
   }
 
   showCheck(char: ICharacter) {
-    if (char.primarySpec.buffs.some(b => b.buffName == this.selectedBuffName)) {
+    if (char.primarySpec.buffs.some(b => b.buff_name == this.selectedBuffName)) {
       return true
     } else {
       return false;
@@ -181,11 +181,11 @@ export class OptimizedRaidDisplayComponent implements OnInit {
     data.forEach(x => {
       //generate ria dbuff collection
       x.primarySpec.buffs.forEach(b => {
-        if (this.buffCollection.some(q => q.buffCode == b.buffCode)) {
-          if (this.buffCollection.some(q => (q.buffCode == b.buffCode && b.buffWeight > q.buffWeight))) {
+        if (this.buffCollection.some(q => q.buff_code == b.buff_code)) {
+          if (this.buffCollection.some(q => (q.buff_code == b.buff_code && b.buff_weight > q.buff_weight))) {
             //found item where weight is higher and buff code is the same
             // console.log("Replacing Item as new Weight is higher")
-            var foundBuff = this.buffCollection.find(q => (q.buffCode == b.buffCode && b.buffWeight > q.buffWeight))
+            var foundBuff = this.buffCollection.find(q => (q.buff_code == b.buff_code && b.buff_weight > q.buff_weight))
             var index = this.buffCollection.indexOf(foundBuff!)
             this.buffCollection[index] = b
           }
@@ -198,7 +198,7 @@ export class OptimizedRaidDisplayComponent implements OnInit {
       })
     })
     this.buffCollection = this.buffCollection.sort((a, b) => {
-      return parseInt(a.buffCode) - parseInt(b.buffCode)
+      return parseInt(a.buff_code) - parseInt(b.buff_code)
     })
   }
 
@@ -206,7 +206,7 @@ export class OptimizedRaidDisplayComponent implements OnInit {
     console.log(buff)
     console.log(i)
     this.selectedIndex = i;
-    this.buffDesc = buff.buffText;
-    this.selectedBuffName = buff.buffName
+    this.buffDesc = buff.buff_text;
+    this.selectedBuffName = buff.buff_name
   }
 }

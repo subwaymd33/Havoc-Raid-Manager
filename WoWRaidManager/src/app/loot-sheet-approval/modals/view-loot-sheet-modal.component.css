@@ -1,0 +1,10 @@
+.LootRow {
+    display: flex;
+    flex-direction: row;
+    font-size: large;
+}
+
+.SlotLabel{
+    padding-right: 10px;
+    width:15%;
+}

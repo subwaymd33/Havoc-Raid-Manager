@@ -21,7 +21,7 @@ export class RosterComponent implements OnInit {
   alignJustifyGlyph = faAlignJustify;
   thLargeGlyph = faThLarge;
   currentFilter: string = "";
-  props = ['charName', 'primarySpec.specName', 'mainsCharacterName', 'main'];
+  props = ['char_name', 'primarySpec.spec_name', 'mainsCharacterName', 'main'];
 
   title: string = '';
   filterText: string = '';
@@ -84,8 +84,8 @@ export class RosterComponent implements OnInit {
       mainCharacterList: new Array
     }
     this.characters.forEach(item => {
-      if (!unique.mainCharacterList.includes(item.mainsCharacterName)) {
-        unique.mainCharacterList.push(item.mainsCharacterName)
+      if (!unique.mainCharacterList.includes(item.mains_name)) {
+        unique.mainCharacterList.push(item.mains_name)
       }
     })
     
@@ -100,8 +100,8 @@ export class RosterComponent implements OnInit {
       obj.data = testCharacter;
     } else {
       var compMain = obj.rank;
-      var compPrimarySpecName = obj.primarySpec.specName;
-      var compOffSpecName = obj.offSpec.specName;
+      var compPrimarySpecName = obj.primarySpec.spec_name;
+      var compOffSpecName = obj.offSpec.spec_name;
     }
     let dialogRef = this.dialog.open(ModalComponent, {
       height: '500px',
@@ -117,15 +117,15 @@ export class RosterComponent implements OnInit {
             this.filterChanged(this.currentFilter)
           })
         } else if (result.event == 'Edit') {
-          if (compMain != result.data.main || compPrimarySpecName != result.data.primarySpec.specName || compOffSpecName != result.data.offSpec.specName) {
+          if (compMain != result.data.main || compPrimarySpecName != result.data.primarySpec.spec_name || compOffSpecName != result.data.offSpec.spec_name) {
             console.log("going to update")
             this.rosterService.updateCharacter(result.data).subscribe(data => {
 
               this.characters.forEach(element => {
-                if (element.charName == result.data.charName) {
+                if (element.char_name == result.data.char_name) {
                   console.log(element)
-                  element.primarySpec.specName = result.data.primarySpec.specName;
-                  element.offSpec.specName = result.data.offSpec.specName;
+                  element.primarySpec.spec_name = result.data.primarySpec.spec_name;
+                  element.offSpec.spec_name = result.data.offSpec.spec_name;
                   element.rank = result.data.rank;
                 }
               })
@@ -146,7 +146,7 @@ export class RosterComponent implements OnInit {
   }
 
   compareDataBeforeUpdate(obj: ICharacter, retObj: ICharacter): boolean {
-    if (obj.charName == retObj.charName && obj.rank == retObj.rank && obj.primarySpec.specName == retObj.primarySpec.specName && obj.offSpec.specName == retObj.offSpec.specName) {
+    if (obj.char_name == retObj.char_name && obj.rank == retObj.rank && obj.primarySpec.spec_name == retObj.primarySpec.spec_name && obj.offSpec.spec_name == retObj.offSpec.spec_name) {
       return false;
     } else {
       return true;

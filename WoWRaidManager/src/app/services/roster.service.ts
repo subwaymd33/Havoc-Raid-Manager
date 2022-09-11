@@ -57,8 +57,8 @@ export class RosterService {
 
   }
 
-  getCharUIDByCharName(charName:string): Observable<any[]> {
-    return this.http.get<any[]>(this.URL + `/getCharUID/${charName}`)
+  getCharUIDByCharName(char_name:string): Observable<any[]> {
+    return this.http.get<any[]>(this.URL + `/getCharUID/${char_name}`)
       .pipe(
         map(data => {
           return data;

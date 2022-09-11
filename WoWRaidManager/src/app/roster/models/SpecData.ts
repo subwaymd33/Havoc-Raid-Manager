@@ -1,11 +1,11 @@
 import { Buffs } from './Buffs';
 export class SpecData {
-    specName: string;
+    spec_name: string;
     role: string;
     buffs: Buffs[];
 
-    constructor(specName: string, role: string, buffs: Buffs[]) {
-        this.specName = specName;
+    constructor(spec_name: string, role: string, buffs: Buffs[]) {
+        this.spec_name = spec_name;
         this.role = role;
         this.buffs = buffs;
     }

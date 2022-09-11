@@ -131,8 +131,12 @@ export class LootSheetComponent implements OnInit {
 
   setFilteredSpecs(dataIn: lootSheetInitiateModel) {
 
-
-    this.filteredSpecs = this.specs.filter(spec => spec.base_class == dataIn.className)
+    if (dataIn.className="Knight"){
+      this.filteredSpecs = this.specs.filter(spec => spec.base_class == "Death Knight")
+    }else{
+      this.filteredSpecs = this.specs.filter(spec => spec.base_class == dataIn.className)
+    }
+  
     this.charRank = dataIn.rank
     //if (this.characterName != dataIn.charName) {
       this.HeaderFormGroup.controls['phase_selector'].setValue(0)
@@ -149,10 +153,10 @@ export class LootSheetComponent implements OnInit {
         si.column_two_item_list = [];
       })
     //}
-    this.characterName = dataIn.charName
+    this.characterName = dataIn.char_name
 
 
-    this.lootService.getLootSheetByCharName(dataIn.charName).subscribe(data => {
+    this.lootService.getLootSheetByCharName(dataIn.char_name).subscribe(data => {
       this.workingCharacterSheetObject = data
       this.originalCharacterSheetObject = JSON.parse(JSON.stringify(data))
     })
@@ -166,7 +170,8 @@ export class LootSheetComponent implements OnInit {
     this.SlotItem.splice(0)
     this.list_ids.splice(0)
 
-    if (this.charRank == environment.MAIN_RAIDER_RANK_NAME) {
+    // if (this.charRank == environment.MAIN_RAIDER_RANK_NAME) {
+    // }
       for (let i = 50; i > 25; i--) {
         var newSlotItem: LootSheetTableRow = new LootSheetTableRow("", "", "", [], [], true, []);
         newSlotItem.slot = i.toString();
@@ -176,26 +181,27 @@ export class LootSheetComponent implements OnInit {
         this.list_ids.push(newSlotItem.column_two_id)
         this.SlotItem.push(newSlotItem)
       }
-    } else {
-      for (let i = 0; i < 2; i++) {
-        var newSlotItem: LootSheetTableRow = new LootSheetTableRow("", "", "", [], [], true, []);
-        newSlotItem.slot = "49";
-        newSlotItem.column_one_id = ('49-1-' + i.toString());
-        this.list_ids.push(newSlotItem.column_one_id)
-        newSlotItem.column_two_id = ('49-2-' + i.toString());
-        this.list_ids.push(newSlotItem.column_two_id)
-        this.SlotItem.push(newSlotItem)
-      }
-      for (let i = 48; i > 25; i--) {
-        var newSlotItem: LootSheetTableRow = new LootSheetTableRow("", "", "", [], [], true, []);
-        newSlotItem.slot = i.toString();
-        newSlotItem.column_one_id = (i.toString() + '-1');
-        this.list_ids.push(newSlotItem.column_one_id)
-        newSlotItem.column_two_id = (i.toString() + '-2');
-        this.list_ids.push(newSlotItem.column_two_id)
-        this.SlotItem.push(newSlotItem)
-      }
-    }
+    
+    // else {
+    //   for (let i = 0; i < 2; i++) {
+    //     var newSlotItem: LootSheetTableRow = new LootSheetTableRow("", "", "", [], [], true, []);
+    //     newSlotItem.slot = "49";
+    //     newSlotItem.column_one_id = ('49-1-' + i.toString());
+    //     this.list_ids.push(newSlotItem.column_one_id)
+    //     newSlotItem.column_two_id = ('49-2-' + i.toString());
+    //     this.list_ids.push(newSlotItem.column_two_id)
+    //     this.SlotItem.push(newSlotItem)
+    //   }
+    //   for (let i = 48; i > 25; i--) {
+    //     var newSlotItem: LootSheetTableRow = new LootSheetTableRow("", "", "", [], [], true, []);
+    //     newSlotItem.slot = i.toString();
+    //     newSlotItem.column_one_id = (i.toString() + '-1');
+    //     this.list_ids.push(newSlotItem.column_one_id)
+    //     newSlotItem.column_two_id = (i.toString() + '-2');
+    //     this.list_ids.push(newSlotItem.column_two_id)
+    //     this.SlotItem.push(newSlotItem)
+    //   }
+    //}
 
     for (let i = 25; i > 0; i--) {
       var newSlotItem: LootSheetTableRow = new LootSheetTableRow("", "", "", [], [], true, []);
@@ -211,14 +217,15 @@ export class LootSheetComponent implements OnInit {
   }
 
   setMainSpec(data: specData) {
+    console.log(this.filteredSpecs)
     this.HeaderFormGroup.controls['main_spec_selector'].setValue(this.filteredSpecs.find(spec => spec.spec == data.spec))
-    this.mainSpecItemtoSpec = this.itemToSpecData.filter(its => its.specUID == data.specUID)
+    this.mainSpecItemtoSpec = this.itemToSpecData.filter(its => its.spec_uid == data.spec_uid)
     this.ProcessSheet()
   }
 
   setOffSpec(data: specData) {
     this.HeaderFormGroup.controls['off_spec_selector'].setValue(this.filteredSpecs.find(spec => spec.spec == data.spec))
-    this.offSpecItemtoSpec = this.itemToSpecData.filter(its => its.specUID == data.specUID)
+    this.offSpecItemtoSpec = this.itemToSpecData.filter(its => its.spec_uid == data.spec_uid)
     this.ProcessSheet()
   }
 
@@ -261,6 +268,8 @@ export class LootSheetComponent implements OnInit {
       if (this.originalCharacterSheetObject.filter(sheet => sheet.item_id == item.item_id)) {
         var foundSheetObjects = this.originalCharacterSheetObject.filter(sheet => sheet.item_id == item.item_id)
         foundSheetObjects.forEach(founditem => {
+          console.log(founditem)
+          console.log(founditem.slot.substring(2, 4) == "-1")
           if (founditem.slot.substring(2, 4) == "-1") {
             this.SlotItem.find(si => si.column_one_id == founditem.slot)?.column_one_item_list.push(item)
             timesItemAdded += 1
@@ -434,7 +443,7 @@ export class LootSheetComponent implements OnInit {
       this.selectedPhase = parseInt(data.value.substring(data.value.lastIndexOf(" ") + 1))
 
       //see if sheet is readonly
-      if (this.sheetLock.find(sl => sl.phase == this.selectedPhase && sl.locked == 'true')) {
+      if (this.sheetLock.find(sl => sl.phase == this.selectedPhase && sl.status == 'true')) {
         this.isSheetforPhaseLocked = true
         this.HeaderFormGroup.controls['off_spec_selector'].disable()
         this.HeaderFormGroup.controls['main_spec_selector'].disable()
@@ -447,11 +456,11 @@ export class LootSheetComponent implements OnInit {
       if (this.sheetLock.length > 0) {
         if (this.sheetLock.find(sl => sl.phase == this.selectedPhase)!.mainspec) {
           var ret: number = this.sheetLock.find(sl => sl.phase == this.selectedPhase)!.mainspec
-          this.setMainSpec(this.filteredSpecs.find(spec => spec.specUID == ret)!)
+          this.setMainSpec(this.filteredSpecs.find(spec => spec.spec_uid == ret)!)
         }
         if (this.sheetLock.find(sl => sl.phase == this.selectedPhase)!.offspec) {
           var ret: number = this.sheetLock.find(sl => sl.phase == this.selectedPhase)!.offspec
-          this.setOffSpec(this.filteredSpecs.find(spec => spec.specUID == ret)!)
+          this.setOffSpec(this.filteredSpecs.find(spec => spec.spec_uid == ret)!)
         }
       }
       this.ProcessSheet();
@@ -590,7 +599,7 @@ export class LootSheetComponent implements OnInit {
 
   SubmitSheet() {
     if (this.sheetLock.find(sl => sl.phase = this.selectedPhase)) {
-      this.sheetLock.find(sl => sl.phase = this.selectedPhase)!.locked = 'true'
+      this.sheetLock.find(sl => sl.phase = this.selectedPhase)!.status = 'true'
     } else {
       var mainSpecUID;
       if (typeof this.HeaderFormGroup.controls['main_spec_selector'].value.specUID != 'undefined') {
@@ -604,6 +613,7 @@ export class LootSheetComponent implements OnInit {
       } else {
         offSpecUID = 0
       }
+      console.log("character name" + this.characterName)
       this.sheetLock.push(new sheetLockModel(this.characterName, this.selectedPhase, "true", mainSpecUID, offSpecUID))
     }
     this.isSheetforPhaseLocked = true
@@ -619,7 +629,7 @@ export class LootSheetComponent implements OnInit {
     if (this.workingCharacterSheetObject.length > 0) {
       if (fromHTML) {
         if (this.sheetLock.find(sl => sl.phase = this.selectedPhase)) {
-          this.sheetLock.find(sl => sl.phase = this.selectedPhase)!.locked = 'false'
+          this.sheetLock.find(sl => sl.phase = this.selectedPhase)!.status = 'false'
         } else {
           var mainSpecUID;
           console.log(mainSpecUID)

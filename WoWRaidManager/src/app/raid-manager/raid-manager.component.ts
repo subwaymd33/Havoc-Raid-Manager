@@ -83,7 +83,7 @@ export class RaidManagerComponent implements OnInit {
     this.workingRaid.drops.forEach(drop=>{
       console.log(drop)
       
-      var foundMatches = this.masterLootSheet.filter(sheetRow => sheetRow.charName==drop.char_name && sheetRow.item_id==drop.item_id && sheetRow.aquired=='false');
+      var foundMatches = this.masterLootSheet.filter(sheetRow => sheetRow.char_name==drop.char_name && sheetRow.item_id==drop.item_id && sheetRow.aquired=='false');
       console.log(foundMatches)
       if (foundMatches.length==1){
         drop.slot_id_to_update = foundMatches[0].slot
@@ -131,8 +131,8 @@ export class RaidManagerComponent implements OnInit {
     var attend = importString.substring(0, importString.indexOf("Loot:")).trimEnd()
     attend = attend.substring(attend.lastIndexOf("\n")).trimStart()
 
-    attend.split(";").forEach(charName => {
-      var newAttendance = new AttendanceModel(raid_id, charName, true, false)
+    attend.split(";").forEach(char_name => {
+      var newAttendance = new AttendanceModel(raid_id, char_name, true, false)
       attendance.push(newAttendance)
     })
 

@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthCallbackComponent } from './login-control/auth-callback/auth-callback.component';
 import { LootConfigComponent } from './loot-manager/loot-config/loot-config.component';
 import { LootManagerComponent } from './loot-manager/loot-manager.component';
+import { LootSheetApprovalComponent } from './loot-sheet-approval/loot-sheet-approval.component';
 import { MasterLootSheetComponent } from './master-loot-sheet/master-loot-sheet.component';
 import { RaidGeneratorComponent } from './raid-generator/raid-generator.component';
 import { RaidManagerControllerComponent } from './raid-manager/raid-manager-controller/raid-manager-controller.component';
@@ -32,6 +33,9 @@ const routes: Routes = [
   },
   {
     path: 'raidManager', component:RaidManagerControllerComponent,canActivate: [OfficerGuardService]
+  },
+  {
+    path: 'sheetApproval', component:LootSheetApprovalComponent,canActivate: [OfficerGuardService]
   }
 ];
 

@@ -7,8 +7,8 @@ const cors = require('cors');
 
 app.use(cors({
   origin: 'https://localhost:3001',
-  origin: 'https://localhost:4200',
-  origin: 'http://localhost:4200',
+  // origin: 'https://localhost:4200',
+  // origin: 'http://localhost:4200',
 
 }));
 
@@ -34,6 +34,8 @@ app.get('/config', db.getConfig)
 app.get('/lootSheet/:charName', db.getLootSheetByCharName)
 app.get('/character/:charName', db.getCharUIDByCharName)
 app.get('/sheetLock/:char_name', db.getSheetLock)
+app.get('/sheetLockForApproval', db.getSheetLockForApproval)
+
 app.get('/masterLootsheet', db.getMasterLootSheet)
 app.get('/raids', db.getRaids)
 app.get('/raidWeeks', db.getRaidWeeks)
@@ -43,7 +45,7 @@ app.patch('/roster',db.updateCharacter)
 app.patch('/session',db.updateSession)
 app.patch('/config', db.updateConfig)
 app.patch('/updateSheetLimitandRanking', db.updateSheetLimitandRanking)
-
+app.patch('/updateSheetlock', db.updateSheetlock)
 app.patch('/updateRaidWeek', db.updateRaidWeek)
 
 app.post('/roster', db.insertCharacter)

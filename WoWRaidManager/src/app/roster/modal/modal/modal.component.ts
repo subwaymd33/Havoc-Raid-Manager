@@ -159,7 +159,7 @@ export class ModalComponent implements OnInit {
       this.reactiveForm.controls['rank'].setValue('rank-2')
     }else{
       this.reactiveForm.controls['rank'].setValue('rank-3')
-      this.reactiveForm.controls['main'].setValue(this.character.char.mainsCharacterName)
+      this.reactiveForm.controls['main'].setValue(this.character.char.mains_name)
       
     }
 
@@ -184,7 +184,7 @@ export class ModalComponent implements OnInit {
 
   doAction() {
     //adding character name
-    this.character.char.charName = this.reactiveForm.controls['characterName'].value;
+    this.character.char.char_name = this.reactiveForm.controls['characterName'].value;
 
     //Adding Spec Name
     this.classesData.forEach(element => {
@@ -192,11 +192,11 @@ export class ModalComponent implements OnInit {
         this.specData.forEach(spec => {
           if (spec.value == this.reactiveForm.controls['specs'].value) {
             let str: string = spec.viewValue + " " + element.viewValue;
-            this.character.char.primarySpec.specName = str;
+            this.character.char.primarySpec.spec_name = str;
           }
           if (spec.value == this.reactiveForm.controls['offSpecs'].value) {
             let str: string = spec.viewValue + " " + element.viewValue;
-            this.character.char.offSpec.specName = str;
+            this.character.char.offSpec.spec_name = str;
           }
         })
 
@@ -209,13 +209,13 @@ export class ModalComponent implements OnInit {
     //adding main or alt
     if (this.reactiveForm.controls['rank'].value == "rank-1") {
       this.character.char.rank = environment.MAIN_RAIDER_RANK_NAME
-      this.character.char.mainsCharacterName = this.reactiveForm.controls['characterName'].value
+      this.character.char.mains_name = this.reactiveForm.controls['characterName'].value
     } else if(this.reactiveForm.controls['rank'].value == "rank-2"){
       this.character.char.rank = environment.SOCIAL_RAIDER_RANK_NAME
-      this.character.char.mainsCharacterName = this.reactiveForm.controls['characterName'].value
+      this.character.char.mains_name = this.reactiveForm.controls['characterName'].value
     }else{
       this.character.char.rank = environment.ALT_RAIDER_RANK_NAME
-      this.character.char.mainsCharacterName = this.reactiveForm.controls['main'].value
+      this.character.char.mains_name = this.reactiveForm.controls['main'].value
     }
 
     
@@ -224,21 +224,21 @@ export class ModalComponent implements OnInit {
   }
 
   setDataForEdit() {
-    this.reactiveForm.controls['characterName'].setValue(this.character.char.charName)
+    this.reactiveForm.controls['characterName'].setValue(this.character.char.char_name)
 
     this.classesData.forEach(element => {
-      if (element.viewValue.includes(this.character.char.primarySpec.specName.split(' ').pop()!)) {
+      if (element.viewValue.includes(this.character.char.primarySpec.spec_name.split(' ').pop()!)) {
         this.reactiveForm.controls['classes'].setValue(element.value)
       }
     })
     this.setSpecBoxValues(this.reactiveForm.controls['classes'])
 
     this.specData.forEach(element => {
-      if (element.viewValue.includes(this.character.char.primarySpec.specName.substring(0,this.character.char.primarySpec.specName.lastIndexOf(" ")))) {
+      if (element.viewValue.includes(this.character.char.primarySpec.spec_name.substring(0,this.character.char.primarySpec.spec_name.lastIndexOf(" ")))) {
         this.reactiveForm.controls['specs'].setValue(element.value)
       }
-      if (this.character.char.offSpec.specName) {
-        if (element.viewValue.includes(this.character.char.offSpec.specName.substring(0,this.character.char.offSpec.specName.lastIndexOf(" ")))) {
+      if (this.character.char.offSpec.spec_name) {
+        if (element.viewValue.includes(this.character.char.offSpec.spec_name.substring(0,this.character.char.offSpec.spec_name.lastIndexOf(" ")))) {
           this.reactiveForm.controls['offSpecs'].setValue(element.value)
         }
       }

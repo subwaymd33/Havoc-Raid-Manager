@@ -1,0 +1,15 @@
+<div class="LootRow" *ngFor="let rec of lootSheet">
+    <div class="SlotLabel">
+        <span>{{rec.slot}}</span>
+    </div>
+    <div class="ItemLabel">
+        <a href="https://wotlkdb.com?item={{getWowheadLinkBasedOnItemID(rec.item_id)}}"
+        rel="item=${{getWowheadLinkBasedOnItemID(rec.item_id)}}" class="q4">{{getItemNameBasedOnItemID(rec.item_id)}}</a>
+    </div>
+<div>
+
+</div>
+<div>
+
+</div>
+</div>

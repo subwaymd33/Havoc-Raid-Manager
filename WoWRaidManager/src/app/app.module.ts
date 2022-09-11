@@ -38,6 +38,8 @@ import { RaidWeekManagerComponent } from './raid-manager/raid-week-manager/raid-
 import { OfficerGuardService } from './shared/guards/officer-guard';
 import { LogonGuardService } from './shared/guards/logon-guard';
 import { SnackbarService } from './services/snackbar.service';
+import { LootSheetApprovalComponent } from './loot-sheet-approval/loot-sheet-approval.component';
+import { ViewLootSheetModalComponent } from './loot-sheet-approval/modals/view-loot-sheet-modal.component';
 
 
 
@@ -65,7 +67,9 @@ import { SnackbarService } from './services/snackbar.service';
     AddonImportModalComponent,
     AddAttendanceModalComponent,
     RaidManagerControllerComponent,
-    RaidWeekManagerComponent
+    RaidWeekManagerComponent,
+    LootSheetApprovalComponent,
+    ViewLootSheetModalComponent
     
   ],
   imports: [

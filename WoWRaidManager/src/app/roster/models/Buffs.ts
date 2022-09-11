@@ -1,13 +1,13 @@
 export class Buffs{
-    buffCode:string;
-    buffText:string;
-    buffName: string;
-    buffWeight: number;
+    buff_code:string;
+    buff_text:string;
+    buff_name: string;
+    buff_weight: number;
 
-    constructor(buffCode:string,buffText:string, buffName:string,buffWeight:number){
-        this.buffCode = buffCode;
-        this.buffText = buffText;
-        this.buffName=buffName;
-        this.buffWeight = buffWeight;
+    constructor(buff_code:string,buff_text:string, buff_name:string,buff_weight:number){
+        this.buff_code = buff_code;
+        this.buff_text = buff_text;
+        this.buff_name=buff_name;
+        this.buff_weight = buff_weight;
     }
 }

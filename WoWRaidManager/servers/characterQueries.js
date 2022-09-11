@@ -14,7 +14,7 @@ const pool = new Pool({
 const getRoster = (request, response) => {
   console.log('Processing request: getRoster')
 
-  pool.query("SELECT \"charName\", \"specUID\", rank, \"offSpecUID\", \"mainsName\" FROM public.characters", (error, results) => {
+  pool.query("SELECT char_name, spec_uid, rank, offspec_uid, mains_name FROM public.characters", (error, results) => {
     release()
     if (error) {
       throw error
@@ -27,7 +27,7 @@ const getRoster = (request, response) => {
 const getRosterbyID = (request, response) => {
   console.log('Processing request: getRosterbyID')
   const id = parseInt(request.params.id)
-  pool.query(`SELECT public.characters.\"charName\", public.specs.\"spec\"||' '|| public.specs.base_class as name, public.specs.\"role\",public.raidbuffdebuff.\"buffCode\",public.raidbuffdebuff.\"buffText\",public.characters.rank FROM public.characters join public.specs on public.characters.\"specUID\" = public.specs.\"specUID\" join public.\"specToBuffDebuff\" on public.specs.\"specUID\" = public.\"specToBuffDebuff\".\"specUID\" join public.raidbuffdebuff on public.\"specToBuffDebuff\".\"buffDebuffUID\" = public.raidbuffdebuff.\"buffDebuffUID\" where public.characters.\"charUID\" = $1 order by public.raidbuffdebuff.\"buffText\" desc`, [id], (error, results) => {
+  pool.query(`SELECT public.characters.char_name, public.specs.spec||' '|| public.specs.base_class as name, public.specs.role,public.raidbuffdebuff.buff_code,public.raidbuffdebuff.buff_text,public.characters.rank FROM public.characters join public.specs on public.characters.spec_uid = public.specs.spec_uid join public.spectobuffdebuff on public.specs.spec_uid = public.spectobuffdebuff.spec_uid join public.raidbuffdebuff on public.spectobuffdebuff.buff_debuff_uid = public.raidbuffdebuff.buff_debuff_uid where public.characters.char_uid = $1 order by public.raidbuffdebuff.buff_text desc`, [id], (error, results) => {
     release()
     if (error) {
       throw error
@@ -40,7 +40,7 @@ const getRosterbyID = (request, response) => {
 const getRosterbyUser = (request, response) => {
   console.log('Processing request: getRosterbyUser')
   const user_id = request.params.user_id
-  pool.query(`SELECT \"charName\", \"specUID\", rank, \"offSpecUID\", \"mainsName\" FROM public.characters WHERE \"user\" = $1`, [user_id], (error, results) => {
+  pool.query(`SELECT char_name, spec_uid, rank, offspec_uid, mains_name FROM public.characters WHERE user_id = $1`, [user_id], (error, results) => {
     release()
     if (error) {
       throw error
@@ -52,25 +52,25 @@ const getRosterbyUser = (request, response) => {
 
 const updateCharacter = (request, response) => {
   console.log('Processing request: updateCharacter')
-  const { charName, specUID, rank, offspecUID, mainsName } = request.body
+  const { char_name, specUID, rank, offspecUID, mainsName } = request.body
 
   pool.query(
-    `UPDATE public.characters SET \"specUID\" = $2, rank = $3, \"offSpecUID\" = $4, \"mainsName\"=$5  WHERE \"charName\" = $1`,
-    [charName, specUID, rank, offspecUID, mainsName],
+    `UPDATE public.characters SET spec_uid = $2, rank = $3, offspec_uid = $4, mains_name=$5  WHERE char_name = $1`,
+    [char_name, specUID, rank, offspecUID, mainsName],
     (error, results) => {
       release()
       if (error) {
         throw error
       }
       console.log("Returning: updateCharacter")
-      response.status(200).send(`Character modified with name: ${charName}`)
+      response.status(200).send(`Character modified with name: ${char_name}`)
     }
   )
 }
 
 const getBuffTable = (request, response) => {
   console.log('Processing request: getBuffTable')
-  pool.query('SELECT public.\"specToBuffDebuff\".\"specUID\",public.\"raidbuffdebuff\".\"buffCode\", public.\"raidbuffdebuff\".\"buffName\", public.\"raidbuffdebuff\".\"buffText\", public.\"raidbuffdebuff\".\"buffWeight\" FROM public.\"specToBuffDebuff\" join public.\"raidbuffdebuff\" on public.\"specToBuffDebuff\".\"buffDebuffUID\" = public.\"raidbuffdebuff\".\"buffDebuffUID\"', (error, results) => {
+  pool.query('SELECT public.spectobuffdebuff.spec_uid,public.raidbuffdebuff.buff_code, public.raidbuffdebuff.buff_name, public.raidbuffdebuff.buff_text, public.raidbuffdebuff.buff_weight FROM public.spectobuffdebuff join public.raidbuffdebuff on public.spectobuffdebuff.buff_debuff_uid = public.raidbuffdebuff.buff_debuff_uid', (error, results) => {
     release()
     if (error) {
       throw error
@@ -84,7 +84,7 @@ const getSpecUID = (request, response) => {
   const baseClass = request.params.baseClass
   const specName = request.params.spec
 
-  pool.query("SELECT \"specUID\" from public.specs where name ='" + specName + "' and base_class like '%" + baseClass + "'", (error, results) => {
+  pool.query("SELECT spec_uid from public.specs where name ='" + specName + "' and base_class like '%" + baseClass + "'", (error, results) => {
     release()
     if (error) {
       throw error
@@ -95,10 +95,10 @@ const getSpecUID = (request, response) => {
 
 const insertCharacter = (request, response) => {
   console.log('Processing request: insertCharacter')
-  const { charName, specUID, rank, offspecUID, mainsName, userOwner } = request.body
+  const { char_name, specUID, rank, offspecUID, mainsName, userOwner } = request.body
 
   pool.query(
-    `INSERT INTO public.characters(\"charName\", \"specUID\", rank, \"offSpecUID\", \"mainsName\", \"user\") VALUES ($1, $2, $3, $4, $5,$6);`, [charName, specUID, rank, offspecUID, mainsName, userOwner],
+    `INSERT INTO public.characters(char_name, spec_uid, rank, offspec_uid, mains_name, user_id) VALUES ($1, $2, $3, $4, $5,$6);`, [char_name, specUID, rank, offspecUID, mainsName, userOwner],
     (error, results) => {
       release()
       if (error) {
@@ -112,21 +112,21 @@ const insertCharacter = (request, response) => {
 
 const deleteCharacter = (request, response) => {
   console.log('Processing request: deleteCharacter')
-  const charName = request.params.charName
+  const char_name = request.params.char_name
 
-  pool.query(`DELETE FROM public.characters WHERE \"charName\" = $1`, [charName], (error, results) => {
+  pool.query(`DELETE FROM public.characters WHERE char_name = $1`, [char_name], (error, results) => {
     release()
     if (error) {
       throw error
     }
     console.log('Returning: deleteCharacter')
-    response.status(200).send(`Character deleted with name : ${charName}`)
+    response.status(200).send(`Character deleted with name : ${char_name}`)
   })
 }
 
 const getAllSpecs = (request, response) => {
   console.log('Processing request: getAllSpecs')
-  pool.query("SELECT \"specUID\", \"spec\"||' '|| base_class as name, role from public.specs", (error, results) => {
+  pool.query("SELECT spec_uid, spec||' '|| base_class as name, role from public.specs", (error, results) => {
     release()
     if (error) {
       throw error
@@ -140,7 +140,7 @@ const getAllSpecs = (request, response) => {
 const getUserbyID = (request, response) => {
   console.log('Processing request: getUserbyID')
   const user_id = request.params.user_id
-  pool.query(`SELECT \"user_name\", role from public.users where \"user_id\" = $1`, [user_id], (error, results) => {
+  pool.query(`SELECT user_name, role from public.users where user_id = $1`, [user_id], (error, results) => {
     release()
     if (error) {
       throw error
@@ -154,7 +154,7 @@ const insertUser = (request, response) => {
   console.log('Processing request: insertUser')
   const { user_id, user_name, role } = request.body
   pool.query(
-    `INSERT INTO public.users(\"user_id\", \"user_name\", role )VALUES ($1, $2, $3);`, [user_id, user_name, role],
+    `INSERT INTO public.users(user_id, user_name, role )VALUES ($1, $2, $3);`, [user_id, user_name, role],
     (error, results) => {
       release()
       if (error) {
@@ -169,7 +169,7 @@ const insertUser = (request, response) => {
 const getSessionbyID = (request, response) => {
   console.log('Processing request: getSessionbyID')
   const user_id = request.params.user_id
-  pool.query(`SELECT \"user_id\",\"access_token\",\"refresh_token\",\"expiry_time\" from public.sessions where \"user_id\" = $1`, [user_id], (error, results) => {
+  pool.query(`SELECT user_id,access_token,refresh_token,expiry_time from public.sessions where user_id = $1`, [user_id], (error, results) => {
     release()
     if (error) {
       throw error
@@ -183,7 +183,7 @@ const insertSession = (request, response) => {
   console.log('Processing request: insertSession')
   const { user_id, access_token, refresh_token, expiry_time } = request.body
   pool.query(
-    `INSERT INTO public.sessions(\"user_id\", \"access_token\", \"refresh_token\", \"expiry_time\" )VALUES ($1, $2, $3, $4);`, [user_id, access_token, refresh_token, expiry_time],
+    `INSERT INTO public.sessions(user_id, access_token, refresh_token, expiry_time )VALUES ($1, $2, $3, $4);`, [user_id, access_token, refresh_token, expiry_time],
     (error, results) => {
       release()
       if (error) {
@@ -199,7 +199,7 @@ const updateSession = (request, response) => {
   console.log('Processing request: updateSession')
   const { user_id, access_token, refresh_token, expiry_time } = request.body
   pool.query(
-    `UPDATE public.sessions SET \"access_token\"= $2, \"refresh_token\" = $3, \"expiry_time\"= $4 WHERE \"user_id\" = $1;`, [user_id, access_token, refresh_token, expiry_time],
+    `UPDATE public.sessions SET access_token= $2, refresh_token = $3, expiry_time= $4 WHERE user_id = $1;`, [user_id, access_token, refresh_token, expiry_time],
     (error, results) => {
       release()
       if (error) {
@@ -227,7 +227,7 @@ const getItems = (request, response) => {
 const getSpecToItem = (request, response) => {
   console.log('Processing request: getSpecToItem')
 
-  pool.query("SELECT \"item_id\", \"specUID\" FROM public.spectoitem", (error, results) => {
+  pool.query("SELECT item_id, spec_uid FROM public.spectoitem", (error, results) => {
     release()
     if (error) {
       throw error
@@ -240,7 +240,7 @@ const getSpecToItem = (request, response) => {
 const getSpecData = (request, response) => {
   console.log('Processing request: getSpecData')
 
-  pool.query("SELECT \"specUID\", \"spec\",\"base_class\" FROM public.specs", (error, results) => {
+  pool.query("SELECT spec_uid, spec,base_class FROM public.specs", (error, results) => {
     release()
     if (error) {
       throw error
@@ -317,8 +317,8 @@ const updateSheetLimitandRanking = (request, response) => {
 
 const getLootSheetByCharName = (request, response) => {
   console.log('Processing request: getLootSheetByCharName')
-  const charName = request.params.charName
-  pool.query(`SELECT phase, item_id, slot, aquired FROM public.lootsheet where \"char_name\" = $1`, [charName], (error, results) => {
+  const char_name = request.params.char_name
+  pool.query(`SELECT phase, item_id, slot, aquired FROM public.lootsheet where char_name = $1`, [char_name], (error, results) => {
     release()
     if (error) {
       throw error
@@ -344,8 +344,8 @@ const insertLootSheet = (request, response) => {
 }
 const getCharUIDByCharName = (request, response) => {
   console.log('Processing request: getCharUIDByCharName')
-  const charName = request.params.charName
-  pool.query(`SELECT \"charUID\" FROM public.characters where \"charName\" = $1`, [charName], (error, results) => {
+  const char_name = request.params.char_name
+  pool.query(`SELECT char_uid FROM public.characters where char_name = $1`, [char_name], (error, results) => {
     release()
     if (error) {
       throw error
@@ -357,7 +357,7 @@ const getCharUIDByCharName = (request, response) => {
 const getSheetLock = (request, response) => {
   console.log('Processing request: getSheetLock')
   const char_name = request.params.char_name
-  pool.query(`SELECT phase, locked, mainspec, offspec FROM public.sheetlock where \"char_name\" = $1`, [char_name], (error, results) => {
+  pool.query(`SELECT char_name, phase, status, mainspec, offspec FROM public.sheetlock where char_name = $1`, [char_name], (error, results) => {
     release()
     if (error) {
       throw error
@@ -366,6 +366,18 @@ const getSheetLock = (request, response) => {
     response.status(200).json(results.rows)
   });
 }
+const getSheetLockForApproval = (request, response) => {
+  console.log('Processing request: getSheetLockForApproval')
+  pool.query(`SELECT char_name, phase, status, mainspec, offspec FROM public.sheetlock where status = 'true'`, (error, results) => {
+    release()
+    if (error) {
+      throw error
+    }
+    console.log("Returning: getSheetLockForApproval")
+    response.status(200).json(results.rows)
+  });
+}
+
 const insertSheetLock = (request, response) => {
   console.log('Processing request: insertSheetLock')
   const { sql } = request.body
@@ -381,11 +393,28 @@ const insertSheetLock = (request, response) => {
     }
   )
 }
+const updateSheetlock = (request, response) => {
+  console.log('Processing request: updateSheetlock')
+  const { char_name, status } = request.body
+  pool.query(
+    `UPDATE public.sheetlock SET status = $2 WHERE char_name = $1`,
+    [char_name, status],
+    (error, results) => {
+      release()
+      if (error) {
+        throw error
+      }
+      console.log("Returning: updateSheetlock")
+      response.status(200).send(`Sheetlock modified for: ${char_name}`)
+    }
+  )
+}
+
 
 const getMasterLootSheet = (request, response) => {
   console.log('Processing request: getMasterLootSheet')
 
-  pool.query("SELECT c.\"charName\",l.phase, l.item_id, l.slot,c.\"charUID\",aquired, c.\"specUID\", c.rank as char_rank from lootsheet l join characters c on c.\"charName\" = l.\"char_name\" where aquired ='false';", (error, results) => {
+  pool.query("SELECT c.char_name,l.phase, l.item_id, l.slot,c.char_uid,aquired, c.spec_uid, c.rank as char_rank from lootsheet l join characters c on c.char_name = l.char_name join sheetlock s on c.char_name = s.char_name where aquired ='false' and s.status = 'approved';", (error, results) => {
     release()
     if (error) {
       throw error
@@ -535,5 +564,7 @@ module.exports = {
   updateRaidWeek,
   updateSheetLimitandRanking,
   getOfficers,
-  deleteCharacterandSheet
+  deleteCharacterandSheet,
+  updateSheetlock,
+  getSheetLockForApproval
 };

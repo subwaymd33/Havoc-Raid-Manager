@@ -6,18 +6,18 @@ import { SpecData } from '../roster/models/SpecData';
 
 
 export interface ICharacter {
-    charName: string;
+    char_name: string;
     rank: string;
-    mainsCharacterName: string;
+    mains_name: string;
     primarySpec: SpecData;
     offSpec: SpecData;
 }
 
 export interface IBuffs {
-    buffCode: string;
-    buffText: string;
-    buffName: string;
-    buffWeight: number;
+    buff_code: string;
+    buff_text: string;
+    buff_name: string;
+    buff_weight: number;
 }
 
 export interface IClasses {

@@ -5,6 +5,6 @@ import { ICharacter } from '../shared/interfaces';
 export class TrackByService {
 
   character(index: number, character: ICharacter) {
-    return character.charName;
+    return character.char_name;
   }
 }

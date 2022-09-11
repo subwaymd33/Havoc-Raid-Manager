@@ -115,10 +115,10 @@ export class MasterLootSheetComponent implements OnInit {
 
     for (let i = 0; i < this.masterLootSheet.length; i++) {
       if (i == 0) {
-        allChars.push(this.masterLootSheet[i].charName)
+        allChars.push(this.masterLootSheet[i].char_name)
       } else {
-        if (allChars.filter(name => name == this.masterLootSheet[i].charName).length == 0) {
-          allChars.push(this.masterLootSheet[i].charName)
+        if (allChars.filter(name => name == this.masterLootSheet[i].char_name).length == 0) {
+          allChars.push(this.masterLootSheet[i].char_name)
         }
       }
     }
@@ -141,7 +141,7 @@ export class MasterLootSheetComponent implements OnInit {
     allChars.forEach(char => {
       var filteredAttendanceByChar: AttendanceModelWithDate[] = [];
 
-      var char_rank = this.masterLootSheet.find(sheet => sheet.charName == char)!.char_rank
+      var char_rank = this.masterLootSheet.find(sheet => sheet.char_name == char)!.char_rank
 
       this.allRaids.forEach(raid => {
         if (moment(raid.raid_date).toDate() > SixteenWeekWindowDate && moment(raid.raid_date).toDate() < prevTuesday) {
@@ -346,7 +346,7 @@ export class MasterLootSheetComponent implements OnInit {
 
     cellsForItem.forEach(cell => {
       cell.displayValue = parseInt(cell.slot.substring(0, cell.slot.indexOf("-")))
-      var workingChar = this.CharacterAttendancePercentage.find(char => char.char_name == cell.charName)!
+      var workingChar = this.CharacterAttendancePercentage.find(char => char.char_name == cell.char_name)!
       var percentForCharacter: number | undefined = workingChar.bonus
       if (typeof percentForCharacter != 'undefined') {
         cell.displayValue += percentForCharacter

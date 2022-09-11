@@ -31,37 +31,37 @@ app.get('/processRoster', (request, response) => {
 
             for (let i in json) {
                 var obj = new Object();
-                obj.charName = json[i]['charName'];
+                obj.char_name = json[i]['char_name'];
 
                 obj.rank = json[i]['rank']
 
-                if (json[i]['mainsName']) {
-                    obj.mainsCharacterName = json[i]['mainsName']
+                if (json[i]['mains_name']) {
+                    obj.mains_name = json[i]['mains_name']
                 } else {
-                    obj.mainsCharacterName = ""
+                    obj.mains_name = ""
                 }
 
                 specMapping.forEach(element => {
-                    if (element.specUID == json[i]['specUID']) {
+                    if (element.spec_uid == json[i]['spec_uid']) {
                         var primarySpecObj = new Object();
-                        primarySpecObj.specName = element.name;
+                        primarySpecObj.spec_name = element.name;
                         primarySpecObj.role = checkRole(element.role)
-                        primarySpecObj.buffs = buffMapping.find(element => { return element.specUID == json[i]['specUID'] }).buffs
+                        primarySpecObj.buffs = buffMapping.find(element => { return element.spec_uid == json[i]['spec_uid'] }).buffs
                         obj.primarySpec = primarySpecObj;
 
                     }
-                    if (element.specUID == json[i]['offSpecUID']) {
+                    if (element.spec_uid == json[i]['offspec_uid']) {
                         var offSpecObj = new Object();
-                        offSpecObj.specName = element.name;
+                        offSpecObj.spec_name = element.name;
                         offSpecObj.role = checkRole(element.role)
-                        offSpecObj.buffs = buffMapping.find(element => { return element.specUID == json[i]['offSpecUID'] }).buffs
+                        offSpecObj.buffs = buffMapping.find(element => { return element.spec_uid == json[i]['offspec_uid'] }).buffs
                         obj.offSpec = offSpecObj;
                     }
                 });
 
                 if (!obj.offSpec) {
                     var offSpecObj = new Object();
-                    offSpecObj.specName = null
+                    offSpecObj.spec_name = null
                     offSpecObj.role = null
                     obj.offSpec = offSpecObj;
                 }
@@ -75,9 +75,9 @@ app.get('/processRoster', (request, response) => {
 
 });
 
-app.get('/getCharUID/:charName', (request, response) => {
+app.get('/getCharUID/:char_name', (request, response) => {
     try {
-        fetch(`http://127.0.0.1:3000/character/${request.params.charName}`).then(res => res.json()).then(json => {
+        fetch(process.env.DATABASE_SERVER_ADDRESS +`/character/${request.params.char_name}`).then(res => res.json()).then(json => {
             response.send(json);
         });
     } catch (error) {
@@ -94,35 +94,35 @@ app.get('/processRoster/:user_id', (request, response) => {
             try {
                 for (let i in json) {
                     var obj = new Object();
-                    obj.charName = json[i]['charName'];
+                    obj.char_name = json[i]['char_name'];
                     obj.rank = json[i]['rank']
-                    if (json[i]['mainsName']) {
-                        obj.mainsCharacterName = json[i]['mainsName']
+                    if (json[i]['mains_name']) {
+                        obj.mains_name = json[i]['mains_name']
                     } else {
-                        obj.mainsCharacterName = ""
+                        obj.mains_name = ""
                     }
 
                     specMapping.forEach(element => {
-                        if (element.specUID == json[i]['specUID']) {
+                        if (element.spec_uid == json[i]['spec_uid']) {
                             var primarySpecObj = new Object();
-                            primarySpecObj.specName = element.name;
+                            primarySpecObj.spec_name = element.name;
                             primarySpecObj.role = checkRole(element.role)
-                            primarySpecObj.buffs = buffMapping.find(element => { return element.specUID == json[i]['specUID'] }).buffs
+                            primarySpecObj.buffs = buffMapping.find(element => { return element.spec_uid == json[i]['spec_uid'] }).buffs
                             obj.primarySpec = primarySpecObj;
 
                         }
-                        if (element.specUID == json[i]['offSpecUID']) {
+                        if (element.spec_uid == json[i]['offspec_uid']) {
                             var offSpecObj = new Object();
-                            offSpecObj.specName = element.name;
+                            offSpecObj.spec_name = element.name;
                             offSpecObj.role = checkRole(element.role)
-                            offSpecObj.buffs = buffMapping.find(element => { return element.specUID == json[i]['offSpecUID'] }).buffs
+                            offSpecObj.buffs = buffMapping.find(element => { return element.spec_uid == json[i]['offspec_uid'] }).buffs
                             obj.offSpec = offSpecObj;
                         }
                     });
 
                     if (!obj.offSpec) {
                         var offSpecObj = new Object();
-                        offSpecObj.specName = null
+                        offSpecObj.spec_name = null
                         offSpecObj.role = null
                         obj.offSpec = offSpecObj;
                     }
@@ -142,26 +142,26 @@ app.get('/processRoster/:user_id', (request, response) => {
 
 app.post('/insertCharacter', (request, response) => {
     try {
-        let mainsName;
+        let mains_name;
         if (request.body.rank == process.env.MAIN_RAIDER_RANK_NAME) {
             boolMain = true;
-            mainsName = request.body.charName
+            mains_name = request.body.char_name
         } else {
             boolMain = false;
-            mainsName = request.body.mainsCharacterName
+            mains_name = request.body.mains_name
         }
 
-        let specUID;
+        let spec_uid;
         specMapping.forEach(element => {
-            if (element.name == request.body.primarySpec.specName) {
-                specUID = element.specUID;
+            if (element.name == request.body.primarySpec.spec_name) {
+                spec_uid = element.spec_uid;
             }
         });
 
-        let offSpecUID;
+        let offspec_uid;
         specMapping.forEach(element => {
-            if (element.name == request.body.offSpec.specName) {
-                offSpecUID = element.specUID;
+            if (element.name == request.body.offSpec.spec_name) {
+                offspec_uid = element.spec_uid;
             }
         });
 
@@ -174,19 +174,19 @@ app.post('/insertCharacter', (request, response) => {
                 },
                 method: 'POST',
                 body: JSON.stringify({
-                    charName: request.body.charName,
-                    specUID: specUID,
+                    char_name: request.body.char_name,
+                    spec_uid: spec_uid,
                     rank: request.body.rank,
-                    offspecUID: offSpecUID,
-                    mainsName: mainsName,
-                    userOwner: request.body.userOwner
+                    offspec_uid: offspec_uid,
+                    mains_name: mains_name,
+                    user_id: request.body.user_id
                 })
             }
         ).then((resp) => {
             if (resp.status != 200) {
                 throw Error("Cannot insert the requested character");
             } else {
-                response.status(200).send({ status: 200, message: `Character inserted with name : ${request.body.charName}` })
+                response.status(200).send({ status: 200, message: `Character inserted with name : ${request.body.char_name}` })
             }
         }).catch((err) => {
             console.error(err); // handle error
@@ -199,20 +199,20 @@ app.post('/insertCharacter', (request, response) => {
 
 app.patch('/updateCharacter', (request, response) => {
     try {
-        let mainsName;
+        let mains_name;
         if (request.body.rank == "Havoc Turtle") {
-            mainsName = request.body.charName
+            mains_name = request.body.char_name
         } else {
-            mainsName = request.body.mainsCharacterName
+            mains_name = request.body.mains_name
         }
 
-        let specUID, offSpecUID;
+        let spec_uid, offspec_uid;
         specMapping.forEach(element => {
-            if (element.name == request.body.primarySpec.specName) {
-                specUID = element.specUID;
+            if (element.name == request.body.primarySpec.spec_name) {
+                spec_uid = element.spec_uid;
             }
-            if (element.name == request.body.offSpec.specName) {
-                offSpecUID = element.specUID;
+            if (element.name == request.body.offSpec.spec_name) {
+                offspec_uid = element.spec_uid;
             }
         });
 
@@ -224,11 +224,11 @@ app.patch('/updateCharacter', (request, response) => {
                 },
                 method: 'PATCH',
                 body: JSON.stringify({
-                    charName: request.body.charName,
-                    specUID: specUID,
+                    char_name: request.body.char_name,
+                    spec_uid: spec_uid,
                     rank: request.body.rank,
-                    mainsName: mainsName,
-                    offspecUID: offSpecUID
+                    mains_name: mains_name,
+                    offspec_uid: offspec_uid
                 })
             }
         ).then((resp) => {
@@ -236,7 +236,7 @@ app.patch('/updateCharacter', (request, response) => {
 
                 throw Error("Cannot insert the requested character");
             } else {
-                response.status(200).send({ status: 200, message: `Character updated with name : ${request.body.charName}` })
+                response.status(200).send({ status: 200, message: `Character updated with name : ${request.body.char_name}` })
             }
         }).catch((err) => {
             console.error(err); // handle error
@@ -251,9 +251,9 @@ app.patch('/updateCharacter', (request, response) => {
 app.delete('/deleteCharacter/:char_name', (request, response) => {
     try {
         console.log("Delete Character")
-        sql = "DELETE FROM public.sheetlock where \"char_name\" = '" + request.params.char_name + "';";
-        sqlDelete = "DELETE FROM public.lootsheet where \"char_name\" = '" + request.params.char_name + "';";
-        sqlCharDelete = "DELETE FROM public.characters where \"charName\" = '" + request.params.char_name + "';";
+        sql = "DELETE FROM public.sheetlock where char_name = '" + request.params.char_name + "';";
+        sqlDelete = "DELETE FROM public.lootsheet where char_name = '" + request.params.char_name + "';";
+        sqlCharDelete = "DELETE FROM public.characters where char_name = '" + request.params.char_name + "';";
 
         deleteSQLString = sql + sqlDelete + sqlCharDelete;
 
@@ -275,7 +275,7 @@ app.delete('/deleteCharacter/:char_name', (request, response) => {
 
                 throw Error("Cannot delete your item from list");
             } else {
-                response.status(200).send({ status: 200, message: `Character deleted with UID : ${request.params.charUID}` })
+                response.status(200).send({ status: 200, message: `Character deleted with UID : ${request.params.char_name}` })
             }
         }).catch((err) => {
             console.error(err); // handle error
@@ -442,7 +442,7 @@ app.patch('/config', (request, response) => {
 
                 throw Error("Cannot update the requested configuration setting");
             } else {
-                response.status(200).send({ status: 200, message: `configration chnaged updated with name : ${request.body.charName}` })
+                response.status(200).send({ status: 200, message: `configration chnaged updated with name : ${request.body.char_name}` })
             }
         }).catch((err) => {
             console.error(err); // handle error
@@ -648,11 +648,11 @@ app.post('/insertItemtoSpec', (request, response) => {
     try {
         var arr = request.body;
         InsertSQLString = `DELETE FROM spectoitem WHERE item_id = '${arr[0].item_id}';`
-        if (arr[0].specUID == 0) {
+        if (arr[0].spec_uid == 0) {
 
         } else {
             for (let i = 0; i < arr.length; i++) {
-                str = `INSERT INTO spectoitem (item_id, \"specUID\") VALUES( '${arr[i].item_id}','${arr[i].specUID}');`
+                str = `INSERT INTO spectoitem (item_id, spec_uid) VALUES( '${arr[i].item_id}','${arr[i].spec_uid}');`
                 InsertSQLString = InsertSQLString + str
             }
         }
@@ -717,7 +717,7 @@ app.patch('/updateSheetLimitandRanking', (request, response) => {
 
 app.get('/getLootSheet/:char_name', (request, response) => {
     try {
-        fetch(`http://127.0.0.1:3000/lootSheet/${request.params.char_name}`).then(res => res.json()).then(json => {
+        fetch(process.env.DATABASE_SERVER_ADDRESS +`/lootSheet/${request.params.char_name}`).then(res => res.json()).then(json => {
             response.send(json);
         });
     } catch (error) {
@@ -730,8 +730,8 @@ app.post('/insertLootSheet', (request, response) => {
     try {
         console.log(request.body)
         var arr = request.body;
-        InsertSQLString = `DELETE FROM lootsheet WHERE \"char_name\" = '${arr[0].char_name}';`
-        if (arr[0].specUID == 0) {
+        InsertSQLString = `DELETE FROM lootsheet WHERE char_name = '${arr[0].char_name}';`
+        if (arr[0].spec_uid == 0) {
 
         } else {
             for (let i = 0; i < arr.length; i++) {
@@ -769,7 +769,18 @@ app.post('/insertLootSheet', (request, response) => {
 
 app.get('/getSheetLock/:char_name', (request, response) => {
     try {
-        fetch(`http://127.0.0.1:3000/sheetLock/${request.params.char_name}`).then(res => res.json()).then(json => {
+        fetch(process.env.DATABASE_SERVER_ADDRESS + `/sheetLock/${request.params.char_name}`).then(res => res.json()).then(json => {
+            response.send(json);
+        });
+    } catch (error) {
+        response.status(400).send("Error ")
+    }
+
+});
+
+app.get('/getSheetLockForApproval', (request, response) => {
+    try {
+        fetch(process.env.DATABASE_SERVER_ADDRESS +`/sheetLockForApproval`).then(res => res.json()).then(json => {
             response.send(json);
         });
     } catch (error) {
@@ -781,8 +792,8 @@ app.get('/getSheetLock/:char_name', (request, response) => {
 app.post('/insertSheetLock', (request, response) => {
     try {
         var arr = request.body;
-        InsertSQLString = `DELETE FROM sheetlock WHERE \"char_name\" = '${arr[0].char_name}';`
-        if (arr[0].specUID == 0) {
+        InsertSQLString = `DELETE FROM sheetlock WHERE char_name = '${arr[0].char_name}';`
+        if (arr[0].spec_uid == 0) {
 
         } else {
             for (let i = 0; i < arr.length; i++) {
@@ -806,6 +817,36 @@ app.post('/insertSheetLock', (request, response) => {
                 throw Error("Cannot insert the requested sheetlock object");
             } else {
                 response.status(200).send({ status: 200, message: `sheetlock object inserted` })
+            }
+        }).catch((err) => {
+            console.error(err); // handle error
+            response.status(400).send("Error during Database Call")
+        });
+    } catch (error) {
+        response.status(400).send("Error")
+    }
+
+})
+
+app.patch('/updateSheetlock', (request, response) => {
+    try {
+        fetch(process.env.DATABASE_SERVER_ADDRESS + "/updateSheetlock",
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'responseType': 'text'
+                },
+                method: 'PATCH',
+                body: JSON.stringify({
+                    char_name: request.body.char_name,
+                    status: request.body.status,
+                })
+            }
+        ).then((resp) => {
+            if (resp.status != 200) {
+                throw Error("Cannot Update the Requested sheetlock");
+            } else {
+                response.status(200).send({ status: 200, message: `sheetlock updated with status : ${request.body.status}` })
             }
         }).catch((err) => {
             console.error(err); // handle error
@@ -910,7 +951,7 @@ app.post('/insertRaid', (request, response) => {
         UpdateLootSheetSQL = ""
         request.body.drops.forEach(drop => {
             RaidDropItemRollingSQL = `insert into raid_droplist (raid_id, item_id, char_name) VALUES ('${request.body.raid_id}', ${drop.item_id},'${drop.char_name}');`;
-            UpdateLootSheetSQL += `update lootsheet set aquired = 'true' where item_id=${drop.item_id} and slot='${drop.slot_id_to_update}' and \"charUID\"= (select \"charUID\" from characters where \"charName\"='${drop.char_name}');`
+            UpdateLootSheetSQL += `update lootsheet set aquired = 'true' where item_id=${drop.item_id} and slot='${drop.slot_id_to_update}' and char_name= '${drop.char_name}');`
             RaidDropSQL += RaidDropItemRollingSQL;
         });
         TotalSQL += RaidDropSQL
@@ -987,7 +1028,7 @@ app.patch('/updateRaidWeek', (request, response) => {
 app.get('/checkSession/:sess_id', (request, response) => {
     console.log("Check Session " + request.params.sess_id)
     try {
-        fetch(`http://127.0.0.1:3000/session/${request.params.sess_id}`).then(res => res.json()).then(json => {
+        fetch(process.env.DATABASE_SERVER_ADDRESS +`/session/${request.params.sess_id}`).then(res => res.json()).then(json => {
             response.send(json);
         });
     } catch (error) {
@@ -999,7 +1040,7 @@ app.get('/checkSession/:sess_id', (request, response) => {
 app.get('/checkUser/:id', (request, response) => {
 
     try {
-        fetch(`http://127.0.0.1:3000/user/${request.params.id}`).then(res => res.json()).then(json => {
+        fetch(process.env.DATABASE_SERVER_ADDRESS +`/user/${request.params.id}`).then(res => res.json()).then(json => {
             response.send(json);
         });
     } catch (error) {
@@ -1141,16 +1182,16 @@ function getOptimalRaidWeight(allBuffs) {
         })
     }
     for (let i = 0; i < 28; i++) {
-        let buffCod = combinedArray.filter(b => (parseInt(b.buffCode) == (i + 1)))
+        let buffCod = combinedArray.filter(b => (parseInt(b.buff_code) == (i + 1)))
         let buffToAdd;
         for (let k = 0; k < buffCod.length; k++) {
             if (k == 0) {
                 buffToAdd = buffCod[k]
-            } else if (buffCod[k].buffWeight > buffToAdd.buffWeight) {
+            } else if (buffCod[k].buff_weight > buffToAdd.buff_weight) {
                 buffToAdd = buffCod[k];
             }
         }
-        // if (buffToAdd.buffWeight != 100){
+        // if (buffToAdd.buff_weight != 100){
         //   console.log(buffToAdd)
         // }
         buffCollection.push(buffToAdd);
@@ -1165,24 +1206,24 @@ function getOptimalRaidWeight(allBuffs) {
 
 
     //   x.buffs.forEach(b => {
-    //     if (buffCollection.some(q => q.buffCode == b.buffCode)) {
+    //     if (buffCollection.some(q => q.buff_code == b.buff_code)) {
     //       console.log("Matching Code Found. Determine if weights are higher")
-    //       console.log("BuffCode : " + b.buffCode)
-    //       console.log("Buff Collection BuffCode : " + buffCollection.find(t => t.buffCode == b.buffCode).buffCode)
+    //       console.log("buff_code : " + b.buff_code)
+    //       console.log("Buff Collection buff_code : " + buffCollection.find(t => t.buff_code == b.buff_code).buff_code)
 
     //       console.log("Values Before Checking for weights")
-    //       console.log("buffWeight : " + b.buffWeight)
-    //       console.log("Buff Collection buffWeight : " + buffCollection.find(t => t.buffCode == b.buffCode).buffWeight)
+    //       console.log("buff_weight : " + b.buff_weight)
+    //       console.log("Buff Collection buff_weight : " + buffCollection.find(t => t.buff_code == b.buff_code).buff_weight)
 
-    //       if (buffCollection.some(q => (b.buffWeight > q.buffWeight && q.buffCode == b.buffCode))) {
+    //       if (buffCollection.some(q => (b.buff_weight > q.buff_weight && q.buff_code == b.buff_code))) {
     //         //found item where weight is higher and buff code is the same
     //         console.log("********************Replacing Item as new Weight is higher**************************")
-    //         var index = buffCollection.indexOf(buffCollection.find(q => (q.buffCode == b.buffCode)))
+    //         var index = buffCollection.indexOf(buffCollection.find(q => (q.buff_code == b.buff_code)))
     //         buffCollection[index] = b
     //       }
     //     } else {
     //       // console.log("New Code Found. Adding to Buff cOllection")
-    //       // console.log("BuffCode : " + b.buffCode)
+    //       // console.log("buff_code : " + b.buff_code)
 
     //       buffCollection.push(b)
     //     }
@@ -1198,11 +1239,11 @@ function getOptimalRaidWeight(allBuffs) {
     raidWeight = 0
 
     buffCollection = buffCollection.sort((a, b) => {
-        return a.buffCode - b.buffCode
+        return a.buff_code - b.buff_code
     })
     //console.log(buffCollection)
     buffCollection.forEach(b => {
-        raidWeight += b.buffWeight
+        raidWeight += b.buff_weight
     })
 
     console.log("Raid Weight: " + raidWeight)
@@ -1230,7 +1271,7 @@ app.listen(port, () => {
         fetch(process.env.DATABASE_SERVER_ADDRESS + "/spec").then(res => res.json()).then(json => {
             for (let i in json) {
                 var obj = new Object();
-                obj.specUID = json[i]['specUID'];
+                obj.spec_uid = json[i]['spec_uid'];
                 obj.name = json[i]['name'];
                 obj.role = json[i]['role']
                 specMapping.push(obj)
@@ -1240,27 +1281,27 @@ app.listen(port, () => {
         fetch(process.env.DATABASE_SERVER_ADDRESS + "/buffs").then(res => res.json()).then(json => {
             for (let i in json) {
                 var found = buffMapping.find(element => {
-                    return element.specUID == json[i]['specUID'];
+                    return element.spec_uid == json[i]['spec_uid'];
                 });
                 if (found) {
                     var addObj = buffMapping.find(element => {
-                        return element.specUID == json[i]['specUID'];
+                        return element.spec_uid == json[i]['spec_uid'];
                     });
                     var buffOBJ = new Object();
-                    buffOBJ.buffCode = json[i]['buffCode'];
-                    buffOBJ.buffText = json[i]['buffText'];
-                    buffOBJ.buffName = json[i]['buffName'];
-                    buffOBJ.buffWeight = json[i]['buffWeight'];
+                    buffOBJ.buff_code = json[i]['buff_code'];
+                    buffOBJ.buff_text = json[i]['buff_text'];
+                    buffOBJ.buff_name = json[i]['buff_name'];
+                    buffOBJ.buff_weight = json[i]['buff_weight'];
                     addObj.buffs.push(buffOBJ);
                 } else {
                     var obj = new Object();
-                    obj.specUID = json[i]['specUID'];
+                    obj.spec_uid = json[i]['spec_uid'];
                     obj.buffs = new Array();
                     var buffOBJ = new Object();
-                    buffOBJ.buffCode = json[i]['buffCode'];
-                    buffOBJ.buffText = json[i]['buffText'];
-                    buffOBJ.buffName = json[i]['buffName'];
-                    buffOBJ.buffWeight = json[i]['buffWeight'];
+                    buffOBJ.buff_code = json[i]['spec_code'];
+                    buffOBJ.buff_text = json[i]['buff_text'];
+                    buffOBJ.buff_name = json[i]['buff_name'];
+                    buffOBJ.buff_weight = json[i]['buff_weight'];
                     obj.buffs.push(buffOBJ);
                     buffMapping.push(obj)
                 }
