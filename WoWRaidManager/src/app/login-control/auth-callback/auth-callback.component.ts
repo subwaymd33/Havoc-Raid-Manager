@@ -37,10 +37,13 @@ export class AuthCallbackComponent implements OnInit {
 
         this.authService.GetDiscordGuilds(access.access_token.toString()).subscribe((data) => {
           data.forEach(guild => {
+            console.log("Discord guild code:" + guild)
             if (guild.id == '822219949284130839') {
+              console.log("Discord Guild Id matched Panic")
               this.authService.GetDiscordGuildsDetails(access.access_token.toString(), guild.id).subscribe(guildData => {
                 var discordRolesArray: DiscordGuildDetails = guildData
                 discordRolesArray.roles.forEach((role: string) => {
+                  console.log("Looping Roles: "+ role)
                   if (role == "827304261725192232") {
                     this.authService.SetAdmin(true)
                     userData.role = "officer"
